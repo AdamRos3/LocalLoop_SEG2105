@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LocalLoop</string>
+    <string name="username_input"></string>
+    <string name="password_input"></string>
+</resources>
