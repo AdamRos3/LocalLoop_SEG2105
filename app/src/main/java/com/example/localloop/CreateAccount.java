@@ -1,7 +1,10 @@
 package com.example.localloop;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -11,8 +14,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.localloop.resources.UserAccount;
+
 public class CreateAccount extends AppCompatActivity {
 
+    public String username;
+    public String password;
     public String accountType;
 
     @Override
@@ -28,5 +35,17 @@ public class CreateAccount extends AppCompatActivity {
                 accountTypeText.setText(accountType);
             }
         });
+    }
+
+    public void onCreateUserAccount(View view) {
+        EditText userText = findViewById(R.id.username_input);
+        username = (userText).getText().toString();
+        //EditText passText = (EditText) findViewById(R.id.password_input);
+        EditText passText = findViewById(R.id.password_input);
+        password = (passText).getText().toString();
+        UserAccount user = new UserAccount(username, password);
+        Intent intent = new Intent(this, MainActivity.class);
+        // TODO pass the new user into user storage before returning to login page
+        startActivity(intent);
     }
 }
