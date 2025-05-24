@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -23,21 +24,18 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="22dp" />
+            android:layout_height="65dp" />
 
         <TextView
-            android:id="@+id/app_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/TextViewCreateAccount"
+            android:layout_width="224dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="LocalLoop"
+            android:text="Please enter your username and password"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textStyle="bold|italic" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="22dp" />
 
         <TextView
             android:id="@+id/badcreds_state"
@@ -101,6 +99,49 @@
 
         </LinearLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="13dp" />
+
+        <LinearLayout
+            android:layout_width="361dp"
+            android:layout_height="54dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="199dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/newAccountType_input"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/newAccountType_input"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/accountTypeSwitch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:checked="true"
+                android:showText="false" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/signIn_button"
             android:layout_width="227dp"
@@ -108,25 +149,6 @@
             android:layout_gravity="center"
             android:onClick="ValidateCredentials"
             android:text="Sign In" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_gravity="center"
-            android:text="Don't have an account?" />
-
-        <Button
-            android:id="@+id/createAccount_button"
-            android:layout_width="117dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:onClick="onCreateAccount"
-            android:text="Create an Account" />
 
     </LinearLayout>
 </RelativeLayout>

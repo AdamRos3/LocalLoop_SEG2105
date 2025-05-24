@@ -45,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onCreateAccount(View view) {
+        Intent intent = new Intent(this, CreateAccount.class);
+        startActivity(intent);
+    }
+
     public void HandleInvalidCredentials (View view) {
         // clear username and password fields
         final TextView clearUser = (TextView) findViewById(R.id.username_input);

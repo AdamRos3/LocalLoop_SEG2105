@@ -3,4 +3,5 @@
     <string name="badcreds_state"></string>
     <string name="username_input"></string>
     <string name="password_input"></string>
+    <string name="newAccountType_input">Participant</string>
 </resources>
