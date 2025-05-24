@@ -1,3 +1,4 @@
+package com.example.localloop.resources;
 
 public class Admin extends UserAccount {
     //public Admin(String inputtedUsername, String inputtedPassword) {

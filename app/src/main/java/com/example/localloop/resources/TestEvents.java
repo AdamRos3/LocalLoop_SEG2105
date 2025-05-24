@@ -1,3 +1,5 @@
+package com.example.localloop.resources;
+
 public class TestEvents {
     public static void main(String[] args) {
         Events event = new Events(

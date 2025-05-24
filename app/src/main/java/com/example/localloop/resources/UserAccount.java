@@ -1,3 +1,4 @@
+package com.example.localloop.resources;
 
 import java.util.ArrayList;
 

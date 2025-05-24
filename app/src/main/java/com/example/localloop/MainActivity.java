@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         //toChange.setText(username);
 
         // temporary hardcoded credentials for testing
-        if (username.equals("admin") && password.equals("123")) {
+        if (username.equals("admin") && password.equals("XPI76SZUqyCjVxgnUjm0")) {
             // Launch WelcomeActivity with username and role
             Intent intent = new Intent(this, WelcomeActivity.class);
             intent.putExtra("username", username);
