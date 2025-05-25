@@ -11,13 +11,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.localloop.resources.UserAccount;
+
 public class WelcomeAdmin extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_welcome_admin);
 
         // Set window insets to maintain future layout compatibility
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.returnToLogin), (v, insets) -> {
@@ -26,13 +29,12 @@ public class WelcomeAdmin extends AppCompatActivity {
             return insets;
         });
 
-        // Get data from login screen
-        String username = getIntent().getStringExtra("username");
-        String role = getIntent().getStringExtra("role");
+        UserAccount user = MainActivity.user;
+        String username = user.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + username + "! You are logged in as \"" + role + "\".";
+        String message = "Welcome " + username + "! You are logged in as admin";
         welcomeMessage.setText(message);
     }
 
