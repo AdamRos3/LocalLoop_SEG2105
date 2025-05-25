@@ -1,10 +1,13 @@
 package com.example.localloop.resources;
 
 public class Admin extends UserAccount {
+    public Admin() {
+
+    }
+
     //public Admin(String inputtedUsername, String inputtedPassword) {
-    public Admin(String inputtedUsername, String inputtedPassword) {
-        super(inputtedUsername, inputtedPassword);
-        typeOfAccount = "Admin";
+    public Admin(String username, String password) {
+        super(username, password);
         //username = "admin";
         //password = "XPI76SZUqyCjVxgnUjm0";
         welcomeSequence();
@@ -16,13 +19,10 @@ public class Admin extends UserAccount {
     }
 
     public void allCreatedUsers() {
-        for (UserAccount account : this.getUserAccounts()) {
-            System.out.println(account);
-        }
     }
 
     @Override
-    public void welcome() {
-
+    public String welcome() {
+        return "Welcome " + username + "! You are logged is as Admin";
     }
 }

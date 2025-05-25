@@ -20,7 +20,6 @@ public class ProgramManager {
         String inputtedPassword = participantSetup.nextLine();
         Participant createdParticipant = new Participant(inputtedUsername, inputtedPassword);
         createdParticipant.welcome();
-        createdParticipant.addUserAccount();
     }
 
     public static void organizerSetup() {
@@ -32,14 +31,12 @@ public class ProgramManager {
         String inputtedPassword = organizerSetup.nextLine();
         Organizer createdOrganizer = new Organizer(inputtedUsername, inputtedPassword);
         createdOrganizer.welcome();
-        createdOrganizer.addUserAccount();
         //return createdOrganizer;
         //userAccounts.add(createdOrganizer);
     }
 
     public static void adminSetup() {
         Admin createdAdmin = new Admin("admin", "XPI76SZUqyCjVxgnUjm0");
-        createdAdmin.addUserAccount();
         createdAdmin.welcome();
     }
 

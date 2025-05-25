@@ -4,9 +4,13 @@ import java.util.ArrayList;
 
 public class Participant extends UserAccount {
     private final ArrayList<Events> registeredEvents; // To store events that the participant registred for
-    public Participant(String inputtedUsername, String inputtedPassword) {
-        super(inputtedUsername, inputtedPassword);
-        typeOfAccount = "Participant";
+
+    public Participant() {
+        registeredEvents = new ArrayList<>();
+    }
+
+    public Participant(String username, String password) {
+        super(username, password);
         registeredEvents = new ArrayList<>();
     }
 
@@ -24,4 +28,8 @@ public class Participant extends UserAccount {
         return registeredEvents;
     }
 
+    @Override
+    public String welcome() {
+        return "Welcome " + username + "! You are logged in as Participant";
+    }
 }

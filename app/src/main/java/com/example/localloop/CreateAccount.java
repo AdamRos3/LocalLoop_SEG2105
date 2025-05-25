@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.localloop.resources.Admin;
 import com.example.localloop.resources.Organizer;
 import com.example.localloop.resources.Participant;
 import com.example.localloop.resources.UserAccount;
@@ -44,6 +45,10 @@ public class CreateAccount extends AppCompatActivity {
     }
 
     public void onCreateUserAccount(View view) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        String key = myRef.push().getKey();
+
         EditText userText = findViewById(R.id.username_input);
         username = (userText).getText().toString();
         //EditText passText = (EditText) findViewById(R.id.password_input);
@@ -53,17 +58,13 @@ public class CreateAccount extends AppCompatActivity {
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
         UserAccount user;
         if (accountSwitch.isChecked()) {
-            accountType = "Participant";
-            user = new Participant();
+            user = new Participant(username, password);
+            myRef.child("users/Participant").child(key).setValue(user);
         } else {
-            accountType = "Organizer";
-            user = new Organizer();
+            user = new Organizer(username, password);
+            myRef.child("users/Organizer").child(key).setValue(user);
+
         }
-        accountType = accountSwitch.isChecked() ? "Participant" : "Organizer";
-        // TODO pass the new user into user storage before returning to login page
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users/" + accountType + "/");
-        myRef.setValue("test");
         startActivity(intent);
     }
 }
