@@ -15,6 +15,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.resources.UserAccount;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CreateAccount extends AppCompatActivity {
 
@@ -46,6 +48,9 @@ public class CreateAccount extends AppCompatActivity {
         UserAccount user = new UserAccount(username, password);
         Intent intent = new Intent(this, MainActivity.class);
         // TODO pass the new user into user storage before returning to login page
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("user");
+        myRef.setValue("Hello, World!");
         startActivity(intent);
     }
 }
