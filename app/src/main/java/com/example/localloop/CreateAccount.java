@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.resources.UserAccount;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -47,10 +49,12 @@ public class CreateAccount extends AppCompatActivity {
         password = (passText).getText().toString();
         UserAccount user = new UserAccount(username, password);
         Intent intent = new Intent(this, MainActivity.class);
+        Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
+        accountType = accountSwitch.isChecked() ? "Participant" : "Organizer";
         // TODO pass the new user into user storage before returning to login page
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //DatabaseReference myRef = database.getReference("user/kblac");
-        //myRef.setValue("456");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + accountType + "/");
+        myRef.setValue("test");
         startActivity(intent);
     }
 }
