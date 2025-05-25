@@ -3,7 +3,7 @@ package com.example.localloop.resources;
 import java.util.ArrayList;
 
 public class Participant extends UserAccount {
-    private ArrayList<Events> registeredEvents; // To store events that the participant registred for
+    private final ArrayList<Events> registeredEvents; // To store events that the participant registred for
     public Participant(String inputtedUsername, String inputtedPassword) {
         super(inputtedUsername, inputtedPassword);
         typeOfAccount = "Participant";
