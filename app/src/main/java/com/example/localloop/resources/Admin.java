@@ -2,9 +2,8 @@ package com.example.localloop.resources;
 
 public class Admin extends UserAccount {
     //public Admin(String inputtedUsername, String inputtedPassword) {
-    public Admin() {
-        //super(inputtedUsername, inputtedPassword);
-        super("admin", "XPI76SZUqyCjVxgnUjm0");
+    public Admin(String inputtedUsername, String inputtedPassword) {
+        super(inputtedUsername, inputtedPassword);
         typeOfAccount = "Admin";
         //username = "admin";
         //password = "XPI76SZUqyCjVxgnUjm0";

@@ -38,7 +38,7 @@ public class ProgramManager {
     }
 
     public static void adminSetup() {
-        Admin createdAdmin = new Admin();
+        Admin createdAdmin = new Admin("admin", "XPI76SZUqyCjVxgnUjm0");
         createdAdmin.addUserAccount();
         createdAdmin.welcome();
     }
