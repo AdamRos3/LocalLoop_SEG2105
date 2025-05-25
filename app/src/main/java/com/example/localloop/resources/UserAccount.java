@@ -22,5 +22,4 @@ public abstract class UserAccount {
     public String getPassword() {
         return password;
     }
-    public abstract void welcome();
 }
