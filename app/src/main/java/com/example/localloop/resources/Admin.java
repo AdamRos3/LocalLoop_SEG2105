@@ -21,4 +21,9 @@ public class Admin extends UserAccount {
             System.out.println(account);
         }
     }
+
+    @Override
+    public void welcome() {
+
+    }
 }

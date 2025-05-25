@@ -2,15 +2,17 @@ package com.example.localloop.resources;
 
 import java.util.ArrayList;
 
-public class UserAccount {
+public abstract class UserAccount {
     public String username;
     public String password;
-    public String typeOfAccount;
-    private static ArrayList<UserAccount> userAccounts = new ArrayList<UserAccount>();
-    //static ArrayList<UserAccount> userAccounts = new ArrayList<UserAccount>();
-    public UserAccount(String inputtedUsername, String inputtedPassword) {
-        username = inputtedUsername;
-        password = inputtedPassword;
+
+    public UserAccount() {
+
+    }
+
+    public UserAccount(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -20,20 +22,5 @@ public class UserAccount {
     public String getPassword() {
         return password;
     }
-
-    public void addUserAccount() {
-        userAccounts.add(this);
-    }
-
-    public String toString() {
-        return typeOfAccount + ", Username: " + this.getUsername() + ", Password: " + this.getPassword();
-    }
-
-    public void welcome() {
-        System.out.println("Welcome " + username + "! You are logged in as \"" + typeOfAccount + "\"");
-    }
-
-    public ArrayList<UserAccount> getUserAccounts() {
-        return userAccounts;
-    }
+    public abstract void welcome();
 }
