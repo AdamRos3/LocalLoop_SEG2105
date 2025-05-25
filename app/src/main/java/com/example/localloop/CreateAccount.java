@@ -49,8 +49,8 @@ public class CreateAccount extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         // TODO pass the new user into user storage before returning to login page
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("user");
-        myRef.setValue("Hello, World!");
+        DatabaseReference myRef = database.getReference("user/kblac");
+        myRef.setValue("456");
         startActivity(intent);
     }
 }

@@ -1,11 +1,9 @@
 package com.example.localloop;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         // temporary hardcoded credentials for testing
         if (username.equals("admin") && password.equals("XPI76SZUqyCjVxgnUjm0")) {
             // Launch WelcomeActivity with username and role
-            Intent intent = new Intent(this, WelcomeActivity.class);
+            Intent intent = new Intent(this, WelcomeAdmin.class);
             intent.putExtra("username", username);
             intent.putExtra("role", "Admin");
             startActivity(intent);
