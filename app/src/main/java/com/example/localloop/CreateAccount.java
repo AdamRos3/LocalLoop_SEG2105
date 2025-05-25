@@ -15,6 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.localloop.resources.Organizer;
+import com.example.localloop.resources.Participant;
 import com.example.localloop.resources.UserAccount;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.database.DatabaseReference;
@@ -47,9 +49,16 @@ public class CreateAccount extends AppCompatActivity {
         //EditText passText = (EditText) findViewById(R.id.password_input);
         EditText passText = findViewById(R.id.password_input);
         password = (passText).getText().toString();
-        UserAccount user = new UserAccount(username, password);
         Intent intent = new Intent(this, MainActivity.class);
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
+        UserAccount user;
+        if (accountSwitch.isChecked()) {
+            accountType = "Participant";
+            user = new Participant();
+        } else {
+            accountType = "Organizer";
+            user = new Organizer();
+        }
         accountType = accountSwitch.isChecked() ? "Participant" : "Organizer";
         // TODO pass the new user into user storage before returning to login page
         FirebaseDatabase database = FirebaseDatabase.getInstance();
