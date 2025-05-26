@@ -58,10 +58,10 @@ public class CreateAccount extends AppCompatActivity {
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
         UserAccount user;
         if (accountSwitch.isChecked()) {
-            user = new Participant(username, password);
+            user = new Participant(username, password, key);
             myRef.child("users/Participant").child(key).setValue(user);
         } else {
-            user = new Organizer(username, password);
+            user = new Organizer(username, password, key);
             myRef.child("users/Organizer").child(key).setValue(user);
 
         }

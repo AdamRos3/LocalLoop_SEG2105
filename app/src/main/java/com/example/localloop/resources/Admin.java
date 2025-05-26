@@ -6,10 +6,11 @@ public class Admin extends UserAccount {
     }
 
     //public Admin(String inputtedUsername, String inputtedPassword) {
-    public Admin(String username, String password) {
-        super(username, password);
+    public Admin(String username, String password, String userID) {
+        super(username, password, userID);
         //username = "admin";
         //password = "XPI76SZUqyCjVxgnUjm0";
+        //userID = "-OR8hNVtR8ECnVq9jcAZ";
         welcomeSequence();
     }
 

@@ -5,8 +5,8 @@ public class Organizer extends UserAccount {
     public Organizer() {
 
     }
-    public Organizer(String username, String password) {
-        super(username, password);
+    public Organizer(String username, String password, String userID) {
+        super(username, password, userID);
     }
 
     @Override

@@ -18,8 +18,8 @@ public class ProgramManager {
         String inputtedUsername = participantSetup.nextLine();
         System.out.println("Participant, what is your password for account creation... ");
         String inputtedPassword = participantSetup.nextLine();
-        Participant createdParticipant = new Participant(inputtedUsername, inputtedPassword);
-        createdParticipant.welcome();
+        //Participant createdParticipant = new Participant(inputtedUsername, inputtedPassword);
+        //createdParticipant.welcome();
     }
 
     public static void organizerSetup() {
@@ -29,15 +29,15 @@ public class ProgramManager {
         String inputtedUsername = organizerSetup.nextLine();
         System.out.println("Organizer, what is your password for account creation... ");
         String inputtedPassword = organizerSetup.nextLine();
-        Organizer createdOrganizer = new Organizer(inputtedUsername, inputtedPassword);
-        createdOrganizer.welcome();
+        //Organizer createdOrganizer = new Organizer(inputtedUsername, inputtedPassword);
+        //createdOrganizer.welcome();
         //return createdOrganizer;
         //userAccounts.add(createdOrganizer);
     }
 
     public static void adminSetup() {
-        Admin createdAdmin = new Admin("admin", "XPI76SZUqyCjVxgnUjm0");
-        createdAdmin.welcome();
+        //Admin createdAdmin = new Admin("admin", "XPI76SZUqyCjVxgnUjm0");
+        //createdAdmin.welcome();
     }
 
     public static void main(String[] args) {

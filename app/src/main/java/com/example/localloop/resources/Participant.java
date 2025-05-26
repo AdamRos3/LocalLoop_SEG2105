@@ -9,8 +9,8 @@ public class Participant extends UserAccount {
         registeredEvents = new ArrayList<>();
     }
 
-    public Participant(String username, String password) {
-        super(username, password);
+    public Participant(String username, String password, String userID) {
+        super(username, password, userID);
         registeredEvents = new ArrayList<>();
     }
 
