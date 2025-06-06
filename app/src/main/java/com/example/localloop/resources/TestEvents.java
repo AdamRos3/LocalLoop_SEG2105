@@ -8,6 +8,7 @@ public class TestEvents {
             "2025-06-01 15:00",
             "Central Park",
             "Sports",
+            "Ottawa",
             3
         );
 

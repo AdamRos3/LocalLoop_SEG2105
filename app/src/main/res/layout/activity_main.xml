@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,6 +21,7 @@
             android:layout_width="305dp"
             android:layout_height="171dp"
             android:layout_gravity="center"
+            android:contentDescription="Photo of canadian parliment"
             android:src="@drawable/parliament" />
 
         <Space
@@ -63,10 +65,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="58dp"
                 android:layout_weight="1"
+                android:autofillHints="username"
                 android:ems="10"
                 android:hint="username"
                 android:inputType="text"
-                android:text="@string/username_input" />
+                android:text="@string/username_input"
+                android:textColor="@color/black" />
 
             <Space
                 android:layout_width="20dp"
@@ -90,9 +94,10 @@
                 android:layout_width="253dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
+                android:autofillHints="password"
                 android:ems="10"
                 android:hint="password"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:text="@string/password_input" />
 
             <Space
@@ -105,7 +110,7 @@
         <Spinner
             android:id="@+id/AccountTypeSelector"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:spinnerMode="dropdown"
@@ -114,7 +119,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="28dp" />
+            android:layout_height="23dp" />
 
         <Button
             android:id="@+id/createUserAccount_button"
@@ -144,4 +149,4 @@
             android:text="Create an Account" />
 
     </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
