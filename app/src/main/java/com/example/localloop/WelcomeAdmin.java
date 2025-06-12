@@ -44,4 +44,9 @@ public class WelcomeAdmin extends AppCompatActivity {
         //startActivity(intent);
     }
 
+    public void toManageUsers(View view) {
+        Intent intent = new Intent(this, ManageUsers.class);
+        startActivity(intent);
+    }
+
 }

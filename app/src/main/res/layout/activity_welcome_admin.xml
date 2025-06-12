@@ -9,17 +9,6 @@
     android:padding="24dp"
     android:background="#5CAF954C">
 
-    <TextView
-        android:id="@+id/TextView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="[Admin Page]"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
     <Space
         android:layout_width="match_parent"
         android:layout_height="90dp" />
@@ -35,11 +24,22 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="108dp" />
+        android:layout_height="31dp" />
+
+    <Button
+        android:id="@+id/manageUsers_btn"
+        android:layout_width="278dp"
+        android:layout_height="wrap_content"
+        android:onClick="toManageUsers"
+        android:text="Manage Users" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="51dp" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="220dp"
+        android:layout_width="141dp"
         android:layout_height="wrap_content"
         android:onClick="ReturnToLogin"
         android:text="Back" />
