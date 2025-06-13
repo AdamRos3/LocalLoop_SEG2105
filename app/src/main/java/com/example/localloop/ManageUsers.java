@@ -31,14 +31,12 @@ import java.util.ArrayList;
 
 public class ManageUsers extends AppCompatActivity {
 
-    private ArrayList<String> organizerList = new ArrayList<String>();;
-    private ArrayList<String> participantList = new ArrayList<String>();
-
+    private ArrayList<Organizer> organizerList = new ArrayList<Organizer>();
+    private ArrayList<Participant> participantList = new ArrayList<Participant>();
     private ArrayAdapter<String> arrayAdapter;
     private ListView listView;
     private TabLayout tabLayout;
     private String accountTypeSelected;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +51,38 @@ public class ManageUsers extends AppCompatActivity {
 
         updateUserLists();
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        arrayAdapter.addAll(organizerList);
+        for(int i =0; i<organizerList.size(); i++) {
+            arrayAdapter.add((organizerList.get(i)).getUsername());
+        }
         listView = findViewById(R.id.users_List);
         listView.setAdapter(arrayAdapter);
+        Intent intent = new Intent(this, EditUsers.class);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String username = (String)adapterView.getItemAtPosition(i);
+                String userID = "";
+                // To add userID
+                if (accountTypeSelected == "Organizer") {
+                    for (int j =0; j< organizerList.size(); j++) {
+                        if (organizerList.get(j).getUsername() == username) {
+                            userID = organizerList.get(j).getUserID();
+                            break;
+                        }
+                    }
+                } else {
+                    for (int j =0; j< organizerList.size(); j++) {
+                        if (participantList.get(j).getUsername() == username) {
+                            userID = participantList.get(j).getUserID();
+                            break;
+                        }
+                    }
+                }
+                intent.putExtra(userID, "userID");
+                intent.putExtra(username, "username");
+                startActivity(intent);
+            }
+        });
 
         tabLayout = findViewById(R.id.tabLayout);
 
@@ -64,11 +91,19 @@ public class ManageUsers extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 arrayAdapter.clear();
                 if (tab.getPosition() == 0) {
-                    arrayAdapter.addAll(organizerList);
-                    accountTypeSelected = "Organizer";
+                    for(int i =0; i<organizerList.size(); i++) {
+                        arrayAdapter.add((organizerList.get(i)).getUsername());
+                        accountTypeSelected = "Organizer";
+                    }
+                    listView = findViewById(R.id.users_List);
+                    listView.setAdapter(arrayAdapter);
                 } else if (tab.getPosition() == 1) {
-                    arrayAdapter.addAll(participantList);
-                    accountTypeSelected = "Participant";
+                    for(int i =0; i<organizerList.size(); i++) {
+                        arrayAdapter.add((participantList.get(i)).getUsername());
+                        accountTypeSelected = "Participant";
+                    }
+                    listView = findViewById(R.id.users_List);
+                    listView.setAdapter(arrayAdapter);
                 }
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -79,18 +114,6 @@ public class ManageUsers extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String user = (String)adapterView.getItemAtPosition(i);
-                Intent intent = new Intent(this, EditUsers.class);
-                intent.putExtra(accountTypeSelected, "accountType");
-                intent.putExtra(user, "username");
-                startActivity(intent);
-            }
-        });
-
     }
     private void updateUserLists() {
         // Clear Lists
@@ -102,7 +125,7 @@ public class ManageUsers extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        organizerList.add(childSnapshot.getValue(Organizer.class).getUsername());
+                        organizerList.add(childSnapshot.getValue(Organizer.class));
                     }
                 }
             @Override
@@ -115,7 +138,7 @@ public class ManageUsers extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    participantList.add(childSnapshot.getValue(Participant.class).getUsername());
+                    participantList.add(childSnapshot.getValue(Participant.class));
                 }
             }
             @Override
