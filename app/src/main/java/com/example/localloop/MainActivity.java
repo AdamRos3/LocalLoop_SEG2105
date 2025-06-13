@@ -99,27 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 HandleInvalidCredentials(view);
             }
         });
-
-        /**
-        accountType = "participant";
-
-        if (accountType == "admin") {
-            user = new Admin(username, password);
-        } else if (accountType == "organizer") {
-            user = new Organizer(username, password);
-        } else if (accountType == "participant") {
-            user = new Participant(username, password);
-        } else {
-            Log.e("Error","Nonexistent or invalid account type");
-        }
-
-        if (true || (username.equals("admin") && password.equals("XPI76SZUqyCjVxgnUjm0"))) { // if user exists and password is correct
-            HandleValidCredentials(view);
-        } else {
-            HandleInvalidCredentials(view);
-        }
-         **/
-
     }
 
     public void HandleValidCredentials (View view) {
