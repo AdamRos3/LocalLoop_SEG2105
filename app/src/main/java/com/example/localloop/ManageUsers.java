@@ -2,6 +2,7 @@ package com.example.localloop;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,25 +62,31 @@ public class ManageUsers extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String username = (String)adapterView.getItemAtPosition(i);
+                Log.d(username, "Username from getItemAtPosition(i) = "+username);
                 String userID = "";
+                String password = "";
                 // To add userID
                 if (accountTypeSelected == "Organizer") {
                     for (int j =0; j< organizerList.size(); j++) {
-                        if (organizerList.get(j).getUsername() == username) {
+                        if (organizerList.get(j).getUsername().equals(username)) {
                             userID = organizerList.get(j).getUserID();
+                            password = organizerList.get(j).getPassword();
                             break;
                         }
                     }
                 } else {
-                    for (int j =0; j< organizerList.size(); j++) {
-                        if (participantList.get(j).getUsername() == username) {
+                    for (int j =0; j< participantList.size(); j++) {
+                        if (participantList.get(j).getUsername().equals(username)) {
                             userID = participantList.get(j).getUserID();
+                            password = participantList.get(j).getPassword();
                             break;
                         }
                     }
                 }
-                intent.putExtra(userID, "userID");
-                intent.putExtra(username, "username");
+                intent.putExtra("accountType", accountTypeSelected);
+                intent.putExtra("userID", userID);
+                intent.putExtra("username",username);
+                intent.putExtra("password", password);
                 startActivity(intent);
             }
         });
