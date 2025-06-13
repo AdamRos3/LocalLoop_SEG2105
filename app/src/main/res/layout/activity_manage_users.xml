@@ -40,7 +40,7 @@
         <ListView
             android:id="@+id/users_List"
             android:layout_width="match_parent"
-            android:layout_height="636dp"
+            android:layout_height="608dp"
             tools:visibility="visible" />
 
     </LinearLayout>

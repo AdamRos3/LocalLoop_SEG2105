@@ -16,6 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.localloop.resources.Admin;
 import com.example.localloop.resources.Organizer;
 import com.example.localloop.resources.Participant;
 import com.example.localloop.resources.UserAccount;
@@ -45,14 +46,14 @@ public class EditUsers extends AppCompatActivity {
         userID = getIntent().getStringExtra("userID");
 
         TextView userID_text = findViewById(R.id.userID_text);
-        EditText username_text = findViewById(R.id.editTextText);
-        EditText password_text = findViewById(R.id.editTextText2);
+        EditText username_text = findViewById(R.id.editUsername_field);
+        EditText password_text = findViewById(R.id.editPassword_field);
 
         userID_text.setText(userID);
         username_text.setText(getIntent().getStringExtra("username"));
         password_text.setText(getIntent().getStringExtra("password"));
 
-        Spinner spinner = findViewById(R.id.accountType_Spinner);
+        Spinner spinner = findViewById(R.id.editAccountType_field);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.options_array,
@@ -73,11 +74,34 @@ public class EditUsers extends AppCompatActivity {
     }
 
     public void onEditSubmit(View view) {
+        EditText username_field = findViewById(R.id.editUsername_field);
+        EditText password_field = findViewById(R.id.editPassword_field);
+        Spinner accountType_field = findViewById(R.id.editAccountType_field);
 
+        String username = username_field.getText().toString();
+        String password = password_field.getText().toString();
+        String key = onDeleteAccount(view);
+
+        UserAccount user;
+        if (accountType_field.getSelectedItem().equals("Organizer")) {
+            user = new Organizer(username, password, userID);
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Organizer");
+            myRef.child(key).setValue(user);
+        } else if (accountType_field.getSelectedItem().equals("Participant")) {
+            user = new Participant(username, password, userID);
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Participant");
+            myRef.child(key).setValue(user);
+        } else {
+            user = new Admin(username, password, userID);
+            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Admin");
+            myRef.child(key).setValue(user);
+        }
+        Intent intent = new Intent(this, ManageUsers.class);
+        startActivity(intent);
     }
 
-    public void onDeleteAccount(View view) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Participant");;
+    public String onDeleteAccount(View view) {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Participant");
         if (accountType.equals("Organizer")) {
             myRef = FirebaseDatabase.getInstance().getReference("users/Organizer");
         }
@@ -85,8 +109,6 @@ public class EditUsers extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    Log.d("DataSnapshot Value", childSnapshot.getValue().toString());
-                    Log.d("DataSnapshot Child Value", childSnapshot.child("userID").getValue().toString());
                     if (childSnapshot.child("userID").getValue().equals(userID)) {
                         childSnapshot.getRef().removeValue();
                     }
@@ -98,5 +120,6 @@ public class EditUsers extends AppCompatActivity {
         });
         Intent intent = new Intent(this, ManageUsers.class);
         startActivity(intent);
+        return userID;
     }
 }
