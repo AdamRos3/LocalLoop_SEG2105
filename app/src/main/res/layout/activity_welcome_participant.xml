@@ -25,7 +25,7 @@
         android:layout_height="90dp" />
 
     <TextView
-        android:id="@+id/welcome_message"
+        android:id="@+id/ManageEventCategories2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome!"
@@ -38,7 +38,7 @@
         android:layout_height="108dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button1"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:onClick="ReturnToLogin"
