@@ -32,7 +32,7 @@ public class WelcomeParticipant extends AppCompatActivity {
         String username = user.getUsername();
 
         // Set welcome message
-        TextView welcomeMessage = findViewById(R.id.welcome_message);
+        TextView welcomeMessage = findViewById(R.id.ManageEventCategories2);
         String message = "Welcome " + username + "! You are logged in as participant.";
         welcomeMessage.setText(message);
     }
