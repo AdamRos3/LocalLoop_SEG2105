@@ -44,4 +44,13 @@
         android:onClick="ReturnToLogin"
         android:text="Back" />
 
+    <Button
+        android:id="@+id/manage_events_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="Manage Events"
+        android:onClick="toManageEvents" />
+
 </LinearLayout>
