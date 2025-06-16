@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -55,6 +56,7 @@ public class ManageUsers extends AppCompatActivity {
         for(int i =0; i<organizerList.size(); i++) {
             arrayAdapter.add((organizerList.get(i)).getUsername());
         }
+
         listView = findViewById(R.id.users_List);
         listView.setAdapter(arrayAdapter);
         Intent intent = new Intent(this, EditUsers.class);
@@ -66,7 +68,7 @@ public class ManageUsers extends AppCompatActivity {
                 String userID = "";
                 String password = "";
                 // To add userID
-                if (accountTypeSelected == "Organizer") {
+                if (accountTypeSelected.equals("Organizer")) {
                     for (int j =0; j< organizerList.size(); j++) {
                         if (organizerList.get(j).getUsername().equals(username)) {
                             userID = organizerList.get(j).getUserID();
@@ -74,7 +76,7 @@ public class ManageUsers extends AppCompatActivity {
                             break;
                         }
                     }
-                } else {
+                } else if (accountTypeSelected.equals("Participant")) {
                     for (int j =0; j< participantList.size(); j++) {
                         if (participantList.get(j).getUsername().equals(username)) {
                             userID = participantList.get(j).getUserID();
@@ -121,6 +123,9 @@ public class ManageUsers extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+
+        Button backButton = findViewById(R.id.manage_user_back_button);
+        backButton.setOnClickListener(v1 -> finish());
     }
     private void updateUserLists() {
         // Clear Lists
@@ -139,6 +144,7 @@ public class ManageUsers extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
         // Get Participants
         myRef = FirebaseDatabase.getInstance().getReference("users/Participant");
         myRef.addValueEventListener(new ValueEventListener() {

@@ -110,6 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="54dp"
             android:layout_weight="1"
+            android:onClick="toManageUsers"
             app:srcCompat="@drawable/aqua_blue_view_users" />
 
     </LinearLayout>
