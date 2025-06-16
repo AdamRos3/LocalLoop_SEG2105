@@ -20,7 +20,7 @@
             android:layout_width="34dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/MirrorsEdgeLogoTransparent2" />
+            app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
         <TextView
             android:id="@+id/TextView3"
@@ -38,14 +38,14 @@
             android:layout_width="46dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/MirrorsEdgeLogoTransparent2" />
+            app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="206dp"
-        app:srcCompat="@drawable/MirrorsEdgeLogoTransparent2" />
+        app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
     <TextView
         android:id="@+id/ManageEventCategories2"
@@ -66,21 +66,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueAddTransparent" />
+            app:srcCompat="@drawable/aqua_blue_add_transparent" />
 
         <ImageView
             android:id="@+id/imageView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueEditTransparent" />
+            app:srcCompat="@drawable/aqua_blue_edit_transparent" />
 
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueDeleteTransparent" />
+            app:srcCompat="@drawable/aqua_blue_delete_transparent" />
 
     </LinearLayout>
 
@@ -93,10 +93,12 @@
         android:id="@+id/welcome_message2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="          Manage User Accounts"
+        android:text="Manage User Accounts"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:gravity="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -108,7 +110,8 @@
             android:layout_width="wrap_content"
             android:layout_height="54dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueViewUsers" />
+            android:onClick="toManageUsers"
+            app:srcCompat="@drawable/aqua_blue_view_users" />
 
     </LinearLayout>
 

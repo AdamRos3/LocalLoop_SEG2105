@@ -12,6 +12,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/manage_user_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Back" />
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
@@ -40,7 +47,7 @@
         <ListView
             android:id="@+id/users_List"
             android:layout_width="match_parent"
-            android:layout_height="608dp"
+            android:layout_height="wrap_content"
             tools:visibility="visible" />
 
     </LinearLayout>
