@@ -52,6 +52,7 @@ public class ManageUsers extends AppCompatActivity {
         });
 
         updateUserLists();
+
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         for(int i =0; i<organizerList.size(); i++) {
             arrayAdapter.add((organizerList.get(i)).getUsername());
@@ -129,8 +130,10 @@ public class ManageUsers extends AppCompatActivity {
     }
     private void updateUserLists() {
         // Clear Lists
-        organizerList.removeAll(organizerList);
-        participantList.removeAll(participantList);
+        //organizerList.removeAll(organizerList);
+        organizerList.clear();
+        //participantList.removeAll(participantList);
+        participantList.clear();
         // Get Organizers
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Organizer");
         myRef.addValueEventListener(new ValueEventListener() {
