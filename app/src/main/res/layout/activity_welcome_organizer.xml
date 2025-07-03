@@ -51,7 +51,7 @@
         android:id="@+id/ManageEventCategories2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Event Categories"
+        android:text="Add/Edit Event Categories"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold" />
