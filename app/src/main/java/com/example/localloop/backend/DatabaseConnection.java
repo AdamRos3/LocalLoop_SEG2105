@@ -1,6 +1,8 @@
 package com.example.localloop.backend;
 
 import android.util.Log;
+
+import com.example.localloop.exception.database.DatabaseConnectionException;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class DatabaseConnection {
     private static boolean organizersLoaded = false;
 
     // Public methods
-    public DatabaseConnection(String username, String password) throws DatabaseConnectionException {
+    public DatabaseConnection(String username, String password) throws DatabaseConnectionException, InterruptedException {
         try {
             updateAllUsers();
 
@@ -49,7 +51,7 @@ public class DatabaseConnection {
                 Log.d("Valid login credentials", "");
             }
 
-        } catch (InterruptedException e) {
+        } catch (DatabaseConnectionException e) {
             Log.e("DatabaseConnection", "Interrupted while waiting for data", e);
             throw new DatabaseConnectionException("Database Connection Interrupted");
         }
@@ -59,26 +61,62 @@ public class DatabaseConnection {
         return user;
     }
 
-    // Protected methods
-    protected static boolean createNew(Participant p) {
+    public static boolean createNew(Participant p) throws InterruptedException {
         // need to update users before searching
-        // this.updateAllUsers();
-        String key = myRef.push().getKey(); // Firebase generated unique ID key
-        // Search all participants to check for username conflicts
-        myRef.child("users/Participant").child(key).setValue(new Participant(p.getUsername(), p.getPassword(), key));
-        return true;
+        try {
+            updateAllUsers();
+        } catch (InterruptedException e) {
+            Log.e("updateAllUsers() Interrupted",e.toString());
+            throw e;
+        }
+        boolean hasConflict = false;
+        for (Participant participant : allParticipants) {
+            if (p.getUsername().equals(participant.getUsername())) {
+                hasConflict = true;
+                break;
+            }
+        }
+        if (!hasConflict) {
+            String key = myRef.push().getKey(); // Firebase generated unique ID key
+            // Search all participants to check for username conflicts
+            myRef.child("users/Participant").child(key).setValue(new Participant(p.getUsername(), p.getPassword(), key));
+            Log.d(p.getUserID(),"New Participant Created");
+            return true;
+        }
+        Log.d(p.getUsername(),"New Participant Username Conflict");
+        return false;
     }
-    protected static boolean createNew(Organizer o) {
+    public static boolean createNew(Organizer o) throws InterruptedException {
         // need to update users before searching
-        // updateAllUsers();
-        String key = myRef.push().getKey(); // Firebase generated unique ID key
-        // Search all organizers to check for username conflicts
-        myRef.child("users/Organizer").child(key).setValue(new Participant(o.getUsername(), o.getPassword(), key));
-        return true;
+        try {
+            updateAllUsers();
+        } catch (InterruptedException e) {
+            Log.e("updateAllUsers() Interrupted",e.toString());
+            throw e;
+        }
+        boolean hasConflict = false;
+        for (Organizer organizer : allOrganizers) {
+            if (o.getUsername().equals(organizer.getUsername())) {
+                hasConflict = true;
+                break;
+            }
+        }
+        if (!hasConflict) {
+            String key = myRef.push().getKey(); // Firebase generated unique ID key
+            // Search all participants to check for username conflicts
+            myRef.child("users/Organizer").child(key).setValue(new Organizer(o.getUsername(), o.getPassword(), key));
+            Log.d(o.getUserID(),"New Organizer Created");
+            return true;
+        }
+        Log.d(o.getUsername(),"New Organizer Username Conflict");
+        return false;
     }
 
+    // Protected methods
+
+
     // Private methods
-    private void updateAllUsers() throws InterruptedException {
+    private static void updateAllUsers() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(2); // One for each list
 
         getAllParticipants(new DatabaseCallback() {
@@ -132,6 +170,7 @@ public class DatabaseConnection {
                     }
                 }
                 callback.onParticipantsLoaded(new ArrayList<>(allParticipants));
+                Log.d("allParticipants", allParticipants.toString());
             }
 
             @Override
@@ -160,6 +199,7 @@ public class DatabaseConnection {
                     }
                 }
                 callback.onOrganizersLoaded(new ArrayList<>(allOrganizers));
+                Log.d("allOrganizers", allOrganizers.toString());
             }
 
             @Override

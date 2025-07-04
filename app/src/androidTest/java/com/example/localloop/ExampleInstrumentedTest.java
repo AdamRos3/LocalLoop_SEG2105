@@ -1,5 +1,7 @@
 package com.example.localloop;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -10,7 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.DatabaseConnectionException;
+import com.example.localloop.backend.Participant;
+import com.example.localloop.exception.database.DatabaseConnectionException;
 import com.example.localloop.backend.Organizer;
 
 
@@ -22,14 +25,10 @@ import com.example.localloop.backend.Organizer;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void testParticipantsLoad() {
+    public void testParticipantsLoad() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        try {
-            DatabaseConnection dbConnect = new DatabaseConnection("bo", "123");
-            Log.d("User",dbConnect.getUser().toString());
-            Log.d("AccountType",dbConnect.getUser() instanceof Organizer ? "Organizer" : "Participant");
-        } catch (DatabaseConnectionException e) {
-            Log.e("DatabaseQueryException", e.toString());
-        }
+        Organizer o = new Organizer("tommer", "321", null);
+        //Participant o = new Participant("umbo","456",null);
+        assertEquals(DatabaseConnection.createNew(o),true);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.localloop.backend;
+package com.example.localloop.exception.database;
 
 public class DatabaseConnectionException extends Exception {
     public DatabaseConnectionException() {

@@ -11,6 +11,9 @@ public class Organizer extends UserAccount {
     }
     public Organizer(String username, String password, String userID) {
         super(username, password, userID);
+        this.username = username;
+        this.password = password;
+        this.userID = userID;
     }
     public String getUsername() {
         return username;
