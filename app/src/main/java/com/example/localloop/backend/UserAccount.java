@@ -6,6 +6,9 @@ public abstract class UserAccount {
     private String password;
     private String userID;
 
+    UserAccount() {
+        // Empty constructor is required by Firebase
+    }
     UserAccount(String username, String password, String userID) {
         this.username = username;
         this.password = password;

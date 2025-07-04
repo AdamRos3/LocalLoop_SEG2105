@@ -8,6 +8,10 @@ public class Participant extends UserAccount {
     String password;
     String userID;
 
+    public Participant(){
+        // Empty constructor is required by Firebase
+    }
+
     public Participant(String username, String password, String userID) {
         super(username, password, userID);
         this.username = username;

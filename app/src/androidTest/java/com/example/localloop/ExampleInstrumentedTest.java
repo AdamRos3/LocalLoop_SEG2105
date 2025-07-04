@@ -29,8 +29,6 @@ public class ExampleInstrumentedTest {
     public void testParticipantsLoad() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        CountDownLatch latch = new CountDownLatch(1);
-
         DatabaseConnection dbConnect = new DatabaseConnection();
         Log.d("Participants", dbConnect.allParticipants.toString());
     }

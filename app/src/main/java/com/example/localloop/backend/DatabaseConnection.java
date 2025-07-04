@@ -14,7 +14,6 @@ public class DatabaseConnection {
 
     public DatabaseConnection() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-
         getAllParticipants(new ParticipantCallback() {
             @Override
             public void onParticipantsLoaded(ArrayList<Participant> participants) {
@@ -43,11 +42,8 @@ public class DatabaseConnection {
             public void onDataChange(DataSnapshot snapshot) {
                 allParticipants.clear();
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    String username = userSnapshot.child("username").getValue(String.class);
-                    String password = userSnapshot.child("password").getValue(String.class);
-                    String userID = userSnapshot.child("userID").getValue(String.class);
-                    Participant p = new Participant(username, password, userID);
-                    Log.d("participant:",p.toString());
+                    Participant p = userSnapshot.getValue(Participant.class);
+                    Log.d("Participant stored locally:",p.toString());
                     allParticipants.add(p);
                 }
                 participantsLoaded = true;
