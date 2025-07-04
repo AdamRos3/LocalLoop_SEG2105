@@ -1,4 +1,4 @@
-package com.example.localloop;
+package com.example.localloop.client;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.localloop.resources.UserAccount;
+import com.example.localloop.R;
+import com.example.localloop.backend.UserAccount;
 
 public class WelcomeOrganizer extends AppCompatActivity {
 

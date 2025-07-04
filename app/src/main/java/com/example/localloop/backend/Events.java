@@ -1,8 +1,6 @@
-package com.example.localloop.resources;
+package com.example.localloop.backend;
 
 import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import java.util.ArrayList;
 

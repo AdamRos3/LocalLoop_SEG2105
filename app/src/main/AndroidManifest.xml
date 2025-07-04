@@ -13,25 +13,25 @@
         android:theme="@style/Theme.LocalLoop"
         tools:targetApi="31">
         <activity
-            android:name=".EditUsers"
+            android:name=".client.EditUsers"
             android:exported="false" />
         <activity
-            android:name=".ManageUsers"
+            android:name=".client.ManageUsers"
             android:exported="false" />
         <activity
-            android:name=".WelcomeOrganizer"
+            android:name=".client.WelcomeOrganizer"
             android:exported="false" />
         <activity
-            android:name=".WelcomeParticipant"
+            android:name=".client.WelcomeParticipant"
             android:exported="false" />
         <activity
-            android:name=".CreateAccount"
+            android:name=".client.CreateAccount"
             android:exported="false" />
         <activity
-            android:name=".WelcomeAdmin"
+            android:name=".client.WelcomeAdmin"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".client.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.example.localloop;
+package com.example.localloop.client;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,16 +10,12 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.localloop.resources.Admin;
-import com.example.localloop.resources.Organizer;
-import com.example.localloop.resources.Participant;
-import com.example.localloop.resources.UserAccount;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.example.localloop.R;
+import com.example.localloop.backend.DatabaseConnector;
+import com.example.localloop.backend.Organizer;
+import com.example.localloop.backend.Participant;
+import com.example.localloop.backend.UserAccount;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -45,9 +41,6 @@ public class CreateAccount extends AppCompatActivity {
     }
 
     public void onCreateUserAccount(View view) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
-        String key = myRef.push().getKey();
 
         EditText userText = findViewById(R.id.username_input);
         username = (userText).getText().toString();
@@ -56,14 +49,10 @@ public class CreateAccount extends AppCompatActivity {
         password = (passText).getText().toString();
         Intent intent = new Intent(this, MainActivity.class);
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
-        UserAccount user;
         if (accountSwitch.isChecked()) {
-            user = new Participant(username, password, key);
-            myRef.child("users/Participant").child(key).setValue(user);
+            DatabaseConnector.createNew(new Participant(username, password, null));
         } else {
-            user = new Organizer(username, password, key);
-            myRef.child("users/Organizer").child(key).setValue(user);
-
+            DatabaseConnector.createNew(new Participant(username, password, null));
         }
         startActivity(intent);
     }

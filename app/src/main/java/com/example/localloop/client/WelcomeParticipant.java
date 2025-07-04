@@ -1,26 +1,26 @@
-package com.example.localloop;
+package com.example.localloop.client;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
-import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.localloop.resources.UserAccount;
+import com.example.localloop.R;
+import com.example.localloop.backend.UserAccount;
 
-public class WelcomeAdmin extends AppCompatActivity {
-
+public class WelcomeParticipant extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_welcome_admin);
+        setContentView(R.layout.activity_welcome_participant);
 
         // Set window insets to maintain future layout compatibility
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.returnToLogin), (v, insets) -> {
@@ -34,18 +34,12 @@ public class WelcomeAdmin extends AppCompatActivity {
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + username + "! You are logged in as admin";
+        String message = "Welcome " + username + "! You are logged in as participant.";
         welcomeMessage.setText(message);
     }
 
     public void ReturnToLogin(View view) {
-        //Intent intent = new Intent(this, MainActivity.class);
-        finish();
-        //startActivity(intent);
-    }
-
-    public void toManageUsers(View view) {
-        Intent intent = new Intent(this, ManageUsers.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
