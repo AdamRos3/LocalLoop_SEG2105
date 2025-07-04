@@ -14,8 +14,6 @@ import com.example.localloop.backend.DatabaseConnection;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        DatabaseConnection db = new DatabaseConnection("bob", "123");
-        System.out.println(db.getAllParticipants());
-        System.out.println(db.getAllOrganizers());
+        DatabaseConnection db = new DatabaseConnection("bb", "123");
     }
 }

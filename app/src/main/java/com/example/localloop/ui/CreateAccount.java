@@ -1,4 +1,4 @@
-package com.example.localloop.client;
+package com.example.localloop.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.DatabaseConnector;
-import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.Participant;
 
 public class CreateAccount extends AppCompatActivity {
 
@@ -47,9 +44,9 @@ public class CreateAccount extends AppCompatActivity {
         Intent intent = new Intent(this, Login.class);
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
         if (accountSwitch.isChecked()) {
-            DatabaseConnector.createNew(new Participant(username, password, null));
+            //DatabaseException.createNew(new Participant(username, password, null));
         } else {
-            DatabaseConnector.createNew(new Organizer(username, password, null));
+            //DatabaseException.createNew(new Organizer(username, password, null));
         }
         startActivity(intent);
     }

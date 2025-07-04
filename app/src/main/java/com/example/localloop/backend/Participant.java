@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Participant extends UserAccount {
 
-    String username;
-    String password;
-    String userID;
+    private String username;
+    private String password;
+    private String userID;
 
     public Participant(){
         // Empty constructor is required by Firebase
@@ -18,7 +18,15 @@ public class Participant extends UserAccount {
         this.password = password;
         this.userID = userID;
     }
-
+    public String getUsername() {
+        return username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public String getUserID() {
+        return userID;
+    }
     public void requestJoinEvent() {
 
     }

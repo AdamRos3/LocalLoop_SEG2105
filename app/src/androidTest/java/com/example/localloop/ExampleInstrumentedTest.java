@@ -9,14 +9,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
 import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Participant;
+import com.example.localloop.backend.DatabaseConnectionException;
+import com.example.localloop.backend.Organizer;
 
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -26,10 +22,14 @@ import java.util.concurrent.TimeUnit;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void testParticipantsLoad() throws InterruptedException {
+    public void testParticipantsLoad() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
-        DatabaseConnection dbConnect = new DatabaseConnection();
-        Log.d("Participants", dbConnect.allParticipants.toString());
+        try {
+            DatabaseConnection dbConnect = new DatabaseConnection("bo", "123");
+            Log.d("User",dbConnect.getUser().toString());
+            Log.d("AccountType",dbConnect.getUser() instanceof Organizer ? "Organizer" : "Participant");
+        } catch (DatabaseConnectionException e) {
+            Log.e("DatabaseQueryException", e.toString());
+        }
     }
 }

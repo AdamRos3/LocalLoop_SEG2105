@@ -1,4 +1,4 @@
-package com.example.localloop.client;
+package com.example.localloop.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,13 +14,13 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.localloop.R;
 import com.example.localloop.backend.UserAccount;
 
-public class WelcomeOrganizer extends AppCompatActivity {
+public class WelcomeParticipant extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_welcome_organizer);
+        setContentView(R.layout.activity_welcome_participant);
 
         // Set window insets to maintain future layout compatibility
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.returnToLogin), (v, insets) -> {
@@ -34,7 +34,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + username + "! You are logged in as organizer.";
+        String message = "Welcome " + username + "! You are logged in as participant.";
         welcomeMessage.setText(message);
     }
 

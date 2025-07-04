@@ -1,4 +1,4 @@
-package com.example.localloop.client;
+package com.example.localloop.ui;
 
 import android.os.Bundle;
 import android.content.Intent;
