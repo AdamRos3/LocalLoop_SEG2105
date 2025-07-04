@@ -31,7 +31,7 @@
             android:name=".client.WelcomeAdmin"
             android:exported="false" />
         <activity
-            android:name=".client.MainActivity"
+            android:name=".client.Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

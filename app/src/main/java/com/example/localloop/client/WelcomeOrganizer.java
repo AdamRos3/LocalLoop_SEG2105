@@ -29,7 +29,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
             return insets;
         });
 
-        UserAccount user = MainActivity.user;
+        UserAccount user = Login.user;
         String username = user.getUsername();
 
         // Set welcome message
@@ -39,7 +39,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
     }
 
     public void ReturnToLogin(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
 

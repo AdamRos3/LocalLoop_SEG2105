@@ -15,9 +15,6 @@ import com.example.localloop.R;
 import com.example.localloop.backend.DatabaseConnector;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
-import com.example.localloop.backend.UserAccount;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class CreateAccount extends AppCompatActivity {
 
@@ -47,12 +44,12 @@ public class CreateAccount extends AppCompatActivity {
         //EditText passText = (EditText) findViewById(R.id.password_input);
         EditText passText = findViewById(R.id.password_input);
         password = (passText).getText().toString();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, Login.class);
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
         if (accountSwitch.isChecked()) {
-            DatabaseConnector.createNewParticipant(username, password);
+            DatabaseConnector.createNew(new Participant(username, password, null));
         } else {
-            DatabaseConnector.createNewOrganizer(username, password);
+            DatabaseConnector.createNew(new Organizer(username, password, null));
         }
         startActivity(intent);
     }

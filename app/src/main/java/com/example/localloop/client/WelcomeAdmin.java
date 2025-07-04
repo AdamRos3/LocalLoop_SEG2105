@@ -30,7 +30,7 @@ public class WelcomeAdmin extends AppCompatActivity {
             return insets;
         });
 
-        UserAccount user = MainActivity.user;
+        UserAccount user = Login.user;
         String username = user.getUsername();
 
         // Set welcome message

@@ -12,10 +12,6 @@ public class Participant extends UserAccount {
         super(username, password, userID);
     }
 
-    protected void setUserID(String str) {
-        this.userID = str;
-    }
-
     public void requestJoinEvent() {
 
     }
