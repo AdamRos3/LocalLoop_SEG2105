@@ -10,6 +10,9 @@ public class Participant extends UserAccount {
 
     public Participant(String username, String password, String userID) {
         super(username, password, userID);
+        this.username = username;
+        this.password = password;
+        this.userID = userID;
     }
 
     public void requestJoinEvent() {

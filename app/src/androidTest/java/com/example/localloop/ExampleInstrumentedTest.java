@@ -1,6 +1,7 @@
 package com.example.localloop;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -10,6 +11,13 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.backend.Participant;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -18,9 +26,12 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void useAppContext() {
-        // Context of the app under test.
+    public void testParticipantsLoad() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.localloop", appContext.getPackageName());
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        DatabaseConnection dbConnect = new DatabaseConnection();
+        Log.d("Participants", dbConnect.allParticipants.toString());
     }
 }
