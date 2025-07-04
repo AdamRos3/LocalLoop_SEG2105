@@ -50,9 +50,9 @@ public class CreateAccount extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
         if (accountSwitch.isChecked()) {
-            DatabaseConnector.createNew(new Participant(username, password, null));
+            DatabaseConnector.createNewParticipant(username, password);
         } else {
-            DatabaseConnector.createNew(new Participant(username, password, null));
+            DatabaseConnector.createNewOrganizer(username, password);
         }
         startActivity(intent);
     }

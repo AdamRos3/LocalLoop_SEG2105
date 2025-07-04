@@ -6,14 +6,12 @@ import com.google.firebase.database.FirebaseDatabase;
 public class DatabaseConnector {
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static DatabaseReference myRef = database.getReference();
-    public static void createNew(Participant p) {
+    public static void createNewParticipant(String username, String password) {
         String key = myRef.push().getKey();
-        p.setUserID(key);
-        myRef.child("users/Participant").child(key).setValue(p);
+        myRef.child("users/Participant").child(key).setValue(new Participant(username, password, key));
     }
-    public static void createNew(Organizer o) {
+    public static void createNewOrganizer(String username, String password) {
         String key = myRef.push().getKey();
-        o.setUserID(key);
-        myRef.child("users/Organizer").child(key).setValue(o);
+        myRef.child("users/Organizer").child(key).setValue(new Organizer(username, password, key));
     }
 }
