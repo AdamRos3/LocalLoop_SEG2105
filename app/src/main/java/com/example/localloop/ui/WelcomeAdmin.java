@@ -19,7 +19,7 @@ import com.example.localloop.backend.UserAccount;
 public class WelcomeAdmin extends AppCompatActivity {
 
     private static DatabaseConnection dbConnection;
-    private static Admin user;
+    private static Admin admin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +33,12 @@ public class WelcomeAdmin extends AppCompatActivity {
             return insets;
         });
         dbConnection = DatabaseInstance.get();
-        user = (Admin)dbConnection.getUser();
-        String username = user.getUsername();
+        admin = (Admin)dbConnection.getUser();
+        String username = admin.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + user.toString();
+        String message = "Welcome " + admin.toString();
         welcomeMessage.setText(message);
     }
 

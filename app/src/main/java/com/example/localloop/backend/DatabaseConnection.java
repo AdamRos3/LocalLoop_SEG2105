@@ -2,8 +2,8 @@ package com.example.localloop.backend;
 
 import android.util.Log;
 
-import com.example.localloop.resources.exception.exception.InvalidUsernameException;
-import com.example.localloop.resources.exception.exception.NoSuchUserException;
+import com.example.localloop.resources.exception.InvalidUsernameException;
+import com.example.localloop.resources.exception.NoSuchUserException;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -95,9 +95,15 @@ public class DatabaseConnection {
 
     // Private methods
 
-    protected ArrayList<Participant> getAllParticipants() {
+    protected ArrayList<Participant> getAllParticipants() throws InterruptedException {
         // Called by Admin Class Only
+        updateAllUsers(); // TODO create updateAllParticipants specific method
         return allParticipants;
+    }
+    protected ArrayList<Organizer> getAllOrganizers() throws InterruptedException {
+        // Called by Admin Class Only
+        updateAllUsers(); // TODO create updateAllOrganizers specific method
+        return allOrganizers;
     }
     // General Methods
     private interface DatabaseCallback {

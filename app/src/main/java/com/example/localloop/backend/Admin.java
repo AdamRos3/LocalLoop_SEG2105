@@ -1,5 +1,7 @@
 package com.example.localloop.backend;
 
+import com.example.localloop.resources.exception.NoSuchUserException;
+
 import java.util.ArrayList;
 
 public class Admin extends UserAccount {
@@ -26,8 +28,17 @@ public class Admin extends UserAccount {
     public String getUserID() {
         return userID;
     }
-    public ArrayList<Participant> getAllParticipants(DatabaseConnection dbConnection) {
+    public ArrayList<Participant> getAllParticipants(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getAllParticipants();
+    }
+    public ArrayList<Organizer> getAllOrganizers(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getAllOrganizers();
+    }
+    public void deleteUser(DatabaseConnection dbConnection, Participant p) throws NoSuchUserException {
+
+    }
+    public void deleteUser(DatabaseConnection dbConnection, Organizer o) throws NoSuchUserException {
+
     }
     public String toString() {
         return "admin: "+username+", ID: "+userID;

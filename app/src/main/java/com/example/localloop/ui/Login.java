@@ -15,7 +15,7 @@ import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.UserAccount;
-import com.example.localloop.resources.exception.exception.NoSuchUserException;
+import com.example.localloop.resources.exception.NoSuchUserException;
 
 public class Login extends AppCompatActivity {
 

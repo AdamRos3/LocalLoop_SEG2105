@@ -19,7 +19,7 @@ import com.example.localloop.backend.UserAccount;
 
 public class WelcomeOrganizer extends AppCompatActivity {
     private static DatabaseConnection dbConnection;
-    private static Organizer user;
+    private static Organizer organizer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +33,12 @@ public class WelcomeOrganizer extends AppCompatActivity {
             return insets;
         });
         dbConnection = DatabaseInstance.get();
-        user = (Organizer)dbConnection.getUser();
-        String username = user.getUsername();
+        organizer = (Organizer)dbConnection.getUser();
+        String username = organizer.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + user.toString();
+        String message = "Welcome " + organizer.toString();
         welcomeMessage.setText(message);
     }
 

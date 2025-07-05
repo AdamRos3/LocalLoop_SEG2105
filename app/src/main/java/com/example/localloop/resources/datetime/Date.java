@@ -1,4 +1,4 @@
-package com.example.localloop.resources.exception.datetime;
+package com.example.localloop.resources.datetime;
 
 public class Date {
     private int year;

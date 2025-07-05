@@ -15,7 +15,7 @@ import com.example.localloop.R;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
-import com.example.localloop.resources.exception.exception.InvalidUsernameException;
+import com.example.localloop.resources.exception.InvalidUsernameException;
 
 public class CreateAccount extends AppCompatActivity {
 
