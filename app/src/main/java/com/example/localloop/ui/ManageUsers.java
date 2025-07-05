@@ -44,31 +44,25 @@ public class ManageUsers extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        listView = findViewById(R.id.users_List);
         dbConnection = DatabaseInstance.get();
         admin = (Admin)dbConnection.getUser();
         new Thread(() -> {
             try {
-                allOrganizers = admin.getAllOrganizers(dbConnection);
-            } catch (InterruptedException e) {
-                Log.e("InterruptedException","Call from ManageUsers onCreate");
-                finish();
-            }
-        }).start();
-        new Thread(() -> {
-            try {
                 allParticipants = admin.getAllParticipants(dbConnection);
+                allOrganizers = admin.getAllOrganizers(dbConnection);
+                runOnUiThread(() -> {
+                    arrayAdapter = new ArrayAdapter<>(ManageUsers.this, android.R.layout.simple_list_item_1);
+                    for (Organizer o : allOrganizers) {
+                        arrayAdapter.add(o.getUsername());
+                    }
+                    listView.setAdapter(arrayAdapter);
+                });
             } catch (InterruptedException e) {
                 Log.e("InterruptedException","Call from ManageUsers onCreate");
                 finish();
             }
         }).start();
-        listView = findViewById(R.id.users_List);
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        for(Organizer o: allOrganizers) {
-            arrayAdapter.add(o.getUsername());
-        }
-        listView.setAdapter(arrayAdapter);
         Intent intent = new Intent(this, EditUsers.class);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -78,7 +72,7 @@ public class ManageUsers extends AppCompatActivity {
                 String userID = "";
                 String password = "";
                 // To add userID
-                if (accountTypeSelected == "Organizer") {
+                if (accountTypeSelected.equals("Organizer")) {
                     for (Organizer o : allOrganizers) {
                         if (o.getUsername().equals(username)) {
                             userID = o.getUserID();

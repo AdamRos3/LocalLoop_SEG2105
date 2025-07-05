@@ -3,6 +3,5 @@
     <string-array name="options_array">
         <item>Participant</item>
         <item>Organizer</item>
-        <item>Admin</item>
     </string-array>
 </resources>
