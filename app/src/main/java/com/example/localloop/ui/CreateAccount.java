@@ -2,6 +2,7 @@ package com.example.localloop.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -12,12 +13,16 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.localloop.R;
+import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.backend.Organizer;
+import com.example.localloop.backend.Participant;
+import com.example.localloop.backend.UserAccount;
+import com.example.localloop.exception.database.InvalidUsernameException;
+import com.example.localloop.exception.database.NoSuchUserException;
 
 public class CreateAccount extends AppCompatActivity {
 
-    public String username;
-    public String password;
-    public String accountType;
+    private DatabaseConnection dbConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,26 +33,37 @@ public class CreateAccount extends AppCompatActivity {
         TextView accountTypeText = findViewById(R.id.newAccountType_input);
         accountTypeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                accountType = accountTypeSwitch.isChecked() ? "Participant" : "Organizer";
-                accountTypeText.setText(accountType);
+                accountTypeText.setText(isChecked ? "Participant" : "Organizer");
             }
         });
+        dbConnection = DatabaseInstance.get();
     }
 
     public void onCreateUserAccount(View view) {
 
         EditText userText = findViewById(R.id.username_input);
-        username = (userText).getText().toString();
-        //EditText passText = (EditText) findViewById(R.id.password_input);
+        String username = (userText).getText().toString();
+
         EditText passText = findViewById(R.id.password_input);
-        password = (passText).getText().toString();
-        Intent intent = new Intent(this, Login.class);
+        String password = (passText).getText().toString();
+
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
-        if (accountSwitch.isChecked()) {
-            //DatabaseException.createNew(new Participant(username, password, null));
-        } else {
-            //DatabaseException.createNew(new Organizer(username, password, null));
-        }
-        startActivity(intent);
+
+        new Thread(() -> {
+            try {
+                if (accountSwitch.isChecked()) {
+                    dbConnection.createNew(new Participant(username, password, null));
+                } else {
+                    dbConnection.createNew(new Organizer(username, password, null));
+                }
+                Intent intent = new Intent(this, Login.class);
+                startActivity(intent);
+            } catch (InvalidUsernameException e) {
+                Log.e("InvalidUsername","Username Taken");
+                return;
+            } catch (InterruptedException e) {
+                Log.e("InterruptedException","Interrupted at onCreateUserAccount > CreateAccount");
+            }
+        }).start();
     }
 }

@@ -38,7 +38,7 @@ public class WelcomeAdmin extends AppCompatActivity {
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + user.getAllParticipants(dbConnection).toString();
+        String message = "Welcome " + user.toString();
         welcomeMessage.setText(message);
     }
 
