@@ -70,22 +70,22 @@
         android:layout_height="50dp"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="242dp"
+        <ImageButton
+            android:id="@+id/imageButton5"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/AquaBlueNameTransparent" />
 
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="253dp"
+        <ImageButton
+            android:id="@+id/imageButton6"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/AquaBlueDescriptionTransparent" />
 
-        <ImageView
-            android:id="@+id/imageView6"
+        <ImageButton
+            android:id="@+id/imageButton7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -110,42 +110,23 @@
                 android:layout_weight="1"
                 app:srcCompat="@drawable/AquaBlueFeeTransparent" />
 
-            <ImageView
-                android:id="@+id/imageView27"
+            <ImageButton
+                android:id="@+id/imageButton3"
                 android:layout_width="wrap_content"
-                android:layout_height="46dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:cropToPadding="false"
                 app:srcCompat="@drawable/AquaBlueDateTransparent" />
 
-            <ImageView
-                android:id="@+id/imageView26"
-                android:layout_width="89dp"
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/AquaBlueTimeTransparent" />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imageView15"
-            android:layout_width="242dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueNameTransparent" />
-
-        <ImageView
-            android:id="@+id/imageView16"
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueDescriptionTransparent" />
-
-        <ImageView
-            android:id="@+id/imageView17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueCategoryTransparent" />
     </LinearLayout>
 
     <TextView
@@ -162,10 +143,10 @@
         android:layout_height="146dp"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView8"
-            android:layout_width="wrap_content"
-            android:layout_height="54dp"
+        <ImageButton
+            android:id="@+id/imageButton8"
+            android:layout_width="339dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/AquaBlueViewEventsTransparent" />
 
