@@ -1,5 +1,6 @@
 package com.example.localloop;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -47,10 +49,11 @@ public class ManageEvents extends AppCompatActivity {
 
         List<Event> events = new ArrayList<>();
 
+        populateEvents(events);
+
         eventsListView.setLayoutManager(new LinearLayoutManager(this));
         eventsListView.setAdapter(new eventAdapter(getApplicationContext(), events));
 
-        populateEvents(events);
     }
 
     public void onBackClick(View view) {
@@ -121,11 +124,30 @@ public class ManageEvents extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull eventViewHolder holder, int position) {
-            holder.nameText.setText(events.get(position).getName());
-            holder.categoryText.setText(events.get(position).getCategory());
-            holder.descriptionText.setText(events.get(position).getDescription());
-            holder.dateTimeText.setText(events.get(position).getDateTime());
-            holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", events.get(position).getFee()));
+            Event event = events.get(position);
+            holder.nameText.setText(event.getName());
+            holder.categoryText.setText(event.getCategory());
+            holder.descriptionText.setText(event.getDescription());
+            holder.dateTimeText.setText(event.getDateTime());
+            holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
+
+
+            holder.editButton.setOnClickListener(v -> {
+
+            });
+
+            holder.deleteButton.setOnClickListener(v -> {
+                new AlertDialog.Builder(context)
+                        .setTitle("Delete Event")
+                        .setMessage("Are you sure you want to delete \"" + event.getName() + "\"?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events").child(event.getEventID());
+                            ref.removeValue();
+                            Toast.makeText(context,"Event Deleted", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            });
         }
 
         @Override
