@@ -3,9 +3,9 @@ package com.example.localloop.ui;
 import android.os.Bundle;
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -14,18 +14,16 @@ import android.widget.TextView;
 
 import com.example.localloop.R;
 import com.example.localloop.backend.Admin;
+import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.Participant;
 import com.example.localloop.backend.UserAccount;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.example.localloop.exception.database.NoSuchUserException;
 
 public class Login extends AppCompatActivity {
 
-    public static UserAccount user;
+
+    protected static DatabaseConnection dbConnection;
+    private static UserAccount user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,62 +39,40 @@ public class Login extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        
     }
 
-    public void ValidateCredentials (View view) {
+    public void ValidateCredentials(View view) {
         String username;
         String password;
-        String accountType;
-        // retrieve username and password from input forms
+
         EditText userText = findViewById(R.id.username_input);
         username = (userText).getText().toString();
         EditText passText = findViewById(R.id.password_input);
         password = (passText).getText().toString();
-
-        Spinner spinner = (Spinner) findViewById(R.id.AccountTypeSelector);
-        accountType = spinner.getSelectedItem().toString();
 
         if (username.isEmpty() || password.isEmpty()) {
             HandleInvalidCredentials(view);
             return;
         }
 
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + accountType);
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    switch (accountType) {
-                        case "Participant":
-                            user = childSnapshot.getValue(Participant.class);
-                            break;
-                        case "Organizer":
-                            user = childSnapshot.getValue(Organizer.class);
-                            break;
-                        case "Admin":
-                            user = childSnapshot.getValue(Admin.class);
-                            break;
-                        default:
-                            user = childSnapshot.getValue(UserAccount.class);
-                            break;
-                    }
-                    if (user.getUsername().equals(username)) {
-                        if (user.getPassword().equals(password)) {
-                            HandleValidCredentials(view);
-                            return;
-                        } else {
-                            HandleInvalidCredentials(view);
-                        }
-                    }
-                }
-            }
+        new Thread(() -> {
+            try {
+                dbConnection = new DatabaseConnection(username, password);
+                user = dbConnection.getUser();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                HandleInvalidCredentials(view);
+                // Navigate on the main thread
+                runOnUiThread(() -> HandleValidCredentials(view));
+
+            } catch (NoSuchUserException e) {
+                runOnUiThread(() -> HandleInvalidCredentials(view));
+            } catch (InterruptedException e) {
+                Log.e("InterruptedException", "At database login", e);
+                runOnUiThread(() -> HandleInvalidCredentials(view));
             }
-        });
+        }).start();
     }
+
 
     public void HandleValidCredentials (View view) {
         Intent intent;

@@ -12,10 +12,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
+import com.example.localloop.backend.Admin;
+import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.backend.Participant;
 import com.example.localloop.backend.UserAccount;
 
 public class WelcomeParticipant extends AppCompatActivity {
 
+    private static DatabaseConnection dbConnection;
+    private static Participant user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,13 +33,13 @@ public class WelcomeParticipant extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        UserAccount user = Login.user;
+        dbConnection = DatabaseInstance.get();
+        user = (Participant)dbConnection.getUser();
         String username = user.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + username + "! You are logged in as participant.";
+        String message = "Welcome " + user.toString();
         welcomeMessage.setText(message);
     }
 

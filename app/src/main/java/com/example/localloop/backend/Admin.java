@@ -2,9 +2,9 @@ package com.example.localloop.backend;
 
 public class Admin extends UserAccount {
 
-    String username;
-    String password;
-    String userID;
+    private String username;
+    private String password;
+    private String userID;
 
     public Admin() {
         // Empty constructor is required by Firebase
@@ -15,9 +15,20 @@ public class Admin extends UserAccount {
         this.password = password;
         this.userID = userID;
     }
-
+    public String getUsername() {
+        return username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public String getUserID() {
+        return userID;
+    }
     public void removeUser(String userID) {
 
+    }
+    public String toString() {
+        return "admin: "+username+", ID: "+userID;
     }
 
 }

@@ -2,7 +2,8 @@ package com.example.localloop.backend;
 
 import android.util.Log;
 
-import com.example.localloop.exception.database.DatabaseConnectionException;
+import com.example.localloop.exception.database.InvalidUsernameException;
+import com.example.localloop.exception.database.NoSuchUserException;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public class DatabaseConnection {
     private static boolean organizersLoaded = false;
     private static boolean adminsLoaded = false;
 
-    // Public constructor with login logic
-    public DatabaseConnection(String username, String password) throws DatabaseConnectionException, InterruptedException {
+    // Public methods
+    public DatabaseConnection(String username, String password) throws NoSuchUserException, InterruptedException {
         updateAllUsers();
 
         Log.d("Participants", String.valueOf(allParticipants));
@@ -59,7 +60,7 @@ public class DatabaseConnection {
         }
 
         if (!found) {
-            throw new DatabaseConnectionException("Invalid Login Credentials");
+            throw new NoSuchUserException("User does not exist");
         }
     }
 
@@ -67,32 +68,32 @@ public class DatabaseConnection {
         return user;
     }
 
-    public static boolean createNew(Participant p) throws InterruptedException {
+    public static void createNew(Participant p) throws InvalidUsernameException, InterruptedException {
         updateAllUsers();
         for (Participant existing : allParticipants) {
             if (p.getUsername().equals(existing.getUsername())) {
                 Log.d(p.getUsername(), "New Participant Username Conflict");
-                return false;
+                throw new InvalidUsernameException("Username taken");
             }
         }
         String key = myRef.push().getKey();
         myRef.child("users/Participant").child(key).setValue(new Participant(p.getUsername(), p.getPassword(), key));
-        return true;
     }
 
-    public static boolean createNew(Organizer o) throws InterruptedException {
+    public static void createNew(Organizer o) throws InvalidUsernameException, InterruptedException {
         updateAllUsers();
         for (Organizer existing : allOrganizers) {
             if (o.getUsername().equals(existing.getUsername())) {
                 Log.d(o.getUsername(), "New Organizer Username Conflict");
-                return false;
+                throw new InvalidUsernameException("Username taken");
             }
         }
         String key = myRef.push().getKey();
         myRef.child("users/Organizer").child(key).setValue(new Organizer(o.getUsername(), o.getPassword(), key));
-        return true;
     }
+    // Protected methods
 
+    // Private methods
     private interface DatabaseCallback {
         void onParticipantsLoaded(ArrayList<Participant> participants);
         void onOrganizersLoaded(ArrayList<Organizer> organizers);

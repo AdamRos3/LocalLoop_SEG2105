@@ -11,11 +11,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Participant;
-import com.example.localloop.exception.database.DatabaseConnectionException;
-import com.example.localloop.backend.Organizer;
+import com.example.localloop.exception.database.NoSuchUserException;
 
 
 /**
@@ -26,11 +23,17 @@ import com.example.localloop.backend.Organizer;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void testParticipantsLoad() throws InterruptedException, DatabaseConnectionException {
+    public void testParticipantsLoad() throws InterruptedException, NoSuchUserException {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         //Organizer o = new Organizer("tommer", "321", null);
         //Participant o = new Participant("umbo","456",null);
         //DatabaseConnection db = new DatabaseConnection("admin","XPI76SZUqyCjVxgnUjm0");
-        DatabaseConnection db = new DatabaseConnection("tommer","321");
+        DatabaseConnection db;
+        try {
+            db = new DatabaseConnection("admin", "XPI76SZUqyCjVxgnUjm0");
+            Log.d("Login","VALID CREDENTIALS!");
+        } catch (NoSuchUserException e) {
+            throw e;
+        }
     }
 }
