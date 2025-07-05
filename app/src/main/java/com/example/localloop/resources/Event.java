@@ -12,21 +12,21 @@ public class Event {
     String dateTime;
     String category;
     double fee;
-    Organizer organizer;
+    String organizerID;
 
     String eventID;
 
     public Event() {}
 
     public Event(String name, String description, String dateTime,
-                 String category, double fee, String eventID, Organizer organizer) {
+                 String category, double fee, String eventID, String organizerID) {
         this.name = name;
         this.description = description;
         this.dateTime = dateTime;
         this.category = category;
         this.fee = fee;
         this.eventID = eventID;
-        this.organizer = organizer;
+        this.organizerID = organizerID;
     }
 
     public String getName() {
@@ -47,5 +47,5 @@ public class Event {
 
     public String getEventID() { return eventID; }
 
-    public Organizer getOrganizer() { return organizer; }
+    public String getOrganizerID() { return organizerID; }
 }

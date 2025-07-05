@@ -76,7 +76,9 @@ public class ManageEvents extends AppCompatActivity {
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
                     Event event = eventSnapshot.getValue(Event.class);
                     if (event != null) {
-                        events.add(event);
+                        if (event.getOrganizerID().equals(organizer.getUserID())) {
+                            events.add(event);
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -118,7 +120,6 @@ public class ManageEvents extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
 
-
         final EditText inputFee = new EditText(this);
         inputFee.setHint("Fee");
         layout.addView(inputFee);
@@ -140,7 +141,7 @@ public class ManageEvents extends AppCompatActivity {
                 DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
                 String eventID = eventsRef.push().getKey();
 
-                Event newEvent = new Event(name, description, dateTime, category, Double.parseDouble(fee), eventID, organizer);
+                Event newEvent = new Event(name, description, dateTime, category, Double.parseDouble(fee), eventID, organizer.getUserID());
                 eventsRef.child(eventID).setValue(newEvent);
 
                 Toast.makeText(this, "Event Added", Toast.LENGTH_SHORT).show();
