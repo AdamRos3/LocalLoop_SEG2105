@@ -95,8 +95,8 @@ public class DatabaseConnection {
 
     // Private methods
 
-    // Called by Admin Class Only
     protected ArrayList<Participant> getAllParticipants() {
+        // Called by Admin Class Only
         return allParticipants;
     }
     // General Methods
