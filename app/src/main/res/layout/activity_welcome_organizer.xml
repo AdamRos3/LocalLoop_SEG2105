@@ -19,7 +19,7 @@
             android:layout_width="34dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/MirrorsEdgeLogoTransparent2" />
+            app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
         <TextView
             android:id="@+id/TextView3"
@@ -37,7 +37,7 @@
             android:layout_width="46dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/MirrorsEdgeLogoTransparent2" />
+            app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
     </LinearLayout>
 
@@ -54,7 +54,7 @@
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="206dp"
-        app:srcCompat="@drawable/LocalLoopSparklerTransparent2" />
+        app:srcCompat="@drawable/localloop_sparkler_transparent" />
 
     <TextView
         android:id="@+id/ManageEventCategories2"
@@ -75,21 +75,21 @@
             android:layout_width="242dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueNameTransparent" />
+            app:srcCompat="@drawable/aqua_blue_name_transparent" />
 
         <ImageView
             android:id="@+id/imageView7"
             android:layout_width="253dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueDescriptionTransparent" />
+            app:srcCompat="@drawable/aqua_blue_description_transparent" />
 
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueCategoryTransparent" />
+            app:srcCompat="@drawable/aqua_blue_category_transparent" />
 
     </LinearLayout>
 
@@ -108,21 +108,21 @@
                 android:layout_width="241dp"
                 android:layout_height="61dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/AquaBlueFeeTransparent" />
+                app:srcCompat="@drawable/aqua_blue_fee_transparent" />
 
             <ImageView
                 android:id="@+id/imageView27"
                 android:layout_width="wrap_content"
                 android:layout_height="46dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/AquaBlueDateTransparent" />
+                app:srcCompat="@drawable/aqua_blue_date_transparent" />
 
             <ImageView
                 android:id="@+id/imageView26"
                 android:layout_width="89dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/AquaBlueTimeTransparent" />
+                app:srcCompat="@drawable/aqua_blue_time_transparent" />
 
         </LinearLayout>
 
@@ -131,21 +131,21 @@
             android:layout_width="242dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueNameTransparent" />
+            app:srcCompat="@drawable/aqua_blue_name_transparent" />
 
         <ImageView
             android:id="@+id/imageView16"
             android:layout_width="253dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueDescriptionTransparent" />
+            app:srcCompat="@drawable/aqua_blue_description_transparent" />
 
         <ImageView
             android:id="@+id/imageView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueCategoryTransparent" />
+            app:srcCompat="@drawable/aqua_blue_category_transparent" />
     </LinearLayout>
 
     <TextView
@@ -167,7 +167,7 @@
             android:layout_width="wrap_content"
             android:layout_height="54dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/AquaBlueViewEventsTransparent" />
+            app:srcCompat="@drawable/aqua_blue_view_events_transparent" />
 
     </LinearLayout>
 
@@ -177,6 +177,6 @@
         android:layout_height="60dp"
         android:onClick="ReturnToLogin"
         android:text="Back"
-        app:icon="@drawable/AquaBlueDeleteTransparent" />
+        app:icon="@drawable/aqua_blue_delete_transparent" />
 
 </LinearLayout>

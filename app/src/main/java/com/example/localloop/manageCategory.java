@@ -1,7 +1,6 @@
 package com.example.localloop;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent;
 
+import com.example.localloop.resources.Category;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,10 +51,7 @@ public class manageCategory extends AppCompatActivity {
                 for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
                     Category category = categorySnapshot.getValue(Category.class);
                     if (category != null) {
-
-                        category.id = categorySnapshot.getKey(); //firebase key
                         categoryList.add(category);
-
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -98,26 +94,6 @@ public class manageCategory extends AppCompatActivity {
         Button backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v1 -> finish());
     }
-
-    public static class Category {
-        public String id;
-
-        public String name;
-        public String description;
-
-
-        public Category() { //firebase needs this
-            //this.id = id;
-            //this.name = name;
-            //this.description = description;
-        }
-
-        public Category(String id, String name, String description) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-        }
-    }
     public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.CategoryViewHolder> {
         private List<Category> categoryList;
         private Context context;
@@ -137,8 +113,8 @@ public class manageCategory extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
             Category category = categoryList.get(position);
-            holder.nameTextView.setText(category.name);
-            holder.descTextView.setText(category.description);
+            holder.nameTextView.setText(category.getName());
+            holder.descTextView.setText(category.getDescription());
 
             holder.editButton.setOnClickListener(v -> {
                 //Toast.makeText(context, "Edit: " + category.name, Toast.LENGTH_SHORT).show();
@@ -149,11 +125,11 @@ public class manageCategory extends AppCompatActivity {
                 layout.setOrientation(LinearLayout.VERTICAL);
 
                 final EditText inputName = new EditText(context);
-                inputName.setText(category.name);
+                inputName.setText(category.getName());
                 layout.addView(inputName);
 
                 final EditText inputDescription = new EditText(context);
-                inputDescription.setText(category.description);
+                inputDescription.setText(category.getDescription());
                 layout.addView(inputDescription);
 
                 builder.setView(layout);
@@ -163,8 +139,8 @@ public class manageCategory extends AppCompatActivity {
                     String newDescription = inputDescription.getText().toString().trim();
 
                     if (!newName.isEmpty() && !newDescription.isEmpty()) {
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.id);
-                        ref.setValue(new Category(category.id, newName, newDescription));
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
+                        ref.setValue(new Category(category.getCategoryID(), newName, newDescription));
                         Toast.makeText(context, "Category Updated", Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -184,7 +160,7 @@ public class manageCategory extends AppCompatActivity {
                         .setTitle("Delete Category")
                         .setMessage("Are you sure you want to delete \"" + category.name +"\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.id);
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
                             ref.removeValue();
                             Toast.makeText(context,"Category Deleted", Toast.LENGTH_SHORT).show();
 
