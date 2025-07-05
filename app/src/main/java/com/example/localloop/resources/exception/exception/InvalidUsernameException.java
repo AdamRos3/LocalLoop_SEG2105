@@ -1,4 +1,4 @@
-package com.example.localloop.exception.database;
+package com.example.localloop.resources.exception.exception;
 
 public class InvalidUsernameException extends Exception {
     public InvalidUsernameException() {

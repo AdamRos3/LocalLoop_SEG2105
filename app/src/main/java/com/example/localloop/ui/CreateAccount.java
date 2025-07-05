@@ -1,6 +1,5 @@
 package com.example.localloop.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,9 +15,7 @@ import com.example.localloop.R;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
-import com.example.localloop.backend.UserAccount;
-import com.example.localloop.exception.database.InvalidUsernameException;
-import com.example.localloop.exception.database.NoSuchUserException;
+import com.example.localloop.resources.exception.exception.InvalidUsernameException;
 
 public class CreateAccount extends AppCompatActivity {
 
@@ -56,11 +53,9 @@ public class CreateAccount extends AppCompatActivity {
                 } else {
                     dbConnection.createNew(new Organizer(username, password, null));
                 }
-                Intent intent = new Intent(this, Login.class);
-                startActivity(intent);
+                finish();
             } catch (InvalidUsernameException e) {
                 Log.e("InvalidUsername","Username Taken");
-                return;
             } catch (InterruptedException e) {
                 Log.e("InterruptedException","Interrupted at onCreateUserAccount > CreateAccount");
             }

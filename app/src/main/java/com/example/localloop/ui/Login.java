@@ -15,7 +15,7 @@ import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.UserAccount;
-import com.example.localloop.exception.database.NoSuchUserException;
+import com.example.localloop.resources.exception.exception.NoSuchUserException;
 
 public class Login extends AppCompatActivity {
 
@@ -67,6 +67,12 @@ public class Login extends AppCompatActivity {
         } else {
             intent = new Intent(this, WelcomeParticipant.class);
         }
+        // clear username and password fields
+        final TextView clearUser = (TextView) findViewById(R.id.username_input);
+        clearUser.setText("");
+        final TextView clearPass = (TextView) findViewById(R.id.password_input);
+        clearPass.setText("");
+        // Go to next actvity
         startActivity(intent);
     }
 

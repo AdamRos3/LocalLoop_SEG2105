@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.exception.database.NoSuchUserException;
+import com.example.localloop.resources.exception.exception.NoSuchUserException;
 
 
 /**

@@ -2,8 +2,8 @@ package com.example.localloop.backend;
 
 import android.util.Log;
 
-import com.example.localloop.exception.database.InvalidUsernameException;
-import com.example.localloop.exception.database.NoSuchUserException;
+import com.example.localloop.resources.exception.exception.InvalidUsernameException;
+import com.example.localloop.resources.exception.exception.NoSuchUserException;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;

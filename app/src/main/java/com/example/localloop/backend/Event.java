@@ -4,7 +4,7 @@ import java.util.Dictionary;
 
 import java.util.ArrayList;
 
-public class Events {
+public class Event {
     private String title;
     private String description;
     private String dateTime;
@@ -16,7 +16,7 @@ public class Events {
     private int maxParticipants;
     private ArrayList<String> registeredUsers;
 
-    public Events(String title, String description, String dateTime, String location,
+    public Event(String title, String description, String dateTime, String location,
                  String category, String categoryDescription, int maxParticipants) {
         this.title = title;
         this.description = description;
