@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, WelcomeAdmin.class);
         } else if (user instanceof Organizer) {
             //intent = new Intent(this, WelcomeOrganizer.class);
-            intent = new Intent(this, manageCategory.class);
+            intent = new Intent(this, ManageEvents.class);
         } else {
             intent = new Intent(this, WelcomeParticipant.class);
         }
