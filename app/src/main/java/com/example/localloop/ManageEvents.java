@@ -7,7 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +65,29 @@ public class ManageEvents extends AppCompatActivity {
     }
 
     public void onAddClick(View view) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Add Event");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText inputName = new EditText(this);
+        inputName.setHint("Name");
+        layout.addView(inputName);
+
+        final EditText inputDescription = new EditText(this);
+        inputDescription.setHint("Category");
+        layout.addView(inputDescription);
+
+        final Spinner categorySpinner = new Spinner(this);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.options_array,
+                com.google.android.material.R.layout.support_simple_spinner_dropdown_item
+        );
+        adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(adapter);
     }
 
     private void populateEvents(List<Event> events) {
@@ -83,6 +110,7 @@ public class ManageEvents extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w("ManageEventListener", error.toException());
+                Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -133,7 +161,7 @@ public class ManageEvents extends AppCompatActivity {
 
 
             holder.editButton.setOnClickListener(v -> {
-
+                //Add Nasar Implementation
             });
 
             holder.deleteButton.setOnClickListener(v -> {
