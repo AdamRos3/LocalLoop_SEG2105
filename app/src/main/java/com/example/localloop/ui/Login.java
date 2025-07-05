@@ -7,9 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.localloop.R;
@@ -29,17 +27,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Spinner spinner = (Spinner) findViewById(R.id.AccountTypeSelector);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.options_array,
-                com.google.android.material.R.layout.support_simple_spinner_dropdown_item
-        );
-        adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        
     }
 
     public void ValidateCredentials(View view) {
@@ -60,10 +47,7 @@ public class Login extends AppCompatActivity {
             try {
                 dbConnection = new DatabaseConnection(username, password);
                 user = dbConnection.getUser();
-
-                // Navigate on the main thread
                 runOnUiThread(() -> HandleValidCredentials(view));
-
             } catch (NoSuchUserException e) {
                 runOnUiThread(() -> HandleInvalidCredentials(view));
             } catch (InterruptedException e) {

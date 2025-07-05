@@ -94,6 +94,12 @@ public class DatabaseConnection {
     // Protected methods
 
     // Private methods
+
+    // Called by Admin Class Only
+    protected ArrayList<Participant> getAllParticipants() {
+        return allParticipants;
+    }
+    // General Methods
     private interface DatabaseCallback {
         void onParticipantsLoaded(ArrayList<Participant> participants);
         void onOrganizersLoaded(ArrayList<Organizer> organizers);

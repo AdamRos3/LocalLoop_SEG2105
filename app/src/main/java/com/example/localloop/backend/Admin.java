@@ -1,5 +1,7 @@
 package com.example.localloop.backend;
 
+import java.util.ArrayList;
+
 public class Admin extends UserAccount {
 
     private String username;
@@ -24,8 +26,8 @@ public class Admin extends UserAccount {
     public String getUserID() {
         return userID;
     }
-    public void removeUser(String userID) {
-
+    public ArrayList<Participant> getAllParticipants(DatabaseConnection dbConnection) {
+        return dbConnection.getAllParticipants();
     }
     public String toString() {
         return "admin: "+username+", ID: "+userID;
