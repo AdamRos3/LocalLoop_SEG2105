@@ -2,6 +2,7 @@ package com.example.localloop.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -17,9 +18,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
 import com.example.localloop.backend.Admin;
+import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
 import com.example.localloop.backend.UserAccount;
+import com.example.localloop.resources.exception.InvalidUsernameException;
+import com.example.localloop.resources.exception.NoSuchUserException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,9 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class EditUsers extends AppCompatActivity {
+    private DatabaseConnection dbConnection;
+    private Admin admin;
+    private UserAccount userToEdit;
 
-    private String accountType;
-    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +47,17 @@ public class EditUsers extends AppCompatActivity {
             return insets;
         });
 
-        accountType = getIntent().getStringExtra("accountType");
-        userID = getIntent().getStringExtra("userID");
+        dbConnection = DatabaseInstance.get();
+        admin = WelcomeAdmin.admin;
+        userToEdit = ManageUsers.userToEdit;
 
         TextView userID_text = findViewById(R.id.userID_text);
         EditText username_text = findViewById(R.id.editUsername_field);
         EditText password_text = findViewById(R.id.editPassword_field);
 
-        userID_text.setText(userID);
-        username_text.setText(getIntent().getStringExtra("username"));
-        password_text.setText(getIntent().getStringExtra("password"));
+        userID_text.setText(userToEdit.getUserID());
+        username_text.setText(userToEdit.getUsername());
+        password_text.setText(userToEdit.getPassword());
 
         Spinner spinner = findViewById(R.id.editAccountType_field);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -61,7 +67,7 @@ public class EditUsers extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        if (accountType.equals("Organizer")) {
+        if (userToEdit instanceof Organizer) {
             spinner.setSelection(1);
         } else {
             spinner.setSelection(0);
@@ -80,46 +86,32 @@ public class EditUsers extends AppCompatActivity {
 
         String username = username_field.getText().toString();
         String password = password_field.getText().toString();
-        String key = onDeleteAccount(view);
-
-        UserAccount user;
-        if (accountType_field.getSelectedItem().equals("Organizer")) {
-            user = new Organizer(username, password, userID);
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Organizer");
-            myRef.child(key).setValue(user);
-        } else if (accountType_field.getSelectedItem().equals("Participant")) {
-            user = new Participant(username, password, userID);
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Participant");
-            myRef.child(key).setValue(user);
-        } else {
-            user = new Admin(username, password, userID);
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Admin");
-            myRef.child(key).setValue(user);
-        }
-        Intent intent = new Intent(this, ManageUsers.class);
-        startActivity(intent);
+        new Thread(() -> {
+            try {
+                if (accountType_field.getSelectedItem().equals("Organizer")) {
+                    dbConnection.createNewUser(new Organizer(username, password, null));
+                } else {
+                    dbConnection.createNewUser(new Participant(username, password, null));
+                }
+            } catch (InvalidUsernameException e) {
+                Log.e("InvalidUsername", "Username Taken");
+            } catch (InterruptedException e) {
+                Log.e("InterruptedException", "Interrupted at onCreateUserAccount > CreateAccount");
+            }
+        }).start();
+        onDeleteAccount(view);
     }
 
-    public String onDeleteAccount(View view) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/Participant");
-        if (accountType.equals("Organizer")) {
-            myRef = FirebaseDatabase.getInstance().getReference("users/Organizer");
-        }
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    if (childSnapshot.child("userID").getValue().equals(userID)) {
-                        childSnapshot.getRef().removeValue();
-                    }
-                }
+    public void onDeleteAccount(View view) {
+        new Thread(() -> {
+            try {
+                admin.deleteUser(dbConnection, userToEdit);
+            } catch (NoSuchUserException e) {
+                Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
+            } catch (InterruptedException e) {
+                Log.e("InterruptedException", "Interrupted at onCreateUserAccount > onDeleteAccount");
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        Intent intent = new Intent(this, ManageUsers.class);
-        startActivity(intent);
-        return userID;
+        }).start();
+        finish();
     }
 }

@@ -19,6 +19,7 @@ import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
+import com.example.localloop.backend.UserAccount;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -27,11 +28,9 @@ public class ManageUsers extends AppCompatActivity {
 
     private ArrayList<Organizer> allOrganizers = new ArrayList<Organizer>();
     private ArrayList<Participant> allParticipants = new ArrayList<Participant>();
-    private DatabaseConnection dbConnection;
-    private Admin admin;
+    protected static UserAccount userToEdit;
     private ArrayAdapter<String> arrayAdapter;
     private ListView listView;
-    private TabLayout tabLayout;
     private String accountTypeSelected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +44,8 @@ public class ManageUsers extends AppCompatActivity {
             return insets;
         });
         listView = findViewById(R.id.users_List);
-        dbConnection = DatabaseInstance.get();
-        admin = (Admin)dbConnection.getUser();
+        DatabaseConnection dbConnection = DatabaseInstance.get();
+        Admin admin = (Admin)dbConnection.getUser();
         new Thread(() -> {
             try {
                 allParticipants = admin.getAllParticipants(dbConnection);
@@ -69,35 +68,27 @@ public class ManageUsers extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String username = (String)adapterView.getItemAtPosition(i);
                 Log.d(username, "Username from getItemAtPosition(i) = "+username);
-                String userID = "";
-                String password = "";
                 // To add userID
                 if (accountTypeSelected.equals("Organizer")) {
                     for (Organizer o : allOrganizers) {
                         if (o.getUsername().equals(username)) {
-                            userID = o.getUserID();
-                            password = o.getPassword();
+                            userToEdit = o;
                             break;
                         }
                     }
                 } else {
                     for (Participant p : allParticipants) {
                         if (p.getUsername().equals(username)) {
-                            userID = p.getUserID();
-                            password = p.getPassword();
+                            userToEdit = p;
                             break;
                         }
                     }
                 }
-                intent.putExtra("accountType", accountTypeSelected);
-                intent.putExtra("userID", userID);
-                intent.putExtra("username",username);
-                intent.putExtra("password", password);
                 startActivity(intent);
             }
         });
 
-        tabLayout = findViewById(R.id.tabLayout);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

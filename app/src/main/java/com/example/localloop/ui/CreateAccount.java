@@ -49,9 +49,9 @@ public class CreateAccount extends AppCompatActivity {
         new Thread(() -> {
             try {
                 if (accountSwitch.isChecked()) {
-                    dbConnection.createNew(new Participant(username, password, null));
+                    dbConnection.createNewUser(new Participant(username, password, null));
                 } else {
-                    dbConnection.createNew(new Organizer(username, password, null));
+                    dbConnection.createNewUser(new Organizer(username, password, null));
                 }
                 finish();
             } catch (InvalidUsernameException e) {

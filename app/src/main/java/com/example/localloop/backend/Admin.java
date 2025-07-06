@@ -34,11 +34,8 @@ public class Admin extends UserAccount {
     public ArrayList<Organizer> getAllOrganizers(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getAllOrganizers();
     }
-    public void deleteUser(DatabaseConnection dbConnection, Participant p) throws NoSuchUserException {
-
-    }
-    public void deleteUser(DatabaseConnection dbConnection, Organizer o) throws NoSuchUserException {
-
+    public void deleteUser(DatabaseConnection dbConnection, UserAccount user) throws NoSuchUserException, InterruptedException {
+        dbConnection.deleteUser(user);
     }
     public String toString() {
         return "admin: "+username+", ID: "+userID;

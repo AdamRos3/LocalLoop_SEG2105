@@ -68,7 +68,7 @@ public class DatabaseConnection {
         return user;
     }
 
-    public static void createNew(Participant p) throws InvalidUsernameException, InterruptedException {
+    public static void createNewUser(Participant p) throws InvalidUsernameException, InterruptedException {
         updateAllUsers();
         for (Participant existing : allParticipants) {
             if (p.getUsername().equals(existing.getUsername())) {
@@ -80,7 +80,7 @@ public class DatabaseConnection {
         myRef.child("users/Participant").child(key).setValue(new Participant(p.getUsername(), p.getPassword(), key));
     }
 
-    public static void createNew(Organizer o) throws InvalidUsernameException, InterruptedException {
+    public static void createNewUser(Organizer o) throws InvalidUsernameException, InterruptedException {
         updateAllUsers();
         for (Organizer existing : allOrganizers) {
             if (o.getUsername().equals(existing.getUsername())) {
@@ -91,33 +91,14 @@ public class DatabaseConnection {
         String key = myRef.push().getKey();
         myRef.child("users/Organizer").child(key).setValue(new Organizer(o.getUsername(), o.getPassword(), key));
     }
-    // Protected methods
-
-    // Private methods
-
-    protected ArrayList<Participant> getAllParticipants() throws InterruptedException {
-        // Called by Admin Class Only
-        updateAllUsers(); // TODO create updateAllParticipants specific method
-        return allParticipants;
-    }
-    protected ArrayList<Organizer> getAllOrganizers() throws InterruptedException {
-        // Called by Admin Class Only
-        updateAllUsers(); // TODO create updateAllOrganizers specific method
-        return allOrganizers;
-    }
-    // General Methods
-    private interface DatabaseCallback {
-        void onParticipantsLoaded(ArrayList<Participant> participants);
-        void onOrganizersLoaded(ArrayList<Organizer> organizers);
-        void onAdminsLoaded(ArrayList<Admin> admins);
-    }
-
-    private static void updateAllUsers() throws InterruptedException {
+    public static void updateAllUsers() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
+        Log.d("updateAllUsers", "Starting...");
 
         getAllUsers(new DatabaseCallback() {
             @Override
             public void onParticipantsLoaded(ArrayList<Participant> participants) {
+                Log.d("updateAllUsers", "Participants loaded");
                 allParticipants = participants;
                 participantsLoaded = true;
                 latch.countDown();
@@ -126,12 +107,14 @@ public class DatabaseConnection {
             @Override
             public void onOrganizersLoaded(ArrayList<Organizer> organizers) {
                 allOrganizers = organizers;
+                Log.d("updateAllUsers", "Organizers loaded");
                 organizersLoaded = true;
                 latch.countDown();
             }
 
             @Override
             public void onAdminsLoaded(ArrayList<Admin> admins) {
+                Log.d("updateAllUsers", "Admins loaded");
                 allAdmins = admins;
                 adminsLoaded = true;
                 latch.countDown();
@@ -143,6 +126,56 @@ public class DatabaseConnection {
         }
     }
 
+    // Protected methods
+    protected static void deleteUser(UserAccount userToDelete) throws NoSuchUserException, InterruptedException {
+        // Called by Admin Class Only
+        updateAllUsers();
+        boolean found = false;
+
+        if (user instanceof Organizer) {
+            // Check that user exists
+            for (Organizer o : allOrganizers) {
+                if (o.getUserID().equals(userToDelete.getUserID())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
+                throw new NoSuchUserException("Nonexisting user cannot be deleted");
+            }
+            myRef.child("users/Organizer").child(userToDelete.getUserID()).removeValue();
+        } else {
+            // Check that user exists
+            for (Participant p : allParticipants) {
+                if (p.getUserID().equals(userToDelete.getUserID())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
+                throw new NoSuchUserException("Nonexisting user cannot be deleted");
+            }
+            myRef.child("users/Participant").child(userToDelete.getUserID()).removeValue();
+        }
+    }
+    protected ArrayList<Participant> getAllParticipants() throws InterruptedException {
+        // Called by Admin Class Only
+        updateAllUsers(); // TODO create updateAllParticipants specific method
+        return allParticipants;
+    }
+    protected ArrayList<Organizer> getAllOrganizers() throws InterruptedException {
+        // Called by Admin Class Only
+        updateAllUsers(); // TODO create updateAllOrganizers specific method
+        return allOrganizers;
+    }
+
+
+    // Private Methods
+    private interface DatabaseCallback {
+        void onParticipantsLoaded(ArrayList<Participant> participants);
+        void onOrganizersLoaded(ArrayList<Organizer> organizers);
+        void onAdminsLoaded(ArrayList<Admin> admins);
+    }
     private static void getAllUsers(DatabaseCallback callback) {
         myRef.child("users/Participant").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -20,7 +20,7 @@ import com.example.localloop.backend.UserAccount;
 public class WelcomeParticipant extends AppCompatActivity {
 
     private static DatabaseConnection dbConnection;
-    private static Participant participant;
+    private static Participant user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +34,12 @@ public class WelcomeParticipant extends AppCompatActivity {
             return insets;
         });
         dbConnection = DatabaseInstance.get();
-        participant = (Participant)dbConnection.getUser();
-        String username = participant.getUsername();
+        user = (Participant)dbConnection.getUser();
+        String username = user.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);
-        String message = "Welcome " + participant.toString();
+        String message = "Welcome " + user.toString();
         welcomeMessage.setText(message);
     }
 
