@@ -42,10 +42,10 @@ public class ExampleInstrumentedTest {
                 DatabaseConnection db = new DatabaseConnection("uOttawa", "password1");
                 Time time = new Time(12,30);
                 Date date = new Date(2026,5,12);
-                EventCategory category = new EventCategory("Music","All Music Events","-OUVRRtcizfCAM0lPhoZ");
+                EventCategory category = new EventCategory("Music","All Music Events","-OUVRRtcizfCAM0lPho");
                 Organizer organizer = (Organizer) db.getUser();
-                Event e = new Event("Drake Concert","at uOttawa campus",category.getCategoryID(),0,date, time, organizer.getUserID(),"-OUW85szNUDR83XYHRZv");
-                organizer.deleteEvent(db, e);
+                Event e = new Event("Drake Concert","at uOttawa campus",category.getCategoryID(),0,date, time, organizer.getUserID(),"-OUWG7BiaaMQC5mSH5Mr");
+                organizer.editEvent(db, e,"Nor Drake Concert",null,null,420.69,null,null);
                 Log.d("TEST", "Event created");
             } catch (Exception e) {
                 Log.e("TEST", "Failed to create event", e);

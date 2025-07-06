@@ -1,5 +1,7 @@
 package com.example.localloop.backend;
 
+import com.example.localloop.resources.datetime.Date;
+import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
@@ -34,6 +36,9 @@ public class Organizer extends UserAccount {
     }
     public void createEvent(DatabaseConnection dbConnection, Event event) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
         dbConnection.createEvent(event);
+    }
+    public void editEvent(DatabaseConnection dbConnection,Event eventToEdit, String name, String description, String categoryID, double fee, Date date, Time time) throws NoSuchEventException, InvalidEventNameException, InterruptedException, NoSuchEventCategoryException {
+        dbConnection.editEvent(eventToEdit,name,description,categoryID,fee,date,time);
     }
     public void deleteEvent(DatabaseConnection dbConnection, Event event) throws NoSuchEventException, InterruptedException {
         dbConnection.deleteEvent(event);

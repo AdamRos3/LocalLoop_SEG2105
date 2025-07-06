@@ -176,7 +176,7 @@ public class DatabaseConnection {
             throw new NoSuchEventCategoryException("Event category does not exist");
         }
 
-        // Check that Event Category does not exist
+        // Check that Event does not exist
         for (Event existing : allEvents) {
             if (event.getName().equals(existing.getName())) {
                 Log.e(event.getName(), "New Event Name Conflict");
@@ -186,14 +186,53 @@ public class DatabaseConnection {
         String key = myRef.push().getKey();
         myRef.child("events").child(key).setValue(new Event(event.getName(),event.getDescription(),event.getCategoryID(),event.getFee(),event.getDate(),event.getTime(),user.getUserID(),key));
     }
-    protected static void editEvent(Event event, String name, String description, EventCategory category, double fee, Date date, Time time) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
-        
+    protected static void editEvent(Event eventToEdit, String name, String description, String categoryID, double fee, Date date, Time time) throws NoSuchEventException, InvalidEventNameException, InterruptedException, NoSuchEventCategoryException {
+        // Called by Organizer Class Only
+        updateAllEvents();
+
+        // Find which attributes to edit
+        if (name==null) {
+            name = eventToEdit.getName();
+        }
+        if (description==null) {
+            description = eventToEdit.getDescription();
+        }
+        if (categoryID==null) {
+            categoryID = eventToEdit.getCategoryID();
+        }
+        if (date==null) {
+            date = eventToEdit.getDate();
+        }
+        if (time==null) {
+            time = eventToEdit.getTime();
+        }
+        Event editedEvent = new Event(name, description, categoryID, fee, date, time, user.getUserID(), eventToEdit.getEventID());
+        // Check that EventCategory exists
+        boolean categoryFound = false;
+        for (EventCategory existing : allEventCategories) {
+            if ((editedEvent.getCategoryID().equals(existing.getCategoryID()))) {
+                categoryFound = true;
+            }
+        }
+        if (!categoryFound) {
+            Log.e(editedEvent.getName(), "EventCategory does not exist");
+            throw new NoSuchEventCategoryException("Event category does not exist");
+        }
+        // Check that Event does not exist
+        for (Event existing : allEvents) {
+            if (editedEvent.getName().equals(existing.getName())) {
+                Log.e(editedEvent.getName(), "New Event Name Conflict");
+                throw new InvalidEventNameException("Event name taken");
+            }
+        }
+        myRef.child("events").child(editedEvent.getEventID()).setValue(editedEvent);
+
     }
     protected static void deleteEvent(Event eventToDelete) throws NoSuchEventException, InterruptedException {
         // Called by Organizer Class Only
         updateAllEvents();
         boolean found = false;
-        // Check that Event Category exists
+        // Check that Event exists
         for (Event existing : allEvents) {
             if ((eventToDelete.getEventID()).equals(existing.getEventID())) {
                 found = true;
