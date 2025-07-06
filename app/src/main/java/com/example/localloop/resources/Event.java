@@ -6,23 +6,29 @@ import java.util.Dictionary;
 
 import java.util.ArrayList;
 
+import com.example.localloop.resources.datetime.Date;
+import com.example.localloop.resources.datetime.Time;
+
 public class Event {
-    String name;
-    String description;
-    String dateTime;
-    String category;
-    double fee;
-    Organizer organizer;
+    private String name;
+    private String description;
+    private Date date;
+    private Time time;
+    private String category;
+    private double fee;
+    private Organizer organizer;
+
 
     String eventID;
 
     public Event() {}
 
-    public Event(String name, String description, String dateTime,
+    public Event(String name, String description, Date date, Time time,
                  String category, double fee, String eventID, Organizer organizer) {
         this.name = name;
         this.description = description;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.time = time;
         this.category = category;
         this.fee = fee;
         this.eventID = eventID;
@@ -37,9 +43,10 @@ public class Event {
         return description;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public Date getDate() {
+        return date;
     }
+    public Time getTime() { return time; }
 
     public String getCategory() { return category; }
 
