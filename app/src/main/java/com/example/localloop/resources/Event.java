@@ -43,9 +43,9 @@ public class Event {
 
     public double getFee() { return fee; }
 
-    public String getCategory() { return categoryID; }
+    public String getCategoryID() { return categoryID; }
 
-    public String getOrganizer() { return organizerID; }
+    public String getOrganizerID() { return organizerID; }
 
     public String getEventID() { return eventID; }
 }

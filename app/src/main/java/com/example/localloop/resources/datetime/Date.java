@@ -31,6 +31,7 @@ public class Date {
     public int getDay() {
         return day;
     }
+
     public String toString() {
         return months[month]+" "+day+", "+year;
     }
