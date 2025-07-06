@@ -3,7 +3,7 @@ package com.example.localloop.backend;
 import android.util.Log;
 
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
-import com.example.localloop.resources.exception.NoSuchUserException;
+import com.example.localloop.resources.exception.NoSuchEventCategoryNameException;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class DatabaseConnection {
     private static boolean eventCategoriesLoaded = false;
 
     // Public methods
-    public DatabaseConnection(String username, String password) throws NoSuchUserException, InterruptedException {
+    public DatabaseConnection(String username, String password) throws NoSuchEventCategoryNameException, InterruptedException {
         updateAllUsers();
         updateAllEventCategories();
 
@@ -64,7 +64,7 @@ public class DatabaseConnection {
         }
 
         if (!found) {
-            throw new NoSuchUserException("User does not exist");
+            throw new NoSuchEventCategoryNameException("User does not exist");
         }
     }
 
@@ -88,7 +88,7 @@ public class DatabaseConnection {
         updateAllUsers();
         for (Organizer existing : allOrganizers) {
             if (o.getUsername().equals(existing.getUsername())) {
-                Log.d(o.getUsername(), "New Organizer Username Conflict");
+                Log.e(o.getUsername(), "New Organizer Username Conflict");
                 throw new InvalidEventCategoryNameException("Username taken");
             }
         }
@@ -104,14 +104,30 @@ public class DatabaseConnection {
         // Check that Event Category does not exist
         for (EventCategory existing : allEventCategories) {
             if (category.getName().equals(existing.getName())) {
-                Log.d(category.getName(), "New Organizer Username Conflict");
+                Log.e(category.getName(), "New Organizer Username Conflict");
                 throw new InvalidEventCategoryNameException("Username taken");
             }
         }
         String key = myRef.push().getKey();
         myRef.child("categories").child(key).setValue(new EventCategory(category.getName(),category.getDescription(),key));
     }
-    protected static void deleteUser(UserAccount userToDelete) throws NoSuchUserException, InterruptedException {
+    protected static void deleteEventCategory(EventCategory categoryToDelete) throws NoSuchEventCategoryNameException, InterruptedException {
+        // Called by Admin Class Only
+        updateAllEventCategories();
+        boolean found = false;
+        // Check that Event Category exists
+        for (EventCategory existing : allEventCategories) {
+            if (categoryToDelete.getCategoryID().equals(existing.getCategoryID())) {
+                found = true;
+            }
+        }
+        if(!found) {
+            Log.e(categoryToDelete.getName(), "EventCategory Not Found");
+            throw new NoSuchEventCategoryNameException("EventCategory does not exist");
+        }
+        myRef.child("categories").child(categoryToDelete.getCategoryID()).removeValue();
+    }
+    protected static void deleteUser(UserAccount userToDelete) throws NoSuchEventCategoryNameException, InterruptedException {
         // Called by Admin Class Only
         updateAllUsers();
         boolean found = false;
@@ -125,7 +141,7 @@ public class DatabaseConnection {
             }
             if (!found) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
-                throw new NoSuchUserException("Nonexisting user cannot be deleted");
+                throw new NoSuchEventCategoryNameException("Nonexisting user cannot be deleted");
             }
             myRef.child("users/Organizer").child(userToDelete.getUserID()).removeValue();
         } else {
@@ -137,7 +153,7 @@ public class DatabaseConnection {
             }
             if (!found) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
-                throw new NoSuchUserException("Nonexisting user cannot be deleted");
+                throw new NoSuchEventCategoryNameException("Nonexisting user cannot be deleted");
             }
             myRef.child("users/Participant").child(userToDelete.getUserID()).removeValue();
         }

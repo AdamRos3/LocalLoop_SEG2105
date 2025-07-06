@@ -22,7 +22,7 @@ import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
 import com.example.localloop.backend.UserAccount;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
-import com.example.localloop.resources.exception.NoSuchUserException;
+import com.example.localloop.resources.exception.NoSuchEventCategoryNameException;
 
 public class EditUsers extends AppCompatActivity {
     private DatabaseConnection dbConnection;
@@ -100,7 +100,7 @@ public class EditUsers extends AppCompatActivity {
         new Thread(() -> {
             try {
                 admin.deleteUser(dbConnection, userToEdit);
-            } catch (NoSuchUserException e) {
+            } catch (NoSuchEventCategoryNameException e) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
             } catch (InterruptedException e) {
                 Log.e("InterruptedException", "Interrupted at onCreateUserAccount > onDeleteAccount");
