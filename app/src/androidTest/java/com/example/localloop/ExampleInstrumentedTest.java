@@ -11,8 +11,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.backend.EventCategory;
+import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
+import com.example.localloop.resources.exception.InvalidUsernameException;
 import com.example.localloop.resources.exception.NoSuchUserException;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -23,17 +30,27 @@ import com.example.localloop.resources.exception.NoSuchUserException;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void testParticipantsLoad() throws InterruptedException, NoSuchUserException {
+    public void testParticipantsLoad() throws InvalidEventCategoryNameException, NoSuchUserException, InterruptedException {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        //Organizer o = new Organizer("tommer", "321", null);
-        //Participant o = new Participant("umbo","456",null);
-        //DatabaseConnection db = new DatabaseConnection("admin","XPI76SZUqyCjVxgnUjm0");
-        DatabaseConnection db;
-        try {
-            db = new DatabaseConnection("admin", "XPI76SZUqyCjVxgnUjm0");
-            Log.d("Login","VALID CREDENTIALS!");
-        } catch (NoSuchUserException e) {
-            throw e;
+        CountDownLatch testLatch = new CountDownLatch(1);
+
+        new Thread(() -> {
+            try {
+                DatabaseConnection db = new DatabaseConnection("admin", "XPI76SZUqyCjVxgnUjm0");
+                EventCategory ec = new EventCategory("Music", "All music events", null);
+                Admin admin = (Admin) db.getUser();
+                admin.createEventCategory(db, ec);
+                Log.d("TEST", "Category Created");
+            } catch (Exception e) {
+                Log.e("TEST", "Failed to create event category", e);
+            } finally {
+                testLatch.countDown();  // Always release the latch!
+            }
+        }).start();
+
+        // Wait up to 10 seconds for thread to complete
+        if (!testLatch.await(10, TimeUnit.SECONDS)) {
+            throw new AssertionError("Test timed out before Firebase operation completed");
         }
     }
 }

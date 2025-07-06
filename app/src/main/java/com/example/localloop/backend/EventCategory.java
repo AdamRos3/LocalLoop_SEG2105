@@ -21,4 +21,7 @@ public class EventCategory {
     public String getCategoryID() {
         return categoryID;
     }
+    public String toString() {
+        return name+", "+categoryID;
+    }
 }

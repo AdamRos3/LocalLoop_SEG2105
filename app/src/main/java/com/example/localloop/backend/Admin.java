@@ -1,5 +1,6 @@
 package com.example.localloop.backend;
 
+import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class Admin extends UserAccount {
     }
     public void deleteUser(DatabaseConnection dbConnection, UserAccount user) throws NoSuchUserException, InterruptedException {
         dbConnection.deleteUser(user);
+    }
+    public void createEventCategory(DatabaseConnection dbConnection, EventCategory category) throws InvalidEventCategoryNameException, InterruptedException {
+        dbConnection.createEventCategory(category);
     }
     public String toString() {
         return "admin: "+username+", ID: "+userID;
