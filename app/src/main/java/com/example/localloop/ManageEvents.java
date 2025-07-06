@@ -15,7 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.core.view.WindowCompat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -34,7 +34,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.example.localloop.resources.datetime.Date;
+import com.example.localloop.resources.datetime.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -120,13 +121,18 @@ public class ManageEvents extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
 
+
         final EditText inputFee = new EditText(this);
         inputFee.setHint("Fee");
         layout.addView(inputFee);
 
-        final EditText inputDateTime = new EditText(this);
-        inputDateTime.setHint("Date and Time");
-        layout.addView(inputDateTime);
+        final EditText inputDate = new EditText(this);
+        inputDate.setHint("Date (YYYY-MM-DD)");
+        layout.addView(inputDate);
+
+        final EditText inputTime = new EditText(this);
+        inputTime.setHint("Time HH:MM");
+        layout.addView(inputTime);
 
         dialogBuilder.setView(layout);
 
@@ -134,19 +140,45 @@ public class ManageEvents extends AppCompatActivity {
             String name = inputName.getText().toString().trim();
             String description = inputDescription.getText().toString().trim();
             String category = categorySpinner.getSelectedItem().toString();
-            String fee = inputFee.getText().toString().trim();
-            String dateTime = inputDateTime.getText().toString().trim();
+            String feeStr = inputFee.getText().toString().trim();
+            String dateStr = inputDate.getText().toString().trim();
+            String timeStr = inputTime.getText().toString().trim();
 
-            if (!name.isEmpty() && !description.isEmpty() && !fee.isEmpty() && !dateTime.isEmpty()) {
-                DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
-                String eventID = eventsRef.push().getKey();
+
+            if (name.isEmpty() || description.isEmpty() || feeStr.isEmpty()
+                    || dateStr.isEmpty() || timeStr.isEmpty()) {
+                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                double fee = Double.parseDouble(feeStr);
+
+                String[] t = timeStr.split(":");
+                Time timeObj = new Time(
+                        Integer.parseInt(t[0]),
+                        Integer.parseInt(t[1]));
+
 
                 Event newEvent = new Event(name, description, dateTime, category, Double.parseDouble(fee), eventID, organizer.getUserID());
                 eventsRef.child(eventID).setValue(newEvent);
+                String[] d = dateStr.split("-");
+                Date dateObj = new Date(
+                        Integer.parseInt(d[0]),
+                        Integer.parseInt(d[1]),
+                        Integer.parseInt(d[2]));
 
-                Toast.makeText(this, "Event Added", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events");
+                String eventID = eventRef.push().getKey();
+
+                Event newEvent = new Event(
+                        name, description, dateObj,timeObj, category, fee, eventID, organizer.getUserID());
+
+                eventRef.child(eventID).setValue(newEvent);
+                Toast.makeText(this, "Event added",
+                        Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this,"Invalid fee or date/time", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -241,7 +273,8 @@ public class ManageEvents extends AppCompatActivity {
         @NonNull
         @Override
         public eventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_event, parent, false));
+            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_event,
+                    parent, false));
         }
 
         @Override
@@ -250,12 +283,109 @@ public class ManageEvents extends AppCompatActivity {
             holder.nameText.setText(event.getName());
             holder.categoryText.setText(event.getCategory());
             holder.descriptionText.setText(event.getDescription());
-            holder.dateTimeText.setText(event.getDateTime());
+            holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
             holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
 
 
             holder.editButton.setOnClickListener(v -> {
-                //Add Nasar Implementation
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Edit Event");
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                final EditText inputName = new EditText(context);
+                inputName.setText(event.getName());
+                layout.addView(inputName);
+
+                final EditText inputDescription = new EditText(context);
+                inputDescription.setText(event.getDescription());
+                layout.addView(inputDescription);
+
+                final Spinner categorySpinner = new Spinner(context);
+                ArrayAdapter<String> adapter  = new ArrayAdapter<>(context,
+                        android.R.layout.simple_spinner_item, ((ManageEvents) context).categories);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(adapter);
+                categorySpinner.setSelection(((ManageEvents) context)
+                        .categories.indexOf(event.getCategory()));
+                layout.addView(categorySpinner);
+
+                final EditText inputFee = new EditText(context);
+                inputFee.setText(String.valueOf(event.getFee()));
+
+                final EditText inputDate = new EditText(context);
+                inputDate.setHint("Date (YYYY-MM-DD)");
+                String isoDate = String.format(
+                        Locale.getDefault(),
+                        "%04d-%02d-%02d",
+                        event.getDate().getYear(),
+                        event.getDate().getMonth(),
+                        event.getDate().getDay()
+                );
+                inputDate.setText(isoDate);
+                layout.addView(inputDate);
+
+                final EditText inputTime = new EditText(context);
+                inputTime.setHint("Time (HH:MM)");
+                String isoTime = String.format(
+                        Locale.getDefault(),
+                        "%02d:%02d",
+                        event.getTime().getHour(),
+                        event.getTime().getMinute()
+                );
+                inputTime.setText(isoTime);
+                layout.addView(inputTime);
+
+                builder.setView(layout);
+
+                builder.setPositiveButton("Save", (dialog, which) -> {
+                    String newName = inputName.getText().toString().trim();
+                    String newDesc = inputDescription.getText().toString().trim();
+                    String newCat = categorySpinner.getSelectedItem().toString();
+                    String newFeeStr = inputFee.getText().toString().trim();
+                    String newDateStr = inputDate.getText().toString().trim();
+                    String newTimeStr = inputTime.getText().toString().trim();
+
+                    if (!newName.isEmpty() && !newDesc.isEmpty() && !newFeeStr.isEmpty()
+                            && !newDateStr.isEmpty() && !newTimeStr.isEmpty()) {
+                        try {
+                            double newFee = Double.parseDouble(newFeeStr);
+
+                            String[] dateParts = newDateStr.split("-");
+                            int year = Integer.parseInt(dateParts[0]);
+                            int month = Integer.parseInt(dateParts[1]);
+                            int day = Integer.parseInt(dateParts[2]);
+
+                            String[] timeParts = newTimeStr.split(":");
+                            int hour = Integer.parseInt(timeParts[0]);
+                            int minute = Integer.parseInt(timeParts[1]);
+
+                            Date newDate = new Date(year, month, day);
+                            Time newTime = new Time(hour, minute);
+
+                            Event updatedEvent = new Event(newName, newDesc, newDate, newTime,
+                                    newCat, newFee, event.getEventID(), event.getOrganizer());
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference
+                                    ("events").child(event.getEventID());
+                            ref.setValue(updatedEvent);
+
+                            Toast.makeText(context, "Event Updated", Toast.LENGTH_SHORT).show();
+                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                            Toast.makeText(context, "Invalid number format or date/time structure"
+                                    , Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, "Error: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(context, "All fields must be filled",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
             });
 
             holder.deleteButton.setOnClickListener(v -> {

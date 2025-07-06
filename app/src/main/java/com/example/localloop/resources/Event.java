@@ -6,46 +6,46 @@ import java.util.Dictionary;
 
 import java.util.ArrayList;
 
-public class Event {
-    String name;
-    String description;
-    String dateTime;
-    String category;
-    double fee;
-    String organizerID;
+import com.example.localloop.resources.datetime.Date;
+import com.example.localloop.resources.datetime.Time;
 
-    String eventID;
+public class Event {
+    private String name;
+    private String description;
+    private Date date;
+    private Time time;
+    private double fee;
+    private String categoryID;
+    private String organizerID;
+    private String eventID;
 
     public Event() {}
 
-    public Event(String name, String description, String dateTime,
-                 String category, double fee, String eventID, String organizerID) {
+    public Event(String name, String description, Date date, Time time,
+                 double fee, String categoryID, String organizerID,  String eventID) {
         this.name = name;
         this.description = description;
-        this.dateTime = dateTime;
-        this.category = category;
+        this.date = date;
+        this.time = time;
         this.fee = fee;
-        this.eventID = eventID;
+        this.categoryID = categoryID;
         this.organizerID = organizerID;
+        this.eventID = eventID;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public String getDateTime() {
-        return dateTime;
-    }
+    public Date getDate() { return date; }
 
-    public String getCategory() { return category; }
+    public Time getTime() { return time; }
 
     public double getFee() { return fee; }
 
-    public String getEventID() { return eventID; }
+    public String getCategory() { return categoryID; }
 
-    public String getOrganizerID() { return organizerID; }
+    public String getOrganizer() { return organizerID; }
+
+    public String getEventID() { return eventID; }
 }
