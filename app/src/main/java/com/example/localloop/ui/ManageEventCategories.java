@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,43 +21,35 @@ import com.example.localloop.R;
 import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.EventCategory;
-import com.example.localloop.backend.Organizer;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManageEventCategories extends AppCompatActivity {
-    private static ArrayList<EventCategory> allCategories = new ArrayList<>();
-    private static DatabaseConnection dbConnection;
-    private static Admin admin;
+    private final ArrayList<EventCategory> allCategories = new ArrayList<>();
+    private DatabaseConnection dbConnection;
+    private Admin admin;
+    private categoryAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_management);
-        RecyclerView recyclerview = findViewById(R.id.category_recycler_view);
 
         dbConnection = DatabaseInstance.get();
-        admin = (Admin)dbConnection.getUser();
+        admin = (Admin) dbConnection.getUser();
 
-        new Thread(() -> {
-            try {
-                allCategories = admin.getAllEventCategories(dbConnection);
-            } catch (InterruptedException e) {
-                Log.e("InterruptedException","Call from ManageUsers onCreate");
-                finish();
-            }
-        }).start();
-
-        categoryAdapter adapter = new categoryAdapter(this, allCategories);
+        RecyclerView recyclerview = findViewById(R.id.category_recycler_view);
+        adapter = new categoryAdapter(this, allCategories);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(adapter);
 
+        fetchAndRefreshCategories();
 
         Button addButton = findViewById(R.id.add_category_button);
         EditText nameInput = findViewById(R.id.category_name_input);
@@ -69,35 +60,54 @@ public class ManageEventCategories extends AppCompatActivity {
             String description = descriptionInput.getText().toString().trim();
 
             if (name.isEmpty() || description.isEmpty()) {
-            Toast.makeText(this, "Both fields are required.", Toast.LENGTH_SHORT).show();
-            return;
+                Toast.makeText(this, "Both fields are required.", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             EventCategory newCategory = new EventCategory(name, description, null);
-            try {
-                admin.createEventCategory(dbConnection, newCategory);
-            } catch (InvalidEventCategoryNameException e) {
-                Toast.makeText(this,"Category name is taken", Toast.LENGTH_SHORT).show();
-                nameInput.setText("");
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
-            Toast.makeText(this,"Category Added!", Toast.LENGTH_SHORT).show();
-            nameInput.setText("");
-            descriptionInput.setText("");
-
-
-
-
+            new Thread(() -> {
+                try {
+                    admin.createEventCategory(dbConnection, newCategory);
+                    runOnUiThread(() -> {
+                        nameInput.setText("");
+                        descriptionInput.setText("");
+                        Toast.makeText(this, "Category Added!", Toast.LENGTH_SHORT).show();
+                        fetchAndRefreshCategories();
+                    });
+                } catch (InvalidEventCategoryNameException e) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "Category name is taken", Toast.LENGTH_SHORT).show();
+                        nameInput.setText("");
+                    });
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
         });
 
         Button backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v1 -> finish());
+        backButton.setOnClickListener(v -> finish());
     }
+
+    private void fetchAndRefreshCategories() {
+        new Thread(() -> {
+            try {
+                List<EventCategory> latest = admin.getAllEventCategories(dbConnection);
+                runOnUiThread(() -> {
+                    allCategories.clear();
+                    allCategories.addAll(latest);
+                    adapter.notifyDataSetChanged();
+                });
+            } catch (InterruptedException e) {
+                Log.e("ManageEventCategories", "Failed to fetch categories", e);
+            }
+        }).start();
+    }
+
     public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.CategoryViewHolder> {
-        private List<EventCategory> allCategories;
-        private Context context;
+        private final List<EventCategory> allCategories;
+        private final Context context;
 
         public categoryAdapter(Context context, List<EventCategory> allCategories) {
             this.context = context;
@@ -118,7 +128,6 @@ public class ManageEventCategories extends AppCompatActivity {
             holder.descTextView.setText(category.getDescription());
 
             holder.editButton.setOnClickListener(v -> {
-                //Toast.makeText(context, "Edit: " + category.name, Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Edit Category");
 
@@ -140,35 +149,44 @@ public class ManageEventCategories extends AppCompatActivity {
                     String newDescription = inputDescription.getText().toString().trim();
 
                     if (!newName.isEmpty() && !newDescription.isEmpty()) {
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
-                        ref.setValue(new EventCategory(newName, newDescription, category.getCategoryID()));
+                        new Thread(() -> {
+                            try {
+                                admin.editEventCategory(dbConnection, category, newName, newDescription);
+                                fetchAndRefreshCategories();
+                            } catch (InvalidEventNameException e) {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(context, "Event category name taken", Toast.LENGTH_SHORT).show();
+                                });
+                            } catch (NoSuchEventCategoryException e) {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(context, "Event category does not exist", Toast.LENGTH_SHORT).show();
+                                });
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).start();
                         Toast.makeText(context, "Category Updated", Toast.LENGTH_SHORT).show();
-
                     } else {
                         Toast.makeText(context, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
-
                     }
                 });
 
-                builder.setNegativeButton("Cancel",null);
+                builder.setNegativeButton("Cancel", null);
                 builder.show();
-
             });
 
             holder.deleteButton.setOnClickListener(v -> {
-                //Toast.makeText(context, "Delete: " + category.name, Toast.LENGTH_SHORT).show();
                 new AlertDialog.Builder(context)
                         .setTitle("Delete Category")
-                        .setMessage("Are you sure you want to delete \"" + category.getName() +"\"?")
+                        .setMessage("Are you sure you want to delete \"" + category.getName() + "\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
                             ref.removeValue();
-                            Toast.makeText(context,"Category Deleted", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(context, "Category Deleted", Toast.LENGTH_SHORT).show();
+                            fetchAndRefreshCategories();
                         })
-                        .setNegativeButton("Cancel",null)
+                        .setNegativeButton("Cancel", null)
                         .show();
-
             });
         }
 
@@ -191,3 +209,4 @@ public class ManageEventCategories extends AppCompatActivity {
         }
     }
 }
+

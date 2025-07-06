@@ -146,7 +146,7 @@ public class DatabaseConnection {
             if (categoryToEdit.getCategoryID().equals(existing.getCategoryID())) {
                 found = true;
             }
-            if (name.equals(existing.getName())) {
+            if (name.equals(existing.getName()) && !((categoryToEdit.getCategoryID()).equals(existing.getCategoryID()))) {
                 duplicate = true;
             }
         }
