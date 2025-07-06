@@ -1,5 +1,7 @@
 package com.example.localloop.backend;
 
+import com.example.localloop.resources.exception.InvalidEventNameException;
+
 public class Organizer extends UserAccount {
 
     private String username;
@@ -26,6 +28,9 @@ public class Organizer extends UserAccount {
     }
     protected void setUserID(String str) {
         this.userID = str;
+    }
+    public void createEvent(DatabaseConnection dbConnection, Event event) throws InvalidEventNameException, InterruptedException {
+        dbConnection.createEvent(event);
     }
     public void editEvents() {
         System.out.println("events edited!!!");

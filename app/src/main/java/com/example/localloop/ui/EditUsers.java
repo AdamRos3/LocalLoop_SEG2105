@@ -21,8 +21,8 @@ import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
 import com.example.localloop.backend.UserAccount;
-import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
-import com.example.localloop.resources.exception.NoSuchEventCategoryNameException;
+import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.NoSuchUserException;
 
 public class EditUsers extends AppCompatActivity {
     private DatabaseConnection dbConnection;
@@ -87,7 +87,7 @@ public class EditUsers extends AppCompatActivity {
                 } else {
                     dbConnection.createNewUser(new Participant(username, password, null));
                 }
-            } catch (InvalidEventCategoryNameException e) {
+            } catch (InvalidEventNameException e) {
                 Log.e("InvalidUsername", "Username Taken");
             } catch (InterruptedException e) {
                 Log.e("InterruptedException", "Interrupted at onCreateUserAccount > CreateAccount");
@@ -100,7 +100,7 @@ public class EditUsers extends AppCompatActivity {
         new Thread(() -> {
             try {
                 admin.deleteUser(dbConnection, userToEdit);
-            } catch (NoSuchEventCategoryNameException e) {
+            } catch (NoSuchUserException e) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
             } catch (InterruptedException e) {
                 Log.e("InterruptedException", "Interrupted at onCreateUserAccount > onDeleteAccount");

@@ -13,9 +13,13 @@ import org.junit.runner.RunWith;
 
 import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.backend.Event;
 import com.example.localloop.backend.EventCategory;
-import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
-import com.example.localloop.resources.exception.NoSuchEventCategoryNameException;
+import com.example.localloop.backend.Organizer;
+import com.example.localloop.resources.datetime.Date;
+import com.example.localloop.resources.datetime.Time;
+import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.NoSuchEventException;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -29,19 +33,22 @@ import java.util.concurrent.TimeUnit;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void testParticipantsLoad() throws InvalidEventCategoryNameException, NoSuchEventCategoryNameException, InterruptedException {
+    public void testParticipantsLoad() throws InvalidEventNameException, NoSuchEventException, InterruptedException {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         CountDownLatch testLatch = new CountDownLatch(1);
 
         new Thread(() -> {
             try {
-                DatabaseConnection db = new DatabaseConnection("admin", "XPI76SZUqyCjVxgnUjm0");
-                EventCategory ec = new EventCategory("Soccer", "All Soccer Events", "-OUVRaVGtaZvV2zYfxOL");
-                Admin admin = (Admin) db.getUser();
-                admin.editEventCategory(db, ec,"Edited Events1","test passed");
-                Log.d("TEST", "Category Deleted");
+                DatabaseConnection db = new DatabaseConnection("uOttawa", "password1");
+                Time time = new Time(12,30);
+                Date date = new Date(2026,5,12);
+                EventCategory category = new EventCategory("Music","All Music Events","-OUVRRtcizfCAM0lPhoZ");
+                Event e = new Event("Beyonce Concert","at uOttawa campus",category,0,date, time, null);
+                Organizer organizer = (Organizer) db.getUser();
+                organizer.createEvent(db, e);
+                Log.d("TEST", "Event created");
             } catch (Exception e) {
-                Log.e("TEST", "Failed to delete event category", e);
+                Log.e("TEST", "Failed to create event", e);
             } finally {
                 testLatch.countDown();  // Always release the latch!
             }

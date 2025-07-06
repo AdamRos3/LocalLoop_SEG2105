@@ -19,6 +19,15 @@ public class Date {
         }
         this.day = day;
     }
+    public int getYear() {
+        return year;
+    }
+    public int getMonth() {
+        return month;
+    }
+    public int getDay() {
+        return day;
+    }
     public String toString() {
         return months[month]+" "+day+", "+year;
     }

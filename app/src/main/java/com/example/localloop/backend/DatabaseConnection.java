@@ -3,7 +3,10 @@ package com.example.localloop.backend;
 import android.util.Log;
 
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
-import com.example.localloop.resources.exception.NoSuchEventCategoryNameException;
+import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.NoSuchEventCategoryException;
+import com.example.localloop.resources.exception.NoSuchEventException;
+import com.example.localloop.resources.exception.NoSuchUserException;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -19,21 +22,25 @@ public class DatabaseConnection {
     private static ArrayList<Organizer> allOrganizers = new ArrayList<>();
     private static ArrayList<Admin> allAdmins = new ArrayList<>();
     private static ArrayList<EventCategory> allEventCategories = new ArrayList<>();
+    private static ArrayList<Event> allEvents = new ArrayList<>();
 
     private static boolean participantsLoaded = false;
     private static boolean organizersLoaded = false;
     private static boolean adminsLoaded = false;
     private static boolean eventCategoriesLoaded = false;
+    private static boolean eventsLoaded = false;
 
     // Public methods
-    public DatabaseConnection(String username, String password) throws NoSuchEventCategoryNameException, InterruptedException {
+    public DatabaseConnection(String username, String password) throws NoSuchEventException, InterruptedException {
         updateAllUsers();
         updateAllEventCategories();
+        updateAllEvents();
 
         Log.d("Participants", String.valueOf(allParticipants));
         Log.d("Organizers", String.valueOf(allOrganizers));
         Log.d("Admins", String.valueOf(allAdmins));
         Log.d("EventCategories", String.valueOf(allEventCategories));
+        Log.d("Events", String.valueOf(allEvents));
 
         boolean found = false;
 
@@ -64,7 +71,7 @@ public class DatabaseConnection {
         }
 
         if (!found) {
-            throw new NoSuchEventCategoryNameException("User does not exist");
+            throw new NoSuchEventException("User does not exist");
         }
     }
 
@@ -72,24 +79,24 @@ public class DatabaseConnection {
         return user;
     }
 
-    public static void createNewUser(Participant p) throws InvalidEventCategoryNameException, InterruptedException {
+    public static void createNewUser(Participant p) throws InvalidEventNameException, InterruptedException {
         updateAllUsers();
         for (Participant existing : allParticipants) {
             if (p.getUsername().equals(existing.getUsername())) {
                 Log.d(p.getUsername(), "New Participant Username Conflict");
-                throw new InvalidEventCategoryNameException("Username taken");
+                throw new InvalidEventNameException("Username taken");
             }
         }
         String key = myRef.push().getKey();
         myRef.child("users/Participant").child(key).setValue(new Participant(p.getUsername(), p.getPassword(), key));
     }
 
-    public static void createNewUser(Organizer o) throws InvalidEventCategoryNameException, InterruptedException {
+    public static void createNewUser(Organizer o) throws InvalidEventNameException, InterruptedException {
         updateAllUsers();
         for (Organizer existing : allOrganizers) {
             if (o.getUsername().equals(existing.getUsername())) {
                 Log.e(o.getUsername(), "New Organizer Username Conflict");
-                throw new InvalidEventCategoryNameException("Username taken");
+                throw new InvalidEventNameException("Username taken");
             }
         }
         String key = myRef.push().getKey();
@@ -104,14 +111,14 @@ public class DatabaseConnection {
         // Check that Event Category does not exist
         for (EventCategory existing : allEventCategories) {
             if (category.getName().equals(existing.getName())) {
-                Log.e(category.getName(), "New Organizer Username Conflict");
-                throw new InvalidEventCategoryNameException("Username taken");
+                Log.e(category.getName(), "New EventCategory Name Conflict");
+                throw new InvalidEventCategoryNameException("EventCategory Name taken");
             }
         }
         String key = myRef.push().getKey();
         myRef.child("categories").child(key).setValue(new EventCategory(category.getName(),category.getDescription(),key));
     }
-    protected static void deleteEventCategory(EventCategory categoryToDelete) throws NoSuchEventCategoryNameException, InterruptedException {
+    protected static void deleteEventCategory(EventCategory categoryToDelete) throws NoSuchEventCategoryException, InterruptedException {
         // Called by Admin Class Only
         updateAllEventCategories();
         boolean found = false;
@@ -123,11 +130,11 @@ public class DatabaseConnection {
         }
         if(!found) {
             Log.e(categoryToDelete.getName(), "EventCategory Not Found");
-            throw new NoSuchEventCategoryNameException("EventCategory does not exist");
+            throw new NoSuchEventCategoryException("EventCategory does not exist");
         }
         myRef.child("categories").child(categoryToDelete.getCategoryID()).removeValue();
     }
-    protected static void editEventCategory(EventCategory categoryToEdit, String name, String description) throws NoSuchEventCategoryNameException, InvalidEventCategoryNameException, InterruptedException {
+    protected static void editEventCategory(EventCategory categoryToEdit, String name, String description) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
         // Called by Admin Class Only
         updateAllEventCategories();
         boolean found = false;
@@ -143,16 +150,30 @@ public class DatabaseConnection {
         }
         if(!found) {
             Log.e(categoryToEdit.getName(), "EventCategory Not Found");
-            throw new NoSuchEventCategoryNameException("EventCategory does not exist");
+            throw new NoSuchEventCategoryException("EventCategory does not exist");
         }
         if(duplicate) {
             Log.e(categoryToEdit.getName(), "EventCategory name conflict");
-            throw new InvalidEventCategoryNameException("EventCategory Name taken");
+            throw new InvalidEventNameException("EventCategory Name taken");
         }
         myRef.child("categories").child(categoryToEdit.getCategoryID()).child("name").setValue(name);
         myRef.child("categories").child(categoryToEdit.getCategoryID()).child("description").setValue(description);
     }
-    protected static void deleteUser(UserAccount userToDelete) throws NoSuchEventCategoryNameException, InterruptedException {
+    protected static void createEvent(Event event) throws InvalidEventNameException, InterruptedException {
+        // Called by Organizer Class Only
+        updateAllEvents();
+        boolean found = false;
+        // Check that Event Category does not exist
+        for (Event existing : allEvents) {
+            if (event.getName().equals(existing.getName())) {
+                Log.e(event.getName(), "New Event Name Conflict");
+                throw new InvalidEventNameException("Event name taken");
+            }
+        }
+        String key = myRef.push().getKey();
+        myRef.child("events").child(key).setValue(new Event(event.getName(),event.getDescription(),event.getCategory(),event.getFee(),event.getDate(),event.getTime(),key));
+    }
+    protected static void deleteUser(UserAccount userToDelete) throws NoSuchUserException, InterruptedException {
         // Called by Admin Class Only
         updateAllUsers();
         boolean found = false;
@@ -166,7 +187,7 @@ public class DatabaseConnection {
             }
             if (!found) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
-                throw new NoSuchEventCategoryNameException("Nonexisting user cannot be deleted");
+                throw new NoSuchUserException("Nonexisting user cannot be deleted");
             }
             myRef.child("users/Organizer").child(userToDelete.getUserID()).removeValue();
         } else {
@@ -178,7 +199,7 @@ public class DatabaseConnection {
             }
             if (!found) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
-                throw new NoSuchEventCategoryNameException("Nonexisting user cannot be deleted");
+                throw new NoSuchUserException("Nonexisting user cannot be deleted");
             }
             myRef.child("users/Participant").child(userToDelete.getUserID()).removeValue();
         }
@@ -203,6 +224,9 @@ public class DatabaseConnection {
     }
     private interface DatabaseEventCategoryCallback {
         void onEventCategoriesLoaded(ArrayList<EventCategory> categories);
+    }
+    private interface DatabaseEventCallback {
+        void onEventsLoaded(ArrayList<Event> events);
     }
     private static void getAllUsers(DatabaseUserCallback callback) {
         myRef.child("users/Participant").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -277,6 +301,24 @@ public class DatabaseConnection {
             }
         });
     }
+    private static void getAllEvents(DatabaseEventCallback callback) {
+        myRef.child("events").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<Event> temp = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Event e = child.getValue(Event.class);
+                    if (e != null) temp.add(e);
+                }
+                callback.onEventsLoaded(temp);
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("DatabaseConnection", "Error loading events", error.toException());
+                callback.onEventsLoaded(new ArrayList<>());
+            }
+        });
+    }
     private static void updateAllUsers() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
         Log.d("updateAllUsers", "Starting...");
@@ -317,10 +359,28 @@ public class DatabaseConnection {
 
         getAllEventCategories(new DatabaseEventCategoryCallback() {
             @Override
-            public void onEventCategoriesLoaded(ArrayList<EventCategory> category) {
+            public void onEventCategoriesLoaded(ArrayList<EventCategory> categories) {
                 Log.d("updateAllEventCategories", "EventCategories loaded");
-                allEventCategories = category;
+                allEventCategories = categories;
                 eventCategoriesLoaded = true;
+                latch.countDown();
+            }
+        });
+
+        if (!latch.await(5, TimeUnit.SECONDS)) {
+            throw new InterruptedException("Timeout while waiting for Firebase data.");
+        }
+    }
+    public static void updateAllEvents() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        Log.d("updateAllEvents", "Starting...");
+
+        getAllEvents(new DatabaseEventCallback() {
+            @Override
+            public void onEventsLoaded(ArrayList<Event> events) {
+                Log.d("updateAllEvents", "Events loaded");
+                allEvents = events;
+                eventsLoaded = true;
                 latch.countDown();
             }
         });

@@ -15,7 +15,7 @@ import com.example.localloop.R;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.Participant;
-import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
+import com.example.localloop.resources.exception.InvalidEventNameException;
 
 public class CreateAccount extends AppCompatActivity {
 
@@ -54,7 +54,7 @@ public class CreateAccount extends AppCompatActivity {
                     dbConnection.createNewUser(new Organizer(username, password, null));
                 }
                 finish();
-            } catch (InvalidEventCategoryNameException e) {
+            } catch (InvalidEventNameException e) {
                 Log.e("InvalidUsername","Username Taken");
             } catch (InterruptedException e) {
                 Log.e("InterruptedException","Interrupted at onCreateUserAccount > CreateAccount");
