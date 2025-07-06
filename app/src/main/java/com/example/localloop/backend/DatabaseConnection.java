@@ -2,6 +2,8 @@ package com.example.localloop.backend;
 
 import android.util.Log;
 
+import com.example.localloop.resources.datetime.Time;
+import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
@@ -31,7 +33,7 @@ public class DatabaseConnection {
     private static boolean eventsLoaded = false;
 
     // Public methods
-    public DatabaseConnection(String username, String password) throws NoSuchEventException, InterruptedException {
+    public DatabaseConnection(String username, String password) throws NoSuchUserException, InterruptedException {
         updateAllUsers();
         updateAllEventCategories();
         updateAllEvents();
@@ -71,7 +73,7 @@ public class DatabaseConnection {
         }
 
         if (!found) {
-            throw new NoSuchEventException("User does not exist");
+            throw new NoSuchUserException("User does not exist");
         }
     }
 
@@ -107,7 +109,7 @@ public class DatabaseConnection {
     protected static void createEventCategory(EventCategory category) throws InvalidEventCategoryNameException, InterruptedException {
         // Called by Admin Class Only
         updateAllEventCategories();
-        boolean found = false;
+
         // Check that Event Category does not exist
         for (EventCategory existing : allEventCategories) {
             if (category.getName().equals(existing.getName())) {
@@ -159,10 +161,21 @@ public class DatabaseConnection {
         myRef.child("categories").child(categoryToEdit.getCategoryID()).child("name").setValue(name);
         myRef.child("categories").child(categoryToEdit.getCategoryID()).child("description").setValue(description);
     }
-    protected static void createEvent(Event event) throws InvalidEventNameException, InterruptedException {
+    protected static void createEvent(Event event) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
         // Called by Organizer Class Only
         updateAllEvents();
-        boolean found = false;
+
+        // Check that EventCategory exists
+        boolean categoryFound = false;
+        for (EventCategory existing : allEventCategories) {
+            if ((event.getCategoryID().equals(existing.getCategoryID()))) {
+                categoryFound = true;
+            }
+        }
+        if (!categoryFound) {
+            throw new NoSuchEventCategoryException("Event category does not exist");
+        }
+
         // Check that Event Category does not exist
         for (Event existing : allEvents) {
             if (event.getName().equals(existing.getName())) {
@@ -171,7 +184,26 @@ public class DatabaseConnection {
             }
         }
         String key = myRef.push().getKey();
-        myRef.child("events").child(key).setValue(new Event(event.getName(),event.getDescription(),event.getCategory(),event.getFee(),event.getDate(),event.getTime(),key));
+        myRef.child("events").child(key).setValue(new Event(event.getName(),event.getDescription(),event.getCategoryID(),event.getFee(),event.getDate(),event.getTime(),user.getUserID(),key));
+    }
+    protected static void editEvent(Event event, String name, String description, EventCategory category, double fee, Date date, Time time) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
+        
+    }
+    protected static void deleteEvent(Event eventToDelete) throws NoSuchEventException, InterruptedException {
+        // Called by Organizer Class Only
+        updateAllEvents();
+        boolean found = false;
+        // Check that Event Category exists
+        for (Event existing : allEvents) {
+            if ((eventToDelete.getEventID()).equals(existing.getEventID())) {
+                found = true;
+            }
+        }
+        if(!found) {
+            Log.e(eventToDelete.getName(), "Event Not Found");
+            throw new NoSuchEventException("Event does not exist");
+        }
+        myRef.child("events").child(eventToDelete.getEventID()).removeValue();
     }
     protected static void deleteUser(UserAccount userToDelete) throws NoSuchUserException, InterruptedException {
         // Called by Admin Class Only

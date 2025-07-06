@@ -5,6 +5,9 @@ public class Date {
     private int month;
     private int day;
     private String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+    public Date() {
+        // Empty constructor is required by Firebase
+    }
     public Date(int year, int month, int day) {
         this.year = year;
         this.month = month;

@@ -5,6 +5,9 @@ public class Time {
     private int hour;
     private int minute;
     private String timezone;
+    public Time() {
+        // Empty constructor is required by Firebase
+    }
     public Time(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;

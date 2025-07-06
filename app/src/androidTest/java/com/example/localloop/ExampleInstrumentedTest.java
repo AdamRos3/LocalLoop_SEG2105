@@ -43,9 +43,9 @@ public class ExampleInstrumentedTest {
                 Time time = new Time(12,30);
                 Date date = new Date(2026,5,12);
                 EventCategory category = new EventCategory("Music","All Music Events","-OUVRRtcizfCAM0lPhoZ");
-                Event e = new Event("Beyonce Concert","at uOttawa campus",category,0,date, time, null);
                 Organizer organizer = (Organizer) db.getUser();
-                organizer.createEvent(db, e);
+                Event e = new Event("Drake Concert","at uOttawa campus",category.getCategoryID(),0,date, time, organizer.getUserID(),"-OUW85szNUDR83XYHRZv");
+                organizer.deleteEvent(db, e);
                 Log.d("TEST", "Event created");
             } catch (Exception e) {
                 Log.e("TEST", "Failed to create event", e);

@@ -16,6 +16,7 @@ import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
 import com.example.localloop.backend.UserAccount;
 import com.example.localloop.resources.exception.NoSuchEventException;
+import com.example.localloop.resources.exception.NoSuchUserException;
 
 public class Login extends AppCompatActivity {
 
@@ -48,7 +49,7 @@ public class Login extends AppCompatActivity {
                 dbConnection = new DatabaseConnection(username, password);
                 user = dbConnection.getUser();
                 runOnUiThread(() -> HandleValidCredentials(view));
-            } catch (NoSuchEventException e) {
+            } catch (NoSuchUserException e) {
                 runOnUiThread(() -> HandleInvalidCredentials(view));
             } catch (InterruptedException e) {
                 Log.e("InterruptedException", "At database login", e);
