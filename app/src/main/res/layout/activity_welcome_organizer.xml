@@ -1,47 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/returnToLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="#5CAF954C"
     android:gravity="center"
-    android:padding="24dp"
-    android:background="#5CAF954C">
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
+
+        <TextView
+            android:id="@+id/TextView3"
+            android:layout_width="213dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:text="Welcome Organizer"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="46dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/TextView3"
+        android:id="@+id/manageEventCategories2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="[Organizer Page]"
-        android:textAlignment="center"
+        android:text="                       Your Events:"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <Space
+    <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="match_parent"
-        android:layout_height="90dp" />
+        android:layout_height="206dp"
+        app:srcCompat="@drawable/localloop_sparkler_transparent" />
 
     <TextView
-        android:id="@+id/welcome_message"
+        android:id="@+id/ManageEventCategories2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome!"
+        android:text="Add/Edit Event Categories"
+        android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#000000" />
+        android:textStyle="bold" />
 
-    <Space
+    <LinearLayout
+        android:layout_width="366dp"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="242dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_name_transparent" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="253dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_description_transparent" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_category_transparent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="358dp"
+        android:layout_height="121dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="241dp"
+                android:layout_height="61dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/aqua_blue_fee_transparent" />
+
+            <ImageView
+                android:id="@+id/imageView27"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/aqua_blue_date_transparent" />
+
+            <ImageView
+                android:id="@+id/imageView26"
+                android:layout_width="89dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/aqua_blue_time_transparent" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="242dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_name_transparent" />
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="253dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_description_transparent" />
+
+        <ImageView
+            android:id="@+id/imageView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_category_transparent" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/welcome_message2"
         android:layout_width="match_parent"
-        android:layout_height="108dp" />
+        android:layout_height="wrap_content"
+        android:text="                  Delete Events"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="146dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_view_events_transparent" />
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button1"
         android:layout_width="220dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:onClick="ReturnToLogin"
-        android:text="Back" />
+        android:text="Back"
+        app:icon="@drawable/aqua_blue_delete_transparent" />
 
 </LinearLayout>

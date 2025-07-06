@@ -1,0 +1,280 @@
+package com.example.localloop;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.localloop.resources.Category;
+import com.example.localloop.resources.Event;
+import com.example.localloop.resources.Organizer;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public class ManageEvents extends AppCompatActivity {
+
+    public static Organizer organizer;
+    List<String> categories;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_manage_events);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        retrieveOrganizer();
+
+        RecyclerView eventsListView = findViewById(R.id.listViewEvents);
+        List<Event> events = new ArrayList<>();
+        categories = retrieveCategoriesFromDatabase();
+
+        eventAdapter adapter = new eventAdapter(this, events);
+        eventsListView.setLayoutManager(new LinearLayoutManager(this));
+        eventsListView.setAdapter(adapter);
+
+        //Get Events from Database
+        DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
+
+        eventsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                events.clear();
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    Event event = eventSnapshot.getValue(Event.class);
+                    if (event != null) {
+                        if (event.getOrganizerID().equals(organizer.getUserID())) {
+                            events.add(event);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("ManageEventListener", error.toException());
+                Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void onBackClick(View view) {
+        finish();
+    }
+
+    public void onAddClick(View view) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Add Event");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText inputName = new EditText(this);
+        inputName.setHint("Name");
+        layout.addView(inputName);
+
+        final EditText inputDescription = new EditText(this);
+        inputDescription.setHint("Description");
+        layout.addView(inputDescription);
+
+        final Spinner categorySpinner = new Spinner(this);
+        categorySpinner.setPrompt("Category");
+        layout.addView(categorySpinner);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, categories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(adapter);
+
+        final EditText inputFee = new EditText(this);
+        inputFee.setHint("Fee");
+        layout.addView(inputFee);
+
+        final EditText inputDateTime = new EditText(this);
+        inputDateTime.setHint("Date and Time");
+        layout.addView(inputDateTime);
+
+        dialogBuilder.setView(layout);
+
+        dialogBuilder.setPositiveButton("Add", (dialog, which) -> {
+            String name = inputName.getText().toString().trim();
+            String description = inputDescription.getText().toString().trim();
+            String category = categorySpinner.getSelectedItem().toString();
+            String fee = inputFee.getText().toString().trim();
+            String dateTime = inputDateTime.getText().toString().trim();
+
+            if (!name.isEmpty() && !description.isEmpty() && !fee.isEmpty() && !dateTime.isEmpty()) {
+                DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
+                String eventID = eventsRef.push().getKey();
+
+                Event newEvent = new Event(name, description, dateTime, category, Double.parseDouble(fee), eventID, organizer.getUserID());
+                eventsRef.child(eventID).setValue(newEvent);
+
+                Toast.makeText(this, "Event Added", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialogBuilder.setNegativeButton("Cancel", null);
+        dialogBuilder.show();
+    }
+
+    private void retrieveOrganizer() {
+        String organizerID = null;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            organizerID = extras.getString("organizerID");
+        }
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference organizerRef = ref.child("Organizer").child(organizerID);
+
+        organizerRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                } else {
+                    Organizer temp = task.getResult().getValue(Organizer.class);
+
+                    if (temp != null) {
+                        organizer = temp;
+                        Log.d("firebase", "Data retrieved, Name: " + organizer.getUsername());
+                    } else {
+                        Log.e("firebase", "Organizer not found");
+                    }
+
+                }
+            }
+        });
+    }
+
+    private List<String> retrieveCategoriesFromDatabase() {
+        //Get Categories from Database
+        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference("categories");
+
+        List<String> categories = new ArrayList<>();
+
+        categoriesRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                } else {
+                    for (DataSnapshot categorySnapshot : task.getResult().getChildren()) {
+                        Category category = categorySnapshot.getValue(Category.class);
+                        if (category != null) {
+                            categories.add(category.getName());
+                        }
+                    }
+                }
+            }
+        });
+
+        return categories;
+    }
+
+    public static class eventViewHolder extends RecyclerView.ViewHolder {
+
+        TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
+        ImageButton editButton, deleteButton;
+
+        public eventViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            nameText = itemView.findViewById(R.id.name);
+            categoryText = itemView.findViewById(R.id.category);
+            descriptionText = itemView.findViewById(R.id.description);
+            dateTimeText = itemView.findViewById(R.id.dateTime);
+            feeText = itemView.findViewById(R.id.fee);
+
+            editButton = itemView.findViewById(R.id.buttonEdit);
+            deleteButton = itemView.findViewById(R.id.buttonDelete);
+        }
+    }
+
+    public static class eventAdapter extends RecyclerView.Adapter<eventViewHolder> {
+
+        Context context;
+        List<Event> events;
+
+        public eventAdapter(Context context, List<Event> events) {
+            this.context = context;
+            this.events = events;
+        }
+
+        @NonNull
+        @Override
+        public eventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_event, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull eventViewHolder holder, int position) {
+            Event event = events.get(position);
+            holder.nameText.setText(event.getName());
+            holder.categoryText.setText(event.getCategory());
+            holder.descriptionText.setText(event.getDescription());
+            holder.dateTimeText.setText(event.getDateTime());
+            holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
+
+
+            holder.editButton.setOnClickListener(v -> {
+                //Add Nasar Implementation
+            });
+
+            holder.deleteButton.setOnClickListener(v -> {
+                new AlertDialog.Builder(context)
+                        .setTitle("Delete Event")
+                        .setMessage("Are you sure you want to delete \"" + event.getName() + "\"?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events").child(event.getEventID());
+                            ref.removeValue();
+                            Toast.makeText(context,"Event Deleted", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return events.size();
+        }
+    }
+}
