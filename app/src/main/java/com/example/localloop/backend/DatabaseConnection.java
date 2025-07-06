@@ -127,6 +127,31 @@ public class DatabaseConnection {
         }
         myRef.child("categories").child(categoryToDelete.getCategoryID()).removeValue();
     }
+    protected static void editEventCategory(EventCategory categoryToEdit, String name, String description) throws NoSuchEventCategoryNameException, InvalidEventCategoryNameException, InterruptedException {
+        // Called by Admin Class Only
+        updateAllEventCategories();
+        boolean found = false;
+        boolean duplicate = false;
+        // Check that Event Category exists
+        for (EventCategory existing : allEventCategories) {
+            if (categoryToEdit.getCategoryID().equals(existing.getCategoryID())) {
+                found = true;
+            }
+            if (name.equals(existing.getName())) {
+                duplicate = true;
+            }
+        }
+        if(!found) {
+            Log.e(categoryToEdit.getName(), "EventCategory Not Found");
+            throw new NoSuchEventCategoryNameException("EventCategory does not exist");
+        }
+        if(duplicate) {
+            Log.e(categoryToEdit.getName(), "EventCategory name conflict");
+            throw new InvalidEventCategoryNameException("EventCategory Name taken");
+        }
+        myRef.child("categories").child(categoryToEdit.getCategoryID()).child("name").setValue(name);
+        myRef.child("categories").child(categoryToEdit.getCategoryID()).child("description").setValue(description);
+    }
     protected static void deleteUser(UserAccount userToDelete) throws NoSuchEventCategoryNameException, InterruptedException {
         // Called by Admin Class Only
         updateAllUsers();

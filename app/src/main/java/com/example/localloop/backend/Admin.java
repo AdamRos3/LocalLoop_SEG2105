@@ -44,6 +44,9 @@ public class Admin extends UserAccount {
     public void deleteEventCategory(DatabaseConnection dbConnection, EventCategory category) throws NoSuchEventCategoryNameException, InterruptedException {
         dbConnection.deleteEventCategory(category);
     }
+    public void editEventCategory(DatabaseConnection dbConnection, EventCategory category, String name, String description) throws InvalidEventCategoryNameException, NoSuchEventCategoryNameException, InterruptedException {
+        dbConnection.editEventCategory(category,name,description);
+    }
     public String toString() {
         return "admin: "+username+", ID: "+userID;
     }

@@ -36,9 +36,9 @@ public class ExampleInstrumentedTest {
         new Thread(() -> {
             try {
                 DatabaseConnection db = new DatabaseConnection("admin", "XPI76SZUqyCjVxgnUjm0");
-                EventCategory ec = new EventCategory("Soccer", "All Soccer Events", null);
+                EventCategory ec = new EventCategory("Soccer", "All Soccer Events", "-OUVRaVGtaZvV2zYfxOL");
                 Admin admin = (Admin) db.getUser();
-                admin.createEventCategory(db, ec);
+                admin.editEventCategory(db, ec,"Edited Events1","test passed");
                 Log.d("TEST", "Category Deleted");
             } catch (Exception e) {
                 Log.e("TEST", "Failed to delete event category", e);
