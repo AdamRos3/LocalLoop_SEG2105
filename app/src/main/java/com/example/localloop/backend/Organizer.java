@@ -7,6 +7,8 @@ import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
+import java.util.ArrayList;
+
 public class Organizer extends UserAccount {
 
     private String username;
@@ -43,8 +45,11 @@ public class Organizer extends UserAccount {
     public void deleteEvent(DatabaseConnection dbConnection, Event event) throws NoSuchEventException, InterruptedException {
         dbConnection.deleteEvent(event);
     }
-    public void editEvents() {
-        System.out.println("events edited!!!");
+    public ArrayList<Event> getUserEvents(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getUserEvents();
+    }
+    public ArrayList<EventCategory> getUserEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getUserEventCategories();
     }
     public String toString() {
         return "organizer: "+username+", ID: "+userID;

@@ -119,4 +119,8 @@ public class ManageUsers extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
+    public void onBackClicked(View view) {
+        Intent intent = new Intent(this, WelcomeAdmin.class);
+        startActivity(intent);
+    }
 }

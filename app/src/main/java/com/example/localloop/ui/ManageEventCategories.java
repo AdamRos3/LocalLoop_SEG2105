@@ -1,9 +1,11 @@
-package com.example.localloop;
+package com.example.localloop.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,7 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.localloop.resources.Category;
+import com.example.localloop.R;
+import com.example.localloop.backend.Admin;
+import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.backend.EventCategory;
+import com.example.localloop.backend.Organizer;
+import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,45 +33,33 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class manageCategory extends AppCompatActivity {
+public class ManageEventCategories extends AppCompatActivity {
+    private static ArrayList<EventCategory> allCategories = new ArrayList<>();
+    private static DatabaseConnection dbConnection;
+    private static Admin admin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_management);
         RecyclerView recyclerview = findViewById(R.id.category_recycler_view);
-        List<Category> categoryList = new ArrayList<>();
 
-        //Testing data
-        //categoryList.add(new Category("Sports","Outdoor and recreational events"));
-        //categoryList.add(new Category("Workshops","Education"));
+        dbConnection = DatabaseInstance.get();
+        admin = (Admin)dbConnection.getUser();
 
-        categoryAdapter adapter = new categoryAdapter(this, categoryList);
+        new Thread(() -> {
+            try {
+                allCategories = admin.getAllEventCategories(dbConnection);
+            } catch (InterruptedException e) {
+                Log.e("InterruptedException","Call from ManageUsers onCreate");
+                finish();
+            }
+        }).start();
+
+        categoryAdapter adapter = new categoryAdapter(this, allCategories);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(adapter);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference categoryRef = database.getReference("categories");
 
-        categoryRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                categoryList.clear();
-                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
-                    Category category = categorySnapshot.getValue(Category.class);
-                    if (category != null) {
-                        categoryList.add(category);
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(manageCategory.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //UI
         Button addButton = findViewById(R.id.add_category_button);
         EditText nameInput = findViewById(R.id.category_name_input);
         EditText descriptionInput = findViewById(R.id.category_description_input);
@@ -78,9 +73,15 @@ public class manageCategory extends AppCompatActivity {
             return;
             }
 
-            String id = categoryRef.push().getKey(); //generates unique ID
-            Category newCategory = new Category(id, name, description);
-            categoryRef.child(id).setValue(newCategory);
+            EventCategory newCategory = new EventCategory(name, description, null);
+            try {
+                admin.createEventCategory(dbConnection, newCategory);
+            } catch (InvalidEventCategoryNameException e) {
+                Toast.makeText(this,"Category name is taken", Toast.LENGTH_SHORT).show();
+                nameInput.setText("");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             Toast.makeText(this,"Category Added!", Toast.LENGTH_SHORT).show();
             nameInput.setText("");
@@ -95,12 +96,12 @@ public class manageCategory extends AppCompatActivity {
         backButton.setOnClickListener(v1 -> finish());
     }
     public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.CategoryViewHolder> {
-        private List<Category> categoryList;
+        private List<EventCategory> allCategories;
         private Context context;
 
-        public categoryAdapter(Context context, List<Category> categoryList) {
+        public categoryAdapter(Context context, List<EventCategory> allCategories) {
             this.context = context;
-            this.categoryList = categoryList;
+            this.allCategories = allCategories;
         }
 
         @NonNull
@@ -112,7 +113,7 @@ public class manageCategory extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-            Category category = categoryList.get(position);
+            EventCategory category = allCategories.get(position);
             holder.nameTextView.setText(category.getName());
             holder.descTextView.setText(category.getDescription());
 
@@ -140,7 +141,7 @@ public class manageCategory extends AppCompatActivity {
 
                     if (!newName.isEmpty() && !newDescription.isEmpty()) {
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
-                        ref.setValue(new Category(category.getCategoryID(), newName, newDescription));
+                        ref.setValue(new EventCategory(newName, newDescription, category.getCategoryID()));
                         Toast.makeText(context, "Category Updated", Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -158,7 +159,7 @@ public class manageCategory extends AppCompatActivity {
                 //Toast.makeText(context, "Delete: " + category.name, Toast.LENGTH_SHORT).show();
                 new AlertDialog.Builder(context)
                         .setTitle("Delete Category")
-                        .setMessage("Are you sure you want to delete \"" + category.name +"\"?")
+                        .setMessage("Are you sure you want to delete \"" + category.getName() +"\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
                             ref.removeValue();
@@ -173,7 +174,7 @@ public class manageCategory extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return categoryList.size();
+            return allCategories.size();
         }
 
         public class CategoryViewHolder extends RecyclerView.ViewHolder {

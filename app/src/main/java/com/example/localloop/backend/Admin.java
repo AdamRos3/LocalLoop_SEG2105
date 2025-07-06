@@ -50,6 +50,12 @@ public class Admin extends UserAccount {
     public void editEventCategory(DatabaseConnection dbConnection, EventCategory category, String name, String description) throws InvalidEventNameException, NoSuchEventCategoryException, InterruptedException {
         dbConnection.editEventCategory(category,name,description);
     }
+    public ArrayList<EventCategory> getAllEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getAllEventCategories();
+    }
+    public ArrayList<Event> getAllEvents(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getAllEvents();
+    }
     public String toString() {
         return "admin: "+username+", ID: "+userID;
     }

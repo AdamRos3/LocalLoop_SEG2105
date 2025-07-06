@@ -14,7 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.localloop.R;
 import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.UserAccount;
 
 public class WelcomeAdmin extends AppCompatActivity {
 
@@ -36,7 +35,7 @@ public class WelcomeAdmin extends AppCompatActivity {
         admin = (Admin)dbConnection.getUser();
         
         // Set welcome message
-        TextView welcomeMessage = findViewById(R.id.welcome_message);
+        TextView welcomeMessage = findViewById(R.id.welcome_message2);
         String message = "Welcome " + admin.toString();
         welcomeMessage.setText(message);
     }
@@ -49,6 +48,10 @@ public class WelcomeAdmin extends AppCompatActivity {
 
     public void toManageUsers(View view) {
         Intent intent = new Intent(this, ManageUsers.class);
+        startActivity(intent);
+    }
+    public void toManageEvents(View view) {
+        Intent intent = new Intent(this, ManageEventCategories.class);
         startActivity(intent);
     }
 

@@ -277,13 +277,51 @@ public class DatabaseConnection {
     }
     protected ArrayList<Participant> getAllParticipants() throws InterruptedException {
         // Called by Admin Class Only
-        updateAllUsers(); // TODO create updateAllParticipants specific method
+        updateAllUsers(); //
         return allParticipants;
     }
     protected ArrayList<Organizer> getAllOrganizers() throws InterruptedException {
         // Called by Admin Class Only
-        updateAllUsers(); // TODO create updateAllOrganizers specific method
+        updateAllUsers(); //
         return allOrganizers;
+    }
+    protected ArrayList<EventCategory> getAllEventCategories() throws InterruptedException {
+        // Called by Admin Class Only
+        updateAllEventCategories(); //
+        return allEventCategories;
+    }
+    protected ArrayList<Event> getAllEvents() throws InterruptedException {
+        // Called by Admin Class only
+        updateAllEvents(); //
+        return allEvents;
+    }
+    protected ArrayList<Event> getUserEvents() throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllEvents(); //
+        ArrayList<Event> userEvents = new ArrayList<>();
+        for (Event e : allEvents) {
+            if ((e.getOrganizerID()).equals(user.getUserID())) {
+                userEvents.add(e);
+            }
+        }
+        return userEvents;
+    }
+    protected ArrayList<EventCategory> getUserEventCategories() throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllEvents(); //
+        ArrayList<EventCategory> userEventCategories = new ArrayList<>();
+        for (Event e : allEvents) {
+            String organizerID = e.getOrganizerID();
+            if (organizerID.equals(user.getUserID())) {
+                for (EventCategory c:allEventCategories) {
+                    String eventCategoryID = c.getCategoryID();
+                      if (eventCategoryID.equals(e.getCategoryID())) {
+                        userEventCategories.add(c);
+                      }
+                }
+            }
+        }
+        return userEventCategories;
     }
 
 

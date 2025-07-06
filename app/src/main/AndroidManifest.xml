@@ -19,6 +19,12 @@
             android:name=".ui.ManageUsers"
             android:exported="false" />
         <activity
+            android:name=".ui.ManageEvents"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ManageEventCategories"
+            android:exported="false" />
+        <activity
             android:name=".ui.WelcomeOrganizer"
             android:exported="false" />
         <activity
