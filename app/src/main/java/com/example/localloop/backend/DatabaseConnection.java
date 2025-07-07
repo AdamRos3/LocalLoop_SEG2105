@@ -220,7 +220,7 @@ public class DatabaseConnection {
         }
         // Check that Event does not exist
         for (Event existing : allEvents) {
-            if (editedEvent.getName().equals(existing.getName())) {
+            if (editedEvent.getName().equals(existing.getName()) && !((user.getUserID()).equals(existing.getOrganizerID()))) {
                 Log.e(editedEvent.getName(), "New Event Name Conflict");
                 throw new InvalidEventNameException("Event name taken");
             }

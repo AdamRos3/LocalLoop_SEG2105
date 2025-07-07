@@ -32,12 +32,14 @@ import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
+import com.example.localloop.resources.exception.NoSuchEventException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ManageEvents extends AppCompatActivity {
 
@@ -315,24 +317,189 @@ public class ManageEvents extends AppCompatActivity {
             }
 
             holder.editButton.setOnClickListener(v -> {
-                // Implement edit if needed
+                Event eventToEdit = events.get(holder.getAdapterPosition());
+
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                dialogBuilder.setTitle("Edit Event");
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                final EditText inputName = new EditText(context);
+                inputName.setHint("Name");
+                inputName.setText(eventToEdit.getName());
+                layout.addView(inputName);
+
+                final EditText inputDescription = new EditText(context);
+                inputDescription.setHint("Description");
+                inputDescription.setText(eventToEdit.getDescription());
+                layout.addView(inputDescription);
+
+                final Spinner categorySpinner = new Spinner(context);
+                ArrayList<String> categoryNames = new ArrayList<>();
+                for (EventCategory c : allCategories) {
+                    categoryNames.add(c.getName());
+                }
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, categoryNames);
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(categoryAdapter);
+                for (int i = 0; i < allCategories.size(); i++) {
+                    if (allCategories.get(i).getCategoryID().equals(eventToEdit.getCategoryID())) {
+                        categorySpinner.setSelection(i);
+                        break;
+                    }
+                }
+                layout.addView(categorySpinner);
+
+                final EditText inputFee = new EditText(context);
+                inputFee.setHint("Fee");
+                inputFee.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                inputFee.setText(String.valueOf(eventToEdit.getFee()));
+                layout.addView(inputFee);
+
+                final EditText inputYear = new EditText(context);
+                inputYear.setHint("Year");
+                inputYear.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+                inputYear.setText(String.valueOf(eventToEdit.getDate().getYear()));
+                layout.addView(inputYear);
+
+                final EditText inputMonth = new EditText(context);
+                inputMonth.setHint("Month");
+                inputMonth.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+                inputMonth.setText(String.valueOf(eventToEdit.getDate().getMonth()));
+                layout.addView(inputMonth);
+
+                final EditText inputDay = new EditText(context);
+                inputDay.setHint("Day");
+                inputDay.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+                inputDay.setText(String.valueOf(eventToEdit.getDate().getDay()));
+                layout.addView(inputDay);
+
+                final EditText inputHour = new EditText(context);
+                inputHour.setHint("Hour");
+                inputHour.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+                inputHour.setText(String.valueOf(eventToEdit.getTime().getHour()));
+                layout.addView(inputHour);
+
+                final EditText inputMinute = new EditText(context);
+                inputMinute.setHint("Minute");
+                inputMinute.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+                inputMinute.setText(String.valueOf(eventToEdit.getTime().getMinute()));
+                layout.addView(inputMinute);
+
+                final Spinner timezoneSpinner = new Spinner(context);
+                String[] timezones = {"EST", "CST", "MST", "PST", "GMT", "UTC"};
+                ArrayAdapter<String> timezoneAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, timezones);
+                timezoneAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                timezoneSpinner.setAdapter(timezoneAdapter);
+                for (int i = 0; i < timezones.length; i++) {
+                    if (timezones[i].equals(eventToEdit.getTime().getTimezone())) {
+                        timezoneSpinner.setSelection(i);
+                        break;
+                    }
+                }
+                layout.addView(timezoneSpinner);
+
+                dialogBuilder.setView(layout);
+
+                dialogBuilder.setPositiveButton("Save", (dialog, which) -> {
+                    String newName = inputName.getText().toString().trim();
+                    String newDescription = inputDescription.getText().toString().trim();
+                    String newCategoryName = (String) categorySpinner.getSelectedItem();
+                    String newFeeStr = inputFee.getText().toString().trim();
+                    String newYearStr = inputYear.getText().toString().trim();
+                    String newMonthStr = inputMonth.getText().toString().trim();
+                    String newDayStr = inputDay.getText().toString().trim();
+                    String newHourStr = inputHour.getText().toString().trim();
+                    String newMinuteStr = inputMinute.getText().toString().trim();
+                    String newTimezone = timezoneSpinner.getSelectedItem().toString();
+
+                    if (newName.isEmpty() || newDescription.isEmpty() || newFeeStr.isEmpty() ||
+                            newYearStr.isEmpty() || newMonthStr.isEmpty() || newDayStr.isEmpty() ||
+                            newHourStr.isEmpty() || newMinuteStr.isEmpty()) {
+                        Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    AtomicReference<String> newCategoryIDRef = new AtomicReference<>(null);
+                    for (EventCategory c : allCategories) {
+                        if (c.getName().equals(newCategoryName)) {
+                            newCategoryIDRef.set(c.getCategoryID());
+                            break;
+                        }
+                    }
+
+                    String newCategoryID = newCategoryIDRef.get();
+                    if (newCategoryID == null) {
+                        Toast.makeText(context, "Invalid category selected", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    try {
+                        double newFee = Double.parseDouble(newFeeStr);
+                        int newYear = Integer.parseInt(newYearStr);
+                        int newMonth = Integer.parseInt(newMonthStr);
+                        int newDay = Integer.parseInt(newDayStr);
+                        int newHour = Integer.parseInt(newHourStr);
+                        int newMinute = Integer.parseInt(newMinuteStr);
+
+                        Date newDate = new Date(newYear, newMonth, newDay);
+                        Time newTime = new Time(newHour, newMinute, newTimezone);
+
+                        new Thread(() -> {
+                            try {
+                                organizer.editEvent(dbConnection, eventToEdit, newName, newDescription, newCategoryID, newFee, newDate, newTime);
+                                runOnUiThread(() -> {
+                                    notifyItemChanged(holder.getAdapterPosition());
+                                    fetchAndRefreshData();
+                                    Toast.makeText(context, "Event updated", Toast.LENGTH_SHORT).show();
+                                });
+                            } catch (InterruptedException | NoSuchEventException | NoSuchEventCategoryException e) {
+                                runOnUiThread(() -> Toast.makeText(context, "Failed to update event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            } catch (InvalidEventNameException e) {
+                                runOnUiThread(() -> Toast.makeText(context, "Failed to update event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            }
+                        }).start();
+
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(context, "Please enter valid numeric values", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                dialogBuilder.setNegativeButton("Cancel", null);
+                dialogBuilder.show();
             });
+
 
             holder.deleteButton.setOnClickListener(v -> {
                 new AlertDialog.Builder(context)
                         .setTitle("Delete Event")
                         .setMessage("Are you sure you want to delete \"" + event.getName() + "\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events").child(event.getEventID());
-                            ref.removeValue();
                             int pos = holder.getAdapterPosition();
-                            events.remove(pos);
-                            notifyItemRemoved(pos);
-                            Toast.makeText(context, "Event Deleted", Toast.LENGTH_SHORT).show();
+                            if (pos == RecyclerView.NO_POSITION) return; // safeguard
+
+                            Event eventToDelete = events.get(pos);
+
+                            new Thread(() -> {
+                                try {
+                                    organizer.deleteEvent(dbConnection, eventToDelete);
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(context, "Event Deleted", Toast.LENGTH_SHORT).show();
+                                        events.remove(pos);
+                                        notifyItemRemoved(pos);
+                                    });
+                                } catch (NoSuchEventException e) {
+                                    runOnUiThread(() -> Toast.makeText(context, "Event Cannot be Deleted", Toast.LENGTH_SHORT).show());
+                                } catch (InterruptedException e) {
+                                    runOnUiThread(() -> Toast.makeText(context, "Event Cannot be Deleted", Toast.LENGTH_SHORT).show());
+                                }
+                            }).start();
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
             });
+
         }
 
         @Override
