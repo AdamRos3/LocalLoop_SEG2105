@@ -286,7 +286,7 @@ public class DatabaseConnection {
         return allOrganizers;
     }
     protected ArrayList<EventCategory> getAllEventCategories() throws InterruptedException {
-        // Called by Admin Class Only
+        // Called by Admin and Organizer Class Only
         updateAllEventCategories(); //
         return allEventCategories;
     }
@@ -306,24 +306,6 @@ public class DatabaseConnection {
         }
         return userEvents;
     }
-    protected ArrayList<EventCategory> getUserEventCategories() throws InterruptedException {
-        // Called by Organizer Class only
-        updateAllEvents(); //
-        ArrayList<EventCategory> userEventCategories = new ArrayList<>();
-        for (Event e : allEvents) {
-            String organizerID = e.getOrganizerID();
-            if (organizerID.equals(user.getUserID())) {
-                for (EventCategory c:allEventCategories) {
-                    String eventCategoryID = c.getCategoryID();
-                      if (eventCategoryID.equals(e.getCategoryID())) {
-                        userEventCategories.add(c);
-                      }
-                }
-            }
-        }
-        return userEventCategories;
-    }
-
 
     // Private Methods
     private interface DatabaseUserCallback {

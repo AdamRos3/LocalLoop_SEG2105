@@ -44,7 +44,7 @@ public class ManageEventCategories extends AppCompatActivity {
         dbConnection = DatabaseInstance.get();
         admin = (Admin) dbConnection.getUser();
 
-        RecyclerView recyclerview = findViewById(R.id.category_recycler_view);
+        RecyclerView recyclerview = findViewById(R.id.event_recycler_view);
         adapter = new categoryAdapter(this, allCategories);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(adapter);

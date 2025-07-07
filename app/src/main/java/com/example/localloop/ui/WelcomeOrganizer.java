@@ -12,10 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.Admin;
 import com.example.localloop.backend.DatabaseConnection;
 import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.UserAccount;
 
 public class WelcomeOrganizer extends AppCompatActivity {
     private static DatabaseConnection dbConnection;
@@ -37,14 +35,16 @@ public class WelcomeOrganizer extends AppCompatActivity {
         String username = user.getUsername();
 
         // Set welcome message
-        TextView welcomeMessage = findViewById(R.id.welcome_message2);
+        TextView welcomeMessage = findViewById(R.id.welcome_message);
         String message = "Welcome " + user.toString();
         welcomeMessage.setText(message);
     }
-
-    public void ReturnToLogin(View view) {
+    public void onManageEvents(View view) {
+        Intent intent = new Intent(this, ManageEvents.class);
+        startActivity(intent);
+    }
+    public void returnToLogin(View view) {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
-
 }

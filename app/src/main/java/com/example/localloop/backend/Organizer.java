@@ -48,8 +48,8 @@ public class Organizer extends UserAccount {
     public ArrayList<Event> getUserEvents(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getUserEvents();
     }
-    public ArrayList<EventCategory> getUserEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
-        return dbConnection.getUserEventCategories();
+    public ArrayList<EventCategory> getAllEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getAllEventCategories();
     }
     public String toString() {
         return "organizer: "+username+", ID: "+userID;
