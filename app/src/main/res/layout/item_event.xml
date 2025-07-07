@@ -37,17 +37,52 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/dateTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="dateTime"
-            android:textColor="@color/black" />
-
-        <TextView
             android:id="@+id/fee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fee"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="year"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="month"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="day"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/hour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="hour"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/minute"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="minute"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/timezone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="timezone"
             android:textColor="@color/black" />
 
     </LinearLayout>

@@ -25,7 +25,6 @@ public class Time {
         return minute;
     }
     public String getTimezone() { return timezone; }
-
     public String toString() {
         return hour+":"+minute+" "+timezone;
     }

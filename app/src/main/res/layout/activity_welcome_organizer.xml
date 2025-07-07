@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="161dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -22,10 +22,11 @@
             app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
         <TextView
-            android:id="@+id/TextView3"
+            android:id="@+id/welcome_message"
             android:layout_width="213dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="Welcome Organizer"
             android:textAlignment="center"
             android:textColor="#000000"
@@ -39,123 +40,37 @@
             android:layout_weight="1"
             app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/manageEventCategories2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="                       Your Events:"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="206dp"
-        app:srcCompat="@drawable/localloop_sparkler_transparent" />
-
-    <TextView
-        android:id="@+id/ManageEventCategories2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add/Edit Event Categories"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="366dp"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/imageButton5"
+        <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/aqua_blue_name_transparent" />
-
-        <ImageButton
-            android:id="@+id/imageButton6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/aqua_blue_description_transparent" />
-
-        <ImageButton
-            android:id="@+id/imageButton7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/aqua_blue_category_transparent" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="358dp"
-        android:layout_height="121dp"
-        android:orientation="horizontal">
+        android:layout_height="61dp"
+        android:orientation="horizontal" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="241dp"
-                android:layout_height="61dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/aqua_blue_fee_transparent" />
-
-            <ImageButton
-                android:id="@+id/imageButton3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:cropToPadding="false"
-                app:srcCompat="@drawable/aqua_blue_date_transparent" />
-
-            <ImageButton
-                android:id="@+id/imageButton4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/aqua_blue_time_transparent" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onManageEvents"
+            android:text="Manage Events" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/welcome_message2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="                  Delete Events"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="146dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/imageButton8"
-            android:layout_width="339dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/aqua_blue_view_events_transparent" />
-
-    </LinearLayout>
+        android:layout_height="18dp"
+        android:orientation="horizontal" />
 
     <Button
-        android:id="@+id/button1"
-        android:layout_width="220dp"
-        android:layout_height="60dp"
-        android:onClick="ReturnToLogin"
-        android:text="Back"
-        app:icon="@drawable/aqua_blue_delete_transparent" />
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="returnToLogin"
+        android:text="Back" />
+
 </LinearLayout>
