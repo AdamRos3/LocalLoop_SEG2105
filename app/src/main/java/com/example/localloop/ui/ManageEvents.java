@@ -479,11 +479,9 @@ public class ManageEvents extends AppCompatActivity {
                             int pos = holder.getAdapterPosition();
                             if (pos == RecyclerView.NO_POSITION) return; // safeguard
 
-                            Event eventToDelete = events.get(pos);
-
                             new Thread(() -> {
                                 try {
-                                    organizer.deleteEvent(dbConnection, eventToDelete);
+                                    organizer.deleteEvent(dbConnection, event);
                                     runOnUiThread(() -> {
                                         Toast.makeText(context, "Event Deleted", Toast.LENGTH_SHORT).show();
                                         events.remove(pos);
