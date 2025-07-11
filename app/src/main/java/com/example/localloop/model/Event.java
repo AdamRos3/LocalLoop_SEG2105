@@ -1,4 +1,4 @@
-package com.example.localloop.backend;
+package com.example.localloop.model;
 
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;

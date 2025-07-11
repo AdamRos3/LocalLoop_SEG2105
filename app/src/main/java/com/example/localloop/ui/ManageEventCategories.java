@@ -18,9 +18,9 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.Admin;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.EventCategory;
+import com.example.localloop.model.Admin;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.EventCategory;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
@@ -32,7 +32,6 @@ import java.util.List;
 
 public class ManageEventCategories extends AppCompatActivity {
     private final ArrayList<EventCategory> allCategories = new ArrayList<>();
-    private DatabaseConnection dbConnection;
     private Admin admin;
     private categoryAdapter adapter;
 
@@ -41,8 +40,7 @@ public class ManageEventCategories extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_management);
 
-        dbConnection = DatabaseInstance.get();
-        admin = (Admin) dbConnection.getUser();
+        admin = (Admin) DatabaseInstance.get().getUser();
 
         RecyclerView recyclerview = findViewById(R.id.event_recycler_view);
         adapter = new categoryAdapter(this, allCategories);
@@ -68,7 +66,7 @@ public class ManageEventCategories extends AppCompatActivity {
 
             new Thread(() -> {
                 try {
-                    admin.createEventCategory(dbConnection, newCategory);
+                    admin.createEventCategory(DatabaseInstance.get(), newCategory);
                     runOnUiThread(() -> {
                         nameInput.setText("");
                         descriptionInput.setText("");
@@ -93,7 +91,7 @@ public class ManageEventCategories extends AppCompatActivity {
     private void fetchAndRefreshCategories() {
         new Thread(() -> {
             try {
-                List<EventCategory> latest = admin.getAllEventCategories(dbConnection);
+                List<EventCategory> latest = admin.getAllEventCategories(DatabaseInstance.get());
                 runOnUiThread(() -> {
                     allCategories.clear();
                     allCategories.addAll(latest);
@@ -151,7 +149,7 @@ public class ManageEventCategories extends AppCompatActivity {
                     if (!newName.isEmpty() && !newDescription.isEmpty()) {
                         new Thread(() -> {
                             try {
-                                admin.editEventCategory(dbConnection, category, newName, newDescription);
+                                admin.editEventCategory(DatabaseInstance.get(), category, newName, newDescription);
                                 fetchAndRefreshCategories();
                             } catch (InvalidEventNameException e) {
                                 runOnUiThread(() -> {

@@ -12,9 +12,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.Participant;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.Organizer;
+import com.example.localloop.model.Participant;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 
 public class CreateAccount extends AppCompatActivity {

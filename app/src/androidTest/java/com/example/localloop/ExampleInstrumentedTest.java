@@ -11,11 +11,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.example.localloop.backend.Admin;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Event;
-import com.example.localloop.backend.EventCategory;
-import com.example.localloop.backend.Organizer;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.Event;
+import com.example.localloop.model.EventCategory;
+import com.example.localloop.model.Organizer;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.exception.InvalidEventNameException;

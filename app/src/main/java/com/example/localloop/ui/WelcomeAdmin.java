@@ -12,12 +12,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.Admin;
-import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.model.Admin;
+import com.example.localloop.model.DatabaseConnection;
 
 public class WelcomeAdmin extends AppCompatActivity {
 
-    private static DatabaseConnection dbConnection;
     protected static Admin admin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +30,7 @@ public class WelcomeAdmin extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        dbConnection = DatabaseInstance.get();
-        admin = (Admin)dbConnection.getUser();
+        admin = (Admin)DatabaseInstance.get().getUser();
         
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message2);

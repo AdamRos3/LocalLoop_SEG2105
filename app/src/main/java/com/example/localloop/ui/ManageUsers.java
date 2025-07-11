@@ -15,11 +15,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.Admin;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.Participant;
-import com.example.localloop.backend.UserAccount;
+import com.example.localloop.model.Admin;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.Organizer;
+import com.example.localloop.model.Participant;
+import com.example.localloop.model.UserAccount;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

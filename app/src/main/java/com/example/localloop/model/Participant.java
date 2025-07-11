@@ -1,6 +1,4 @@
-package com.example.localloop.backend;
-
-import java.util.ArrayList;
+package com.example.localloop.model;
 
 public class Participant extends UserAccount {
 

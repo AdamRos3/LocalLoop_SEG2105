@@ -1,4 +1,4 @@
-package com.example.localloop.backend;
+package com.example.localloop.model;
 
 public abstract class UserAccount {
 

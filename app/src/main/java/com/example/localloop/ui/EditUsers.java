@@ -16,16 +16,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.Admin;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.Participant;
-import com.example.localloop.backend.UserAccount;
+import com.example.localloop.model.Admin;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.Organizer;
+import com.example.localloop.model.Participant;
+import com.example.localloop.model.UserAccount;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
 public class EditUsers extends AppCompatActivity {
-    private DatabaseConnection dbConnection;
     private Admin admin;
     private UserAccount userToEdit;
 
@@ -41,8 +40,7 @@ public class EditUsers extends AppCompatActivity {
             return insets;
         });
 
-        dbConnection = DatabaseInstance.get();
-        admin = WelcomeAdmin.admin;
+        admin = (Admin) DatabaseInstance.get().getUser();
         userToEdit = ManageUsers.userToEdit;
 
         TextView userID_text = findViewById(R.id.userID_text);
@@ -83,9 +81,9 @@ public class EditUsers extends AppCompatActivity {
         new Thread(() -> {
             try {
                 if (accountType_field.getSelectedItem().equals("Organizer")) {
-                    dbConnection.createNewUser(new Organizer(username, password, null));
+                    DatabaseInstance.get().createNewUser(new Organizer(username, password, null));
                 } else {
-                    dbConnection.createNewUser(new Participant(username, password, null));
+                    DatabaseInstance.get().createNewUser(new Participant(username, password, null));
                 }
             } catch (InvalidEventNameException e) {
                 Log.e("InvalidUsername", "Username Taken");
@@ -99,7 +97,7 @@ public class EditUsers extends AppCompatActivity {
     public void onDeleteAccount(View view) {
         new Thread(() -> {
             try {
-                admin.deleteUser(dbConnection, userToEdit);
+                admin.deleteUser(DatabaseInstance.get(), userToEdit);
             } catch (NoSuchUserException e) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
             } catch (InterruptedException e) {

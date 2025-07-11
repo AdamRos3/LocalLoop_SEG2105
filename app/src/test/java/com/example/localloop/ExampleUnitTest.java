@@ -2,9 +2,7 @@ package com.example.localloop;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-import com.example.localloop.backend.DatabaseConnection;
+import com.example.localloop.model.DatabaseConnection;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

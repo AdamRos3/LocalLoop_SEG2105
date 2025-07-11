@@ -11,11 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.Admin;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Organizer;
-import com.example.localloop.backend.UserAccount;
-import com.example.localloop.resources.exception.NoSuchEventException;
+import com.example.localloop.model.Admin;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.Organizer;
+import com.example.localloop.model.UserAccount;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
 public class Login extends AppCompatActivity {

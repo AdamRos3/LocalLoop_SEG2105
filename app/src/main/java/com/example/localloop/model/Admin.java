@@ -1,9 +1,8 @@
-package com.example.localloop.backend;
+package com.example.localloop.model;
 
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
-import com.example.localloop.resources.exception.NoSuchEventException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
 import java.util.ArrayList;

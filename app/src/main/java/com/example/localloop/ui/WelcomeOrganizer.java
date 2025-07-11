@@ -12,11 +12,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
-import com.example.localloop.backend.DatabaseConnection;
-import com.example.localloop.backend.Organizer;
+import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.Organizer;
 
 public class WelcomeOrganizer extends AppCompatActivity {
-    private static DatabaseConnection dbConnection;
     private static Organizer user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +29,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        dbConnection = DatabaseInstance.get();
-        user = (Organizer)dbConnection.getUser();
+        user = (Organizer)DatabaseInstance.get().getUser();
         String username = user.getUsername();
 
         // Set welcome message
