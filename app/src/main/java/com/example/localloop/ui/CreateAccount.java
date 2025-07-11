@@ -19,8 +19,6 @@ import com.example.localloop.resources.exception.InvalidEventNameException;
 
 public class CreateAccount extends AppCompatActivity {
 
-    private DatabaseConnection dbConnection;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +31,6 @@ public class CreateAccount extends AppCompatActivity {
                 accountTypeText.setText(isChecked ? "Participant" : "Organizer");
             }
         });
-        dbConnection = DatabaseInstance.get();
     }
 
     public void onCreateUserAccount(View view) {
@@ -49,9 +46,9 @@ public class CreateAccount extends AppCompatActivity {
         new Thread(() -> {
             try {
                 if (accountSwitch.isChecked()) {
-                    dbConnection.createNewUser(new Participant(username, password, null));
+                    DatabaseInstance.get().createNewUser(new Participant(username, password, null));
                 } else {
-                    dbConnection.createNewUser(new Organizer(username, password, null));
+                    DatabaseInstance.get().createNewUser(new Organizer(username, password, null));
                 }
                 finish();
             } catch (InvalidEventNameException e) {
