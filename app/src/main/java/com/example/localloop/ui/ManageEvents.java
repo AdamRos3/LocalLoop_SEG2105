@@ -28,13 +28,6 @@ import com.example.localloop.R;
 import com.example.localloop.model.EventCategory;
 import com.example.localloop.model.Event;
 import com.example.localloop.model.Organizer;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
 import java.util.ArrayList;
@@ -44,8 +37,9 @@ import java.util.Locale;
 public class ManageEvents extends AppCompatActivity {
 
     private static Organizer organizer;
-    private ArrayList<EventCategory> categories;
-    private ArrayList<String> categoryNames;
+    private static ArrayList<EventCategory> allCategories = new ArrayList<>();
+    private static ArrayList<String> allCategoryNames = new ArrayList<>();
+    private ArrayList<Event> userEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,21 +55,28 @@ public class ManageEvents extends AppCompatActivity {
 
         organizer = (Organizer) DatabaseInstance.get().getUser();
 
-        categories = new ArrayList<>();
-        categoryNames = new ArrayList<>();
+        new Thread(() -> {
+            try {
+                allCategories = organizer.getAllEventCategories(DatabaseInstance.get());
+                userEvents = organizer.getUserEvents(DatabaseInstance.get());
+                for (EventCategory c:allCategories) {
+                    allCategoryNames.add(c.getName());
+                }
+            } catch (InterruptedException e) {
+                Log.e("ManageEvents", e.toString());
+                Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+            }
+        }).start();
 
-        retrieveCategoriesFromDatabase();
+        //retrieveCategoriesFromDatabase();
 
         RecyclerView eventsListView = findViewById(R.id.listViewEvents);
-        List<Event> events = new ArrayList<>();
 
-        eventAdapter adapter = new eventAdapter(this, events);
+        eventAdapter adapter = new eventAdapter(this, userEvents);
         eventsListView.setLayoutManager(new LinearLayoutManager(this));
         eventsListView.setAdapter(adapter);
 
-        //Get Events from Database
-        DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
-
+        /*
         eventsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -97,6 +98,7 @@ public class ManageEvents extends AppCompatActivity {
                 Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
             }
         });
+         */
     }
 
     public void onBackClick(View view) {
@@ -124,7 +126,7 @@ public class ManageEvents extends AppCompatActivity {
         layout.addView(categorySpinner);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, categoryNames);
+                android.R.layout.simple_spinner_item, allCategoryNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
 
@@ -150,7 +152,7 @@ public class ManageEvents extends AppCompatActivity {
             String timeStr = inputTime.getText().toString().trim();
             String feeStr = inputFee.getText().toString().trim();
             int categoryPosition = categorySpinner.getSelectedItemPosition();
-            String categoryID = (categories.get(categoryPosition)).getCategoryID();
+            String categoryID = (allCategories.get(categoryPosition)).getCategoryID();
 
             if (name.isEmpty() || description.isEmpty() || feeStr.isEmpty()
                     || dateStr.isEmpty() || timeStr.isEmpty()) {
@@ -189,30 +191,7 @@ public class ManageEvents extends AppCompatActivity {
         dialogBuilder.setNegativeButton("Cancel", null);
         dialogBuilder.show();
     }
-
-    private void retrieveCategoriesFromDatabase() {
-        //Get Categories from Database
-        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference("categories");
-
-        categoriesRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                } else {
-                    for (DataSnapshot categorySnapshot : task.getResult().getChildren()) {
-                        EventCategory category = categorySnapshot.getValue(EventCategory.class);
-                        if (category != null) {
-                            categories.add(category);
-                            categoryNames.add(category.getName());
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public static class eventViewHolder extends RecyclerView.ViewHolder {
+        public static class eventViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
         ImageButton editButton, deleteButton;
@@ -254,7 +233,7 @@ public class ManageEvents extends AppCompatActivity {
             holder.nameText.setText(event.getName());
 
             String categoryName = "";
-            for (EventCategory category : ((ManageEvents) context).categories) {
+            for (EventCategory category : allCategories) {
                 if (category.getCategoryID().equals(event.getCategoryID())) {
                     categoryName = category.getName();
                     break;
@@ -284,11 +263,11 @@ public class ManageEvents extends AppCompatActivity {
 
                 final Spinner categorySpinner = new Spinner(context);
                 ArrayAdapter<String> adapter  = new ArrayAdapter<>(context,
-                        android.R.layout.simple_spinner_item, ((ManageEvents) context).categoryNames);
+                        android.R.layout.simple_spinner_item, (allCategoryNames));
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categorySpinner.setAdapter(adapter);
                 categorySpinner.setSelection(((ManageEvents) context)
-                        .categoryNames.indexOf(event.getCategoryID()));
+                        .allCategoryNames.indexOf(event.getCategoryID()));
                 layout.addView(categorySpinner);
 
                 final EditText inputFee = new EditText(context);
@@ -326,7 +305,7 @@ public class ManageEvents extends AppCompatActivity {
                     String newTimeStr = inputTime.getText().toString().trim();
                     String newFeeStr = inputFee.getText().toString().trim();
                     int newCatPos = categorySpinner.getSelectedItemPosition();
-                    String newCatID = ((ManageEvents) context).categories.get(newCatPos).getCategoryID();
+                    String newCatID = allCategories.get(newCatPos).getCategoryID();
 
 
                     if (!newName.isEmpty() && !newDesc.isEmpty() && !newFeeStr.isEmpty()
