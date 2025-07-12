@@ -38,8 +38,8 @@ public class Organizer extends UserAccount {
     public void createEvent(DatabaseConnection dbConnection, Event event) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
         dbConnection.createEvent(event);
     }
-    public void editEvent(DatabaseConnection dbConnection,Event eventToEdit, String name, String description, String categoryID, double fee, Date date, Time time) throws NoSuchEventException, InvalidEventNameException, InterruptedException, NoSuchEventCategoryException {
-        dbConnection.editEvent(eventToEdit,name,description,categoryID,fee,date,time);
+    public void editEvent(DatabaseConnection dbConnection,Event eventToEdit, Event editedEvent) throws NoSuchEventException, InvalidEventNameException, InterruptedException, NoSuchEventCategoryException {
+        dbConnection.editEvent(eventToEdit,editedEvent);
     }
     public void deleteEvent(DatabaseConnection dbConnection, Event event) throws NoSuchEventException, InterruptedException {
         dbConnection.deleteEvent(event);

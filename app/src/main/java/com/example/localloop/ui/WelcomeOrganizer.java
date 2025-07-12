@@ -30,7 +30,6 @@ public class WelcomeOrganizer extends AppCompatActivity {
             return insets;
         });
         user = (Organizer)DatabaseInstance.get().getUser();
-        String username = user.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message);

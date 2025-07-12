@@ -30,6 +30,10 @@ import com.example.localloop.model.Event;
 import com.example.localloop.model.Organizer;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
+import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.NoSuchEventCategoryException;
+import com.example.localloop.resources.exception.NoSuchEventException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -37,9 +41,10 @@ import java.util.Locale;
 public class ManageEvents extends AppCompatActivity {
 
     private static Organizer organizer;
-    private static ArrayList<EventCategory> allCategories = new ArrayList<>();
-    private static ArrayList<String> allCategoryNames = new ArrayList<>();
+    private ArrayList<EventCategory> allCategories = new ArrayList<>();
+    private ArrayList<String> allCategoryNames = new ArrayList<>();
     private ArrayList<Event> userEvents = new ArrayList<>();
+    private eventAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,26 +62,34 @@ public class ManageEvents extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                allCategories = organizer.getAllEventCategories(DatabaseInstance.get());
-                userEvents = organizer.getUserEvents(DatabaseInstance.get());
-                for (EventCategory c:allCategories) {
-                    allCategoryNames.add(c.getName());
+                allCategories.clear();
+                userEvents.clear();
+                allCategoryNames.clear();
+                allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
+                userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
+                for (EventCategory category:allCategories) {
+                    allCategoryNames.add(category.getName());
                 }
+                runOnUiThread(() -> {
+                    RecyclerView eventsListView = findViewById(R.id.listViewEvents);
+                    adapter = new eventAdapter(this, userEvents);
+                    eventsListView.setLayoutManager(new LinearLayoutManager(this));
+                    eventsListView.setAdapter(adapter);
+                });
             } catch (InterruptedException e) {
                 Log.e("ManageEvents", e.toString());
                 Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
             }
         }).start();
-
+        /*
         //retrieveCategoriesFromDatabase();
 
         RecyclerView eventsListView = findViewById(R.id.listViewEvents);
-
         eventAdapter adapter = new eventAdapter(this, userEvents);
         eventsListView.setLayoutManager(new LinearLayoutManager(this));
         eventsListView.setAdapter(adapter);
 
-        /*
+
         eventsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -124,11 +137,10 @@ public class ManageEvents extends AppCompatActivity {
         categorySpinner.setPrompt("EventCategory");
 
         layout.addView(categorySpinner);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, allCategoryNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(adapter);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryAdapter);
 
 
         final EditText inputFee = new EditText(this);
@@ -159,35 +171,31 @@ public class ManageEvents extends AppCompatActivity {
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            try {
-                double fee = Double.parseDouble(feeStr);
-
-                String[] t = timeStr.split(":");
-                Time timeObj = new Time(
-                        Integer.parseInt(t[0]),
-                        Integer.parseInt(t[1]));
-
-                String[] d = dateStr.split("-");
-                Date dateObj = new Date(
-                        Integer.parseInt(d[0]),
-                        (Integer.parseInt(d[1]) - 1),
-                        Integer.parseInt(d[2]));
-
-                DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events");
-                String eventID = eventRef.push().getKey();
-
-                Event newEvent = new Event(
-                        name, description, categoryID, fee, dateObj, timeObj, organizer.getUserID(), eventID);
-
-                eventRef.child(eventID).setValue(newEvent);
-                Toast.makeText(this, "Event added",
-                        Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Toast.makeText(this,"Invalid fee or date/time", Toast.LENGTH_SHORT).show();
-            }
+            new Thread(() -> {
+                try {
+                    double fee = Double.parseDouble(feeStr);
+                    String[] t = timeStr.split(":");
+                    Time timeObj = new Time(Integer.parseInt(t[0]), Integer.parseInt(t[1]));
+                    String[] d = dateStr.split("-");
+                    Date dateObj = new Date(Integer.parseInt(d[0]), (Integer.parseInt(d[1]) - 1), Integer.parseInt(d[2]));
+                    organizer.createEvent(DatabaseInstance.get(), new Event(name, description, categoryID, fee, dateObj, timeObj, organizer.getUserID(), null));
+                    allCategories.clear();
+                    userEvents.clear();
+                    allCategoryNames.clear();
+                    allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
+                    userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
+                    for (EventCategory category:allCategories) {
+                        allCategoryNames.add(category.getName());
+                    }
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(this, "Event added", Toast.LENGTH_SHORT).show();
+                    });
+                } catch (Exception e) {
+                    runOnUiThread(() -> Toast.makeText(this, "Invalid fee or date/time", Toast.LENGTH_SHORT).show());
+                }
+            }).start();
         });
-
         dialogBuilder.setNegativeButton("Cancel", null);
         dialogBuilder.show();
     }
@@ -233,7 +241,7 @@ public class ManageEvents extends AppCompatActivity {
             holder.nameText.setText(event.getName());
 
             String categoryName = "";
-            for (EventCategory category : allCategories) {
+            for (EventCategory category : ((ManageEvents)context).allCategories) {
                 if (category.getCategoryID().equals(event.getCategoryID())) {
                     categoryName = category.getName();
                     break;
@@ -262,10 +270,10 @@ public class ManageEvents extends AppCompatActivity {
                 layout.addView(inputDescription);
 
                 final Spinner categorySpinner = new Spinner(context);
-                ArrayAdapter<String> adapter  = new ArrayAdapter<>(context,
-                        android.R.layout.simple_spinner_item, (allCategoryNames));
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                categorySpinner.setAdapter(adapter);
+                ArrayAdapter<String> categoryAdapter  = new ArrayAdapter<>(context,
+                        android.R.layout.simple_spinner_item, ((ManageEvents)context).allCategoryNames);
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(categoryAdapter);
                 categorySpinner.setSelection(((ManageEvents) context)
                         .allCategoryNames.indexOf(event.getCategoryID()));
                 layout.addView(categorySpinner);
@@ -305,12 +313,12 @@ public class ManageEvents extends AppCompatActivity {
                     String newTimeStr = inputTime.getText().toString().trim();
                     String newFeeStr = inputFee.getText().toString().trim();
                     int newCatPos = categorySpinner.getSelectedItemPosition();
-                    String newCatID = allCategories.get(newCatPos).getCategoryID();
+                    String newCatID = ((ManageEvents)context).allCategories.get(newCatPos).getCategoryID();
 
 
                     if (!newName.isEmpty() && !newDesc.isEmpty() && !newFeeStr.isEmpty()
                             && !newDateStr.isEmpty() && !newTimeStr.isEmpty()) {
-                        try {
+                        new Thread(() -> {
                             double newFee = Double.parseDouble(newFeeStr);
 
                             String[] dateParts = newDateStr.split("-");
@@ -325,22 +333,26 @@ public class ManageEvents extends AppCompatActivity {
                             Date newDate = new Date(year, month, day);
                             Time newTime = new Time(hour, minute);
 
-                            Event updatedEvent = new Event(newName, newDesc, newCatID, newFee, newDate, newTime, event.getOrganizerID(), event.getEventID());
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference
-                                    ("events").child(event.getEventID());
-                            ref.setValue(updatedEvent);
-
-                            Toast.makeText(context, "Event Updated", Toast.LENGTH_SHORT).show();
-                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                            Toast.makeText(context, "Invalid number format or date/time structure"
-                                    , Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            Toast.makeText(context, "Error: " + e.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
+                            try {
+                                organizer.editEvent(DatabaseInstance.get(),event,new Event(newName, newDesc, newCatID, newFee, newDate, newTime, organizer.getUserID(), event.getEventID()));
+                                ((ManageEvents)context).allCategories.clear();
+                                ((ManageEvents)context).userEvents.clear();
+                                ((ManageEvents)context).allCategoryNames.clear();
+                                ((ManageEvents)context).allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
+                                ((ManageEvents)context).userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
+                                for (EventCategory category:((ManageEvents)context).allCategories) {
+                                    ((ManageEvents)context).allCategoryNames.add(category.getName());
+                                }
+                                ((ManageEvents)context).runOnUiThread(() -> {
+                                    ((ManageEvents)context).adapter.notifyDataSetChanged();
+                                    Toast.makeText(context, "Event Updated", Toast.LENGTH_SHORT).show();
+                                });
+                            } catch (Exception e) {
+                                ((ManageEvents)context).runOnUiThread(() -> Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show());
+                            }
+                        }).start();
                     } else {
-                        Toast.makeText(context, "All fields must be filled",
-                                Toast.LENGTH_SHORT).show();
+                        ((ManageEvents)context).runOnUiThread(() -> Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show());
                     }
                 });
 
@@ -353,9 +365,27 @@ public class ManageEvents extends AppCompatActivity {
                         .setTitle("Delete Event")
                         .setMessage("Are you sure you want to delete \"" + event.getName() + "\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events").child(event.getEventID());
-                            ref.removeValue();
-                            Toast.makeText(context,"Event Deleted", Toast.LENGTH_SHORT).show();
+                            new Thread(() -> {
+                                try {
+                                    organizer.deleteEvent(DatabaseInstance.get(),event);
+                                    ((ManageEvents)context).allCategories.clear();
+                                    ((ManageEvents)context).userEvents.clear();
+                                    ((ManageEvents)context).allCategoryNames.clear();
+                                    ((ManageEvents)context).allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
+                                    ((ManageEvents)context).userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
+                                    for (EventCategory category:((ManageEvents)context).allCategories) {
+                                        ((ManageEvents)context).allCategoryNames.add(category.getName());
+                                    }
+                                    ((ManageEvents)context).runOnUiThread(() -> {
+                                        ((ManageEvents)context).adapter.notifyDataSetChanged();
+                                    });
+                                    ((AppCompatActivity)context).runOnUiThread(() -> {
+                                        Toast.makeText(context, "Event Deleted", Toast.LENGTH_SHORT).show();
+                                    });
+                                    } catch (Exception e) {
+                                    Toast.makeText(context, "Error Unable to Delete Event", Toast.LENGTH_SHORT).show();
+                                }
+                            }).start();
                         })
                         .setNegativeButton("Cancel", null)
                         .show();

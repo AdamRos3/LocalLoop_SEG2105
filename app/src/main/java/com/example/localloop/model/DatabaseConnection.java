@@ -186,27 +186,10 @@ public class DatabaseConnection {
         String key = myRef.push().getKey();
         myRef.child("events").child(key).setValue(new Event(event.getName(),event.getDescription(),event.getCategoryID(),event.getFee(),event.getDate(),event.getTime(),user.getUserID(),key));
     }
-    protected static void editEvent(Event eventToEdit, String name, String description, String categoryID, double fee, Date date, Time time) throws NoSuchEventException, InvalidEventNameException, InterruptedException, NoSuchEventCategoryException {
+    protected static void editEvent(Event eventToEdit, Event editedEvent) throws NoSuchEventException, InvalidEventNameException, InterruptedException, NoSuchEventCategoryException {
         // Called by Organizer Class Only
         updateAllEvents();
 
-        // Find which attributes to edit
-        if (name==null) {
-            name = eventToEdit.getName();
-        }
-        if (description==null) {
-            description = eventToEdit.getDescription();
-        }
-        if (categoryID==null) {
-            categoryID = eventToEdit.getCategoryID();
-        }
-        if (date==null) {
-            date = eventToEdit.getDate();
-        }
-        if (time==null) {
-            time = eventToEdit.getTime();
-        }
-        Event editedEvent = new Event(name, description, categoryID, fee, date, time, user.getUserID(), eventToEdit.getEventID());
         // Check that EventCategory exists
         boolean categoryFound = false;
         for (EventCategory existing : allEventCategories) {
@@ -225,7 +208,7 @@ public class DatabaseConnection {
                 throw new InvalidEventNameException("Event name taken");
             }
         }
-        myRef.child("events").child(editedEvent.getEventID()).setValue(editedEvent);
+        myRef.child("events").child(eventToEdit.getEventID()).setValue(editedEvent);
 
     }
     protected static void deleteEvent(Event eventToDelete) throws NoSuchEventException, InterruptedException {
