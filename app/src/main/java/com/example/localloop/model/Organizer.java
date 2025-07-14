@@ -32,9 +32,6 @@ public class Organizer extends UserAccount {
     public String getUserID() {
         return userID;
     }
-    protected void setUserID(String str) {
-        this.userID = str;
-    }
     public void createEvent(DatabaseConnection dbConnection, Event event) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
         dbConnection.createEvent(event);
     }
@@ -49,6 +46,9 @@ public class Organizer extends UserAccount {
     }
     public ArrayList<EventCategory> getAllEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getAllEventCategories();
+    }
+    public ArrayList<Participant> getJoinRequests(DatabaseConnection dbConnection, Event event) throws InterruptedException {
+        return dbConnection.getJoinRequests(event);
     }
     public String toString() {
         return "organizer: "+username+", ID: "+userID;

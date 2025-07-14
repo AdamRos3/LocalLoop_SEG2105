@@ -25,12 +25,14 @@ public class DatabaseConnection {
     private static ArrayList<Admin> allAdmins = new ArrayList<>();
     private static ArrayList<EventCategory> allEventCategories = new ArrayList<>();
     private static ArrayList<Event> allEvents = new ArrayList<>();
+    private static ArrayList<JoinRequest> allJoinRequests = new ArrayList<>();
 
     private static boolean participantsLoaded = false;
     private static boolean organizersLoaded = false;
     private static boolean adminsLoaded = false;
     private static boolean eventCategoriesLoaded = false;
     private static boolean eventsLoaded = false;
+    private static boolean joinRequestsLoaded = false;
 
     // Public methods
     public DatabaseConnection(String username, String password) throws NoSuchUserException, InterruptedException {
@@ -274,7 +276,7 @@ public class DatabaseConnection {
         return allEventCategories;
     }
     protected ArrayList<Event> getAllEvents() throws InterruptedException {
-        // Called by Admin Class only
+        // Called by Admin and Participant Class only
         updateAllEvents(); //
         return allEvents;
     }
@@ -289,6 +291,35 @@ public class DatabaseConnection {
         }
         return userEvents;
     }
+    protected void requestJoinEvent(Event event) throws InterruptedException {
+        // Called by Participant Class only
+        // TODO Check if event already exists
+        // TODO Check if request already exists
+        String key = myRef.push().getKey();
+        myRef.child("joinRequests").child(key).setValue(new JoinRequest(user.getUserID(),event.getEventID(),key));
+    }
+    protected ArrayList<Participant> getJoinRequests(Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllJoinRequests();
+        updateAllUsers();
+
+        ArrayList<String> userIDs = new ArrayList<>();
+        ArrayList<Participant> requests = new ArrayList<>();
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getEventID()).equals(event.getEventID())) {
+                userIDs.add(r.getParticipantID());
+            }
+        }
+        for (Participant p : allParticipants) {
+            for (String ID : userIDs) {
+                if (ID.equals(p.getUserID())) {
+                    requests.add(p);
+                }
+            }
+        }
+        return requests;
+    }
 
     // Private Methods
     private interface DatabaseUserCallback {
@@ -301,6 +332,9 @@ public class DatabaseConnection {
     }
     private interface DatabaseEventCallback {
         void onEventsLoaded(ArrayList<Event> events);
+    }
+    private interface DatabaseJoinRequestCallback {
+        void onJoinRequestsLoaded(ArrayList<JoinRequest> joinRequests);
     }
     private static void getAllUsers(DatabaseUserCallback callback) {
         myRef.child("users/Participant").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -393,6 +427,24 @@ public class DatabaseConnection {
             }
         });
     }
+    private static void getAllJoinRequests(DatabaseJoinRequestCallback callback) {
+        myRef.child("joinRequests").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<JoinRequest> temp = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    JoinRequest e = child.getValue(JoinRequest.class);
+                    if (e != null) temp.add(e);
+                }
+                callback.onJoinRequestsLoaded(temp);
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("DatabaseConnection", "Error loading events", error.toException());
+                callback.onJoinRequestsLoaded(new ArrayList<>());
+            }
+        });
+    }
     private static void updateAllUsers() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(3);
         Log.d("updateAllUsers", "Starting...");
@@ -455,6 +507,24 @@ public class DatabaseConnection {
                 Log.d("updateAllEvents", "Events loaded");
                 allEvents = events;
                 eventsLoaded = true;
+                latch.countDown();
+            }
+        });
+
+        if (!latch.await(5, TimeUnit.SECONDS)) {
+            throw new InterruptedException("Timeout while waiting for Firebase data.");
+        }
+    }
+    public static void updateAllJoinRequests() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        Log.d("updateAllJoinRequests", "Starting...");
+
+        getAllJoinRequests(new DatabaseJoinRequestCallback() {
+            @Override
+            public void onJoinRequestsLoaded(ArrayList<JoinRequest> joinRequests) {
+                Log.d("updateAllJoinRequests", "JoinRequests loaded");
+                allJoinRequests = joinRequests;
+                joinRequestsLoaded = true;
                 latch.countDown();
             }
         });

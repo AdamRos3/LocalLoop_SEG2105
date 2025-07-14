@@ -14,12 +14,15 @@ import org.junit.runner.RunWith;
 import com.example.localloop.model.DatabaseConnection;
 import com.example.localloop.model.Event;
 import com.example.localloop.model.EventCategory;
+import com.example.localloop.model.JoinRequest;
 import com.example.localloop.model.Organizer;
+import com.example.localloop.model.Participant;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventException;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -38,16 +41,20 @@ public class ExampleInstrumentedTest {
 
         new Thread(() -> {
             try {
+                // Creating a request
+                DatabaseConnection dbKB = new DatabaseConnection("kobe", "123");
+                Participant kobe = (Participant)dbKB.getUser();
+                ArrayList<Event> eventstojoin = kobe.getAllEvents(dbKB);
+                kobe.requestJoinEvent(dbKB,eventstojoin.getFirst());
+                // Fetching requests
                 DatabaseConnection db = new DatabaseConnection("uOttawa", "password1");
-                Time time = new Time(12,30);
-                Date date = new Date(2026,5,12);
-                EventCategory category = new EventCategory("Musics","All Music Events","-OUVRRtcizfCAM0lPhoZ");
-                Organizer organizer = (Organizer) db.getUser();
-                Event e = new Event("Drake Concert","at uOttawa campus",category.getCategoryID(),0,date, time, organizer.getUserID(),null);
-                organizer.createEvent(db, e);
-                Log.d("TEST", "Event created");
+                Organizer me = (Organizer)db.getUser();
+                ArrayList<Event> events = me.getUserEvents(db);
+                ArrayList<Participant> requests = me.getJoinRequests(db,events.getFirst());
+                Log.d("requests",requests.toString());
+                Log.d("TEST", "Request created");
             } catch (Exception e) {
-                Log.e("TEST", "Failed to create event", e);
+                Log.e("TEST", "Failed to create request", e);
             } finally {
                 testLatch.countDown();  // Always release the latch!
             }

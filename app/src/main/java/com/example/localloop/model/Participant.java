@@ -1,5 +1,7 @@
 package com.example.localloop.model;
 
+import java.util.ArrayList;
+
 public class Participant extends UserAccount {
 
     private String username;
@@ -25,8 +27,11 @@ public class Participant extends UserAccount {
     public String getUserID() {
         return userID;
     }
-    public void requestJoinEvent() {
-
+    public ArrayList<Event> getAllEvents(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getAllEvents();
+    }
+    public void requestJoinEvent(DatabaseConnection dbConnection, Event event) throws InterruptedException {
+        dbConnection.requestJoinEvent(event);
     }
     public String toString() {
         return "participant: "+username+", ID: "+userID;
