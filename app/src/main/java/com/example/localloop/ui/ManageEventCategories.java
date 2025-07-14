@@ -24,6 +24,7 @@ import com.example.localloop.model.EventCategory;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
+import com.example.localloop.resources.exception.NoSuchEventException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -178,9 +179,18 @@ public class ManageEventCategories extends AppCompatActivity {
                         .setTitle("Delete Category")
                         .setMessage("Are you sure you want to delete \"" + category.getName() + "\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("categories").child(category.getCategoryID());
-                            ref.removeValue();
-                            Toast.makeText(context, "Category Deleted", Toast.LENGTH_SHORT).show();
+                            new Thread(() -> {
+                                try {
+                                    admin.deleteEventCategory(DatabaseInstance.get(),category);
+                                } catch (NoSuchEventCategoryException e) {
+                                    runOnUiThread(() -> Toast.makeText(context, "Category does not exist!", Toast.LENGTH_SHORT).show());
+                                } catch (NoSuchEventException e) {
+                                    runOnUiThread(() -> Toast.makeText(context, "Category deletion event error", Toast.LENGTH_SHORT).show());
+                                } catch (InterruptedException e) {
+                                    runOnUiThread(() -> Toast.makeText(context, "Connection error", Toast.LENGTH_SHORT).show());
+                                }
+                            }).start();
+                            runOnUiThread(() -> Toast.makeText(context, "Category Deleted", Toast.LENGTH_SHORT).show());
                             fetchAndRefreshCategories();
                         })
                         .setNegativeButton("Cancel", null)

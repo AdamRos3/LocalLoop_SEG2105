@@ -131,16 +131,13 @@ public class DatabaseConnection {
         }
         // Delete all associated events (which inherently deletes all associated JoinRequests and Reservations
         updateAllEvents();
-        Log.d("updateEvents","");
         for (Event e : allEvents) {
-            Log.d("searchEvent",e.toString());
             if ((e.getCategoryID()).equals(categoryToDelete.getCategoryID())) {
                 deleteEvent(e);
             }
         }
         // Delete Event Category
         myRef.child("categories").child(categoryToDelete.getCategoryID()).removeValue();
-        Log.d("doneDeleteCateg","");
     }
     protected static void editEventCategory(EventCategory categoryToEdit, String name, String description) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
         // Called by Admin Class Only
