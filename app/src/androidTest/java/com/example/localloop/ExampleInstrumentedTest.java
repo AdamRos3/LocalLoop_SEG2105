@@ -42,17 +42,21 @@ public class ExampleInstrumentedTest {
         new Thread(() -> {
             try {
                 // Creating a request
+                /*
                 DatabaseConnection dbKB = new DatabaseConnection("kobe", "123");
                 Participant kobe = (Participant)dbKB.getUser();
                 ArrayList<Event> eventstojoin = kobe.getAllEvents(dbKB);
                 kobe.requestJoinEvent(dbKB,eventstojoin.getFirst());
+                */
                 // Fetching requests
                 DatabaseConnection db = new DatabaseConnection("uOttawa", "password1");
                 Organizer me = (Organizer)db.getUser();
                 ArrayList<Event> events = me.getUserEvents(db);
                 ArrayList<Participant> requests = me.getJoinRequests(db,events.getFirst());
+                // accepting requests
+                me.acceptJoinRequest(db,requests.getFirst(),events.getFirst());
                 Log.d("requests",requests.toString());
-                Log.d("TEST", "Request created");
+                Log.d("TEST", "Request accepted");
             } catch (Exception e) {
                 Log.e("TEST", "Failed to create request", e);
             } finally {

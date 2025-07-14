@@ -320,7 +320,27 @@ public class DatabaseConnection {
         }
         return requests;
     }
+    protected void acceptJoinRequest(Participant participant, Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllJoinRequests();
+        updateAllUsers();
 
+        JoinRequest request = null;
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getParticipantID()).equals(participant.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    request = r;
+                }
+            }
+        }
+        // TODO no such request error handling
+        myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
+        String key = myRef.push().getKey();
+        myRef.child("reservations").child(key).setValue(new Reservation(user.getUserID(),event.getEventID(),key));
+
+
+    }
     // Private Methods
     private interface DatabaseUserCallback {
         void onParticipantsLoaded(ArrayList<Participant> participants);
