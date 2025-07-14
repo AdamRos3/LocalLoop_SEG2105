@@ -26,25 +26,18 @@ public class DatabaseConnection {
     private static ArrayList<EventCategory> allEventCategories = new ArrayList<>();
     private static ArrayList<Event> allEvents = new ArrayList<>();
     private static ArrayList<JoinRequest> allJoinRequests = new ArrayList<>();
-
+    private static ArrayList<Reservation> allReservations = new ArrayList<>();
     private static boolean participantsLoaded = false;
     private static boolean organizersLoaded = false;
     private static boolean adminsLoaded = false;
     private static boolean eventCategoriesLoaded = false;
     private static boolean eventsLoaded = false;
     private static boolean joinRequestsLoaded = false;
+    private static boolean reservationsLoaded = false;
 
     // Public methods
     public DatabaseConnection(String username, String password) throws NoSuchUserException, InterruptedException {
         updateAllUsers();
-        updateAllEventCategories();
-        updateAllEvents();
-
-        Log.d("Participants", String.valueOf(allParticipants));
-        Log.d("Organizers", String.valueOf(allOrganizers));
-        Log.d("Admins", String.valueOf(allAdmins));
-        Log.d("EventCategories", String.valueOf(allEventCategories));
-        Log.d("Events", String.valueOf(allEvents));
 
         boolean found = false;
 
@@ -271,7 +264,7 @@ public class DatabaseConnection {
         return allOrganizers;
     }
     protected ArrayList<EventCategory> getAllEventCategories() throws InterruptedException {
-        // Called by Admin and Organizer Class Only
+        // Called by Admin, Organizer and Participant Class Only
         updateAllEventCategories(); //
         return allEventCategories;
     }
@@ -320,6 +313,31 @@ public class DatabaseConnection {
         }
         return requests;
     }
+
+    protected ArrayList<Event> getJoinRequests() throws InterruptedException {
+        // Called by Participant Class only
+        updateAllJoinRequests();
+        updateAllEvents();
+
+        ArrayList<String> eventIDs = new ArrayList<>();
+        ArrayList<Event> requests = new ArrayList<>();
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((user.getUserID()).equals(r.getParticipantID())) {
+                eventIDs.add(r.getEventID());
+            }
+        }
+
+        for (Event e : allEvents) {
+            for (String ID : eventIDs) {
+                if (ID.equals(e.getEventID())) {
+                    requests.add(e);
+                }
+            }
+        }
+        return requests;
+    }
+
     protected void acceptJoinRequest(Participant participant, Event event) throws InterruptedException {
         // Called by Organizer Class only
         updateAllJoinRequests();
@@ -337,7 +355,7 @@ public class DatabaseConnection {
         // TODO no such request error handling
         myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
         String key = myRef.push().getKey();
-        myRef.child("reservations").child(key).setValue(new Reservation(user.getUserID(),event.getEventID(),key));
+        myRef.child("reservations").child(key).setValue(new Reservation(participant.getUserID(),event.getEventID(),key));
     }
     protected void rejectJoinRequest(Participant participant, Event event) throws InterruptedException {
         // Called by Organizer Class only
@@ -356,6 +374,76 @@ public class DatabaseConnection {
         // TODO no such request error handling
         myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
+    protected ArrayList<Event> getReservations() throws InterruptedException {
+        // Called by Participant Class only
+        updateAllReservations();
+        updateAllEvents();
+
+        ArrayList<String> eventIDs = new ArrayList<>();
+        ArrayList<Event> requests = new ArrayList<>();
+
+        for (Reservation r : allReservations) {
+            if ((user.getUserID()).equals(r.getAttendeeID())) {
+                eventIDs.add(r.getEventID());
+            }
+        }
+
+        for (Event e : allEvents) {
+            for (String ID : eventIDs) {
+                if (ID.equals(e.getEventID())) {
+                    requests.add(e);
+                }
+            }
+        }
+        return requests;
+    }
+    protected ArrayList<Participant> getReservations(Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllReservations();
+        updateAllUsers();
+
+        ArrayList<String> userIDs = new ArrayList<>();
+        ArrayList<Participant> reservations = new ArrayList<>();
+
+        for (Reservation r : allReservations) {
+            if ((event.getEventID()).equals(r.getEventID())) {
+                userIDs.add(r.getAttendeeID());
+            }
+        }
+
+        for (Participant p : allParticipants) {
+            for (String ID : userIDs) {
+                if (ID.equals(p.getUserID())) {
+                    reservations.add(p);
+                }
+            }
+        }
+        return reservations;
+    }
+
+    protected Event eventSearch(String name) throws InterruptedException {
+        // Called by Participant Class only
+        updateAllEvents();
+        Event event = null;
+        for (Event e : allEvents) {
+            if (name.equals(e.getName())) {
+                event = e;
+            }
+        }
+        return event;
+    }
+    protected ArrayList<Event> eventSearch(EventCategory category) throws InterruptedException {
+        // Called by Participant Class only
+        updateAllEventCategories();
+        updateAllEvents();
+        ArrayList<Event> events = new ArrayList<>();
+        for (Event e : allEvents) {
+            if ((category.getCategoryID()).equals(e.getCategoryID())) {
+                events.add(e);
+            }
+        }
+        return events;
+    }
     // Private Methods
     private interface DatabaseUserCallback {
         void onParticipantsLoaded(ArrayList<Participant> participants);
@@ -370,6 +458,9 @@ public class DatabaseConnection {
     }
     private interface DatabaseJoinRequestCallback {
         void onJoinRequestsLoaded(ArrayList<JoinRequest> joinRequests);
+    }
+    private interface DatabaseReservationCallback {
+        void onReservationsLoaded(ArrayList<Reservation> reservations);
     }
     private static void getAllUsers(DatabaseUserCallback callback) {
         myRef.child("users/Participant").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -475,8 +566,26 @@ public class DatabaseConnection {
             }
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.e("DatabaseConnection", "Error loading events", error.toException());
+                Log.e("DatabaseConnection", "Error loading join requests", error.toException());
                 callback.onJoinRequestsLoaded(new ArrayList<>());
+            }
+        });
+    }
+    private static void getAllReservations(DatabaseReservationCallback callback) {
+        myRef.child("reservations").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<Reservation> temp = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Reservation e = child.getValue(Reservation.class);
+                    if (e != null) temp.add(e);
+                }
+                callback.onReservationsLoaded(temp);
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.e("DatabaseConnection", "Error loading reservations", error.toException());
+                callback.onReservationsLoaded(new ArrayList<>());
             }
         });
     }
@@ -531,6 +640,7 @@ public class DatabaseConnection {
         if (!latch.await(5, TimeUnit.SECONDS)) {
             throw new InterruptedException("Timeout while waiting for Firebase data.");
         }
+        Log.d("EventCategories", String.valueOf(allEventCategories));
     }
     public static void updateAllEvents() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
@@ -549,6 +659,7 @@ public class DatabaseConnection {
         if (!latch.await(5, TimeUnit.SECONDS)) {
             throw new InterruptedException("Timeout while waiting for Firebase data.");
         }
+        Log.d("Events", String.valueOf(allEvents));
     }
     public static void updateAllJoinRequests() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
@@ -567,5 +678,25 @@ public class DatabaseConnection {
         if (!latch.await(5, TimeUnit.SECONDS)) {
             throw new InterruptedException("Timeout while waiting for Firebase data.");
         }
+        Log.d("JoinRequests", String.valueOf(allJoinRequests));
+    }
+    public static void updateAllReservations() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        Log.d("updateAllReservations", "Starting...");
+
+        getAllReservations(new DatabaseReservationCallback() {
+            @Override
+            public void onReservationsLoaded(ArrayList<Reservation> reservations) {
+                Log.d("updateAllReservations", "Reservations loaded");
+                allReservations = reservations;
+                reservationsLoaded = true;
+                latch.countDown();
+            }
+        });
+
+        if (!latch.await(5, TimeUnit.SECONDS)) {
+            throw new InterruptedException("Timeout while waiting for Firebase data.");
+        }
+        Log.d("Reservations", String.valueOf(allReservations));
     }
 }

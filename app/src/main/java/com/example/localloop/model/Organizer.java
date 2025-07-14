@@ -56,6 +56,9 @@ public class Organizer extends UserAccount {
     public void rejectJoinRequest(DatabaseConnection dbConnection, Participant participant, Event event) throws InterruptedException {
         dbConnection.rejectJoinRequest(participant, event);
     }
+    public ArrayList<Participant> getReservations(DatabaseConnection dbConnection, Event event) throws InterruptedException {
+        return dbConnection.getReservations(event);
+    }
     public String toString() {
         return "organizer: "+username+", ID: "+userID;
     }

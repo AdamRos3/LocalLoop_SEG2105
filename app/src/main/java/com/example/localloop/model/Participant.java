@@ -30,11 +30,23 @@ public class Participant extends UserAccount {
     public ArrayList<Event> getAllEvents(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getAllEvents();
     }
+    public ArrayList<EventCategory> getAllEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getAllEventCategories();
+    }
     public void requestJoinEvent(DatabaseConnection dbConnection, Event event) throws InterruptedException {
         dbConnection.requestJoinEvent(event);
     }
     public ArrayList<Event> getJoinRequests(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getJoinRequests();
+    }
+    public ArrayList<Event> getReservations(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getReservations();
+    }
+    public Event eventSearch(DatabaseConnection dbConnection, String name) throws InterruptedException {
+        return dbConnection.eventSearch(name);
+    }
+    public ArrayList<Event> eventSearch(DatabaseConnection dbConnection, EventCategory category) throws InterruptedException {
+        return dbConnection.eventSearch(category);
     }
     public String toString() {
         return "participant: "+username+", ID: "+userID;
