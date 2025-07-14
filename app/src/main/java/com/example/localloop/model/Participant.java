@@ -33,6 +33,9 @@ public class Participant extends UserAccount {
     public void requestJoinEvent(DatabaseConnection dbConnection, Event event) throws InterruptedException {
         dbConnection.requestJoinEvent(event);
     }
+    public ArrayList<Event> getJoinRequests(DatabaseConnection dbConnection) throws InterruptedException {
+        return dbConnection.getJoinRequests();
+    }
     public String toString() {
         return "participant: "+username+", ID: "+userID;
     }

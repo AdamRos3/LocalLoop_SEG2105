@@ -46,12 +46,19 @@ public class ExampleInstrumentedTest {
                 Participant kobe = (Participant)dbKB.getUser();
                 ArrayList<Event> eventstojoin = kobe.getAllEvents(dbKB);
                 kobe.requestJoinEvent(dbKB,eventstojoin.getFirst());
-                // Fetching requests
+                // Fetching requests - Participant
+                ArrayList<Event> requests = kobe.getJoinRequests(dbKB);
+                Log.d("requests",requests.toString());
+                // Fetching reservations - Participant
+                // Fetching requests - Organizer
+                /*
                 DatabaseConnection db = new DatabaseConnection("uOttawa", "password1");
                 Organizer me = (Organizer)db.getUser();
                 ArrayList<Event> events = me.getUserEvents(db);
                 ArrayList<Participant> requests = me.getJoinRequests(db,events.getFirst());
                 Log.d("requests",requests.toString());
+                */
+                // Fetching reservations - Organizer
                 Log.d("TEST", "Request created");
             } catch (Exception e) {
                 Log.e("TEST", "Failed to create request", e);

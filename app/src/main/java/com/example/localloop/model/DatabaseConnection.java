@@ -320,7 +320,29 @@ public class DatabaseConnection {
         }
         return requests;
     }
+    protected ArrayList<Event> getJoinRequests() throws InterruptedException {
+        // Called by Participant Class only
+        updateAllJoinRequests();
+        updateAllEvents();
 
+        ArrayList<String> eventIDs = new ArrayList<>();
+        ArrayList<Event> requests = new ArrayList<>();
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((user.getUserID()).equals(r.getParticipantID())) {
+                eventIDs.add(r.getEventID());
+            }
+        }
+
+        for (Event e : allEvents) {
+            for (String ID : eventIDs) {
+                if (ID.equals(e.getEventID())) {
+                    requests.add(e);
+                }
+            }
+        }
+        return requests;
+    }
     // Private Methods
     private interface DatabaseUserCallback {
         void onParticipantsLoaded(ArrayList<Participant> participants);
