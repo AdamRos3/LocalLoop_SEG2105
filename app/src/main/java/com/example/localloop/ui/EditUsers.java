@@ -22,6 +22,7 @@ import com.example.localloop.model.Organizer;
 import com.example.localloop.model.Participant;
 import com.example.localloop.model.UserAccount;
 import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.NoSuchEventException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
 public class EditUsers extends AppCompatActivity {
@@ -100,7 +101,10 @@ public class EditUsers extends AppCompatActivity {
                 admin.deleteUser(DatabaseInstance.get(), userToEdit);
             } catch (NoSuchUserException e) {
                 Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
-            } catch (InterruptedException e) {
+            } catch (NoSuchEventException e) {
+                Log.e("NoSuchEventException","User's events cannot be deleted");
+            }
+            catch (InterruptedException e) {
                 Log.e("InterruptedException", "Interrupted at onCreateUserAccount > onDeleteAccount");
             }
         }).start();

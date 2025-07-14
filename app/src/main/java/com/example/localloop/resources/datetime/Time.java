@@ -40,6 +40,18 @@ public class Time {
     }
     public String getTimezone() { return timezone; }
     public String toString() {
-        return hour+":"+minute+" "+timezone;
+        String hourStr = "";
+        String minuteStr = "";
+        if (hour < 10) {
+            hourStr = "0"+String.valueOf(hour);
+        } else {
+            hourStr = String.valueOf(hour);
+        }
+        if (minute < 10) {
+            minuteStr = "0"+String.valueOf(minute);
+        } else {
+            minuteStr = String.valueOf(minute);
+        }
+        return hourStr+":"+minuteStr+" "+timezone;
     }
 }

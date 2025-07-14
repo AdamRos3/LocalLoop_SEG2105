@@ -37,19 +37,12 @@ public class WelcomeAdmin extends AppCompatActivity {
         String message = "Welcome " + admin.getUsername();
         welcomeMessage.setText(message);
     }
-
-    public void ReturnToLogin(View view) {
-        //Intent intent = new Intent(this, MainActivity.class);
-        finish();
-        //startActivity(intent);
-    }
-
-    public void toManageUsers(View view) {
-        Intent intent = new Intent(this, ManageUsers.class);
-        startActivity(intent);
-    }
     public void toManageEvents(View view) {
         Intent intent = new Intent(this, ManageEventCategories.class);
+        startActivity(intent);
+    }
+    public void returnToLogin(View view) {
+        Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
 

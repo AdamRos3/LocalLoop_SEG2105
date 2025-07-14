@@ -115,7 +115,7 @@ public class DatabaseConnection {
         String key = myRef.push().getKey();
         myRef.child("categories").child(key).setValue(new EventCategory(category.getName(),category.getDescription(),key));
     }
-    protected static void deleteEventCategory(EventCategory categoryToDelete) throws NoSuchEventCategoryException, InterruptedException {
+    protected static void deleteEventCategory(EventCategory categoryToDelete) throws NoSuchEventCategoryException, NoSuchEventException, InterruptedException {
         // Called by Admin Class Only
         updateAllEventCategories();
         boolean found = false;
@@ -129,6 +129,14 @@ public class DatabaseConnection {
             Log.e(categoryToDelete.getName(), "EventCategory Not Found");
             throw new NoSuchEventCategoryException("EventCategory does not exist");
         }
+        // Delete all associated events (which inherently deletes all associated JoinRequests and Reservations
+        updateAllEvents();
+        for (Event e : allEvents) {
+            if ((e.getCategoryID()).equals(categoryToDelete.getCategoryID())) {
+                deleteEvent(e);
+            }
+        }
+        // Delete Event Category
         myRef.child("categories").child(categoryToDelete.getCategoryID()).removeValue();
     }
     protected static void editEventCategory(EventCategory categoryToEdit, String name, String description) throws NoSuchEventCategoryException, InvalidEventNameException, InterruptedException {
@@ -221,8 +229,22 @@ public class DatabaseConnection {
             throw new NoSuchEventException("Event does not exist");
         }
         myRef.child("events").child(eventToDelete.getEventID()).removeValue();
+        // Delete all associated joinRequests
+        updateAllJoinRequests();
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getEventID()).equals(eventToDelete.getEventID())) {
+                myRef.child("joinRequests").child(r.getJoinRequestID()).removeValue();
+            }
+        }
+        // Delete all associated Reservations
+        updateAllReservations();
+        for (Reservation r : allReservations) {
+            if ((r.getEventID()).equals(eventToDelete.getEventID())) {
+                myRef.child("reservations").child(r.getReservationID()).removeValue();
+            }
+        }
     }
-    protected static void deleteUser(UserAccount userToDelete) throws NoSuchUserException, InterruptedException {
+    protected static void deleteUser(UserAccount userToDelete) throws NoSuchUserException, NoSuchEventException, InterruptedException {
         // Called by Admin Class Only
         updateAllUsers();
         boolean found = false;
@@ -239,6 +261,13 @@ public class DatabaseConnection {
                 throw new NoSuchUserException("Nonexisting user cannot be deleted");
             }
             myRef.child("users/Organizer").child(userToDelete.getUserID()).removeValue();
+            // Delete all associated events (which inherently deletes all associated JoinRequests and Reservations
+            updateAllEvents();
+            for (Event e : allEvents) {
+                if ((e.getOrganizerID()).equals(userToDelete.getUserID())) {
+                    deleteEvent(e);
+                }
+            }
         } else {
             // Check that user exists
             for (Participant p : allParticipants) {
@@ -313,7 +342,6 @@ public class DatabaseConnection {
         }
         return requests;
     }
-
     protected ArrayList<Event> getJoinRequests() throws InterruptedException {
         // Called by Participant Class only
         updateAllJoinRequests();
@@ -337,7 +365,6 @@ public class DatabaseConnection {
         }
         return requests;
     }
-
     protected void acceptJoinRequest(Participant participant, Event event) throws InterruptedException {
         // Called by Organizer Class only
         updateAllJoinRequests();
@@ -420,7 +447,6 @@ public class DatabaseConnection {
         }
         return reservations;
     }
-
     protected Event eventSearch(String name) throws InterruptedException {
         // Called by Participant Class only
         updateAllEvents();

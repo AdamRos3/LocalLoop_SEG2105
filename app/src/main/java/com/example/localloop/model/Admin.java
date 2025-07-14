@@ -3,6 +3,7 @@ package com.example.localloop.model;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
+import com.example.localloop.resources.exception.NoSuchEventException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 
 import java.util.ArrayList;
@@ -37,13 +38,13 @@ public class Admin extends UserAccount {
     public ArrayList<Organizer> getAllOrganizers(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getAllOrganizers();
     }
-    public void deleteUser(DatabaseConnection dbConnection, UserAccount user) throws NoSuchUserException, InterruptedException {
+    public void deleteUser(DatabaseConnection dbConnection, UserAccount user) throws NoSuchUserException, NoSuchEventException, InterruptedException {
         dbConnection.deleteUser(user);
     }
     public void createEventCategory(DatabaseConnection dbConnection, EventCategory category) throws InvalidEventCategoryNameException, InterruptedException {
         dbConnection.createEventCategory(category);
     }
-    public void deleteEventCategory(DatabaseConnection dbConnection, EventCategory category) throws NoSuchEventCategoryException, InterruptedException {
+    public void deleteEventCategory(DatabaseConnection dbConnection, EventCategory category) throws NoSuchEventCategoryException, NoSuchEventException, InterruptedException {
         dbConnection.deleteEventCategory(category);
     }
     public void editEventCategory(DatabaseConnection dbConnection, EventCategory category, String name, String description) throws InvalidEventNameException, NoSuchEventCategoryException, InterruptedException {
