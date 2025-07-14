@@ -30,7 +30,9 @@ import com.example.localloop.model.Event;
 import com.example.localloop.model.Organizer;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
+import com.example.localloop.resources.exception.InvalidDateException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.InvalidTimeException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
 
@@ -175,24 +177,26 @@ public class ManageEvents extends AppCompatActivity {
                 try {
                     double fee = Double.parseDouble(feeStr);
                     String[] t = timeStr.split(":");
-                    Time timeObj = new Time(Integer.parseInt(t[0]), Integer.parseInt(t[1]));
                     String[] d = dateStr.split("-");
-                    Date dateObj = new Date(Integer.parseInt(d[0]), (Integer.parseInt(d[1]) - 1), Integer.parseInt(d[2]));
-                    organizer.createEvent(DatabaseInstance.get(), new Event(name, description, categoryID, fee, dateObj, timeObj, organizer.getUserID(), null));
+                    organizer.createEvent(DatabaseInstance.get(), new Event(name, description, categoryID, fee, new Date(Integer.parseInt(d[0]), (Integer.parseInt(d[1])), Integer.parseInt(d[2])), new Time(Integer.parseInt(t[0]), Integer.parseInt(t[1])), organizer.getUserID(), null));
                     allCategories.clear();
                     userEvents.clear();
                     allCategoryNames.clear();
                     allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
                     userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
-                    for (EventCategory category:allCategories) {
+                    for (EventCategory category : allCategories) {
                         allCategoryNames.add(category.getName());
                     }
                     runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         Toast.makeText(this, "Event added", Toast.LENGTH_SHORT).show();
                     });
+                } catch (InvalidTimeException e) {
+                    runOnUiThread(() -> Toast.makeText(this, "Invalid time", Toast.LENGTH_SHORT).show());
+                } catch (InvalidDateException e) {
+                    runOnUiThread(() -> Toast.makeText(this, "Invalid date", Toast.LENGTH_SHORT).show());
                 } catch (Exception e) {
-                    runOnUiThread(() -> Toast.makeText(this, "Invalid fee or date/time", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(this, "Invalid entry", Toast.LENGTH_SHORT).show());
                 }
             }).start();
         });
@@ -323,30 +327,31 @@ public class ManageEvents extends AppCompatActivity {
 
                             String[] dateParts = newDateStr.split("-");
                             int year = Integer.parseInt(dateParts[0]);
-                            int month = (Integer.parseInt(dateParts[1]) - 1);
+                            int month = (Integer.parseInt(dateParts[1]));
                             int day = Integer.parseInt(dateParts[2]);
 
                             String[] timeParts = newTimeStr.split(":");
                             int hour = Integer.parseInt(timeParts[0]);
                             int minute = Integer.parseInt(timeParts[1]);
 
-                            Date newDate = new Date(year, month, day);
-                            Time newTime = new Time(hour, minute);
-
                             try {
-                                organizer.editEvent(DatabaseInstance.get(),event,new Event(newName, newDesc, newCatID, newFee, newDate, newTime, organizer.getUserID(), event.getEventID()));
-                                ((ManageEvents)context).allCategories.clear();
-                                ((ManageEvents)context).userEvents.clear();
-                                ((ManageEvents)context).allCategoryNames.clear();
-                                ((ManageEvents)context).allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
-                                ((ManageEvents)context).userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
-                                for (EventCategory category:((ManageEvents)context).allCategories) {
-                                    ((ManageEvents)context).allCategoryNames.add(category.getName());
+                                organizer.editEvent(DatabaseInstance.get(), event, new Event(newName, newDesc, newCatID, newFee, new Date(year, month, day), new Time(hour, minute), organizer.getUserID(), event.getEventID()));
+                                ((ManageEvents) context).allCategories.clear();
+                                ((ManageEvents) context).userEvents.clear();
+                                ((ManageEvents) context).allCategoryNames.clear();
+                                ((ManageEvents) context).allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
+                                ((ManageEvents) context).userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
+                                for (EventCategory category : ((ManageEvents) context).allCategories) {
+                                    ((ManageEvents) context).allCategoryNames.add(category.getName());
                                 }
-                                ((ManageEvents)context).runOnUiThread(() -> {
-                                    ((ManageEvents)context).adapter.notifyDataSetChanged();
+                                ((ManageEvents) context).runOnUiThread(() -> {
+                                    ((ManageEvents) context).adapter.notifyDataSetChanged();
                                     Toast.makeText(context, "Event Updated", Toast.LENGTH_SHORT).show();
                                 });
+                            } catch (InvalidTimeException e) {
+                                ((ManageEvents) context).runOnUiThread(() -> Toast.makeText(context, "Invalid time", Toast.LENGTH_SHORT).show());
+                            } catch (InvalidDateException e) {
+                                ((ManageEvents)context).runOnUiThread(() -> Toast.makeText(context, "Invalid date", Toast.LENGTH_SHORT).show());
                             } catch (Exception e) {
                                 ((ManageEvents)context).runOnUiThread(() -> Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show());
                             }
