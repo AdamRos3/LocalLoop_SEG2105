@@ -320,28 +320,41 @@ public class DatabaseConnection {
         }
         return requests;
     }
-    protected ArrayList<Event> getJoinRequests() throws InterruptedException {
-        // Called by Participant Class only
+    protected void acceptJoinRequest(Participant participant, Event event) throws InterruptedException {
+        // Called by Organizer Class only
         updateAllJoinRequests();
-        updateAllEvents();
+        updateAllUsers();
 
-        ArrayList<String> eventIDs = new ArrayList<>();
-        ArrayList<Event> requests = new ArrayList<>();
+        JoinRequest request = null;
 
         for (JoinRequest r : allJoinRequests) {
-            if ((user.getUserID()).equals(r.getParticipantID())) {
-                eventIDs.add(r.getEventID());
-            }
-        }
-
-        for (Event e : allEvents) {
-            for (String ID : eventIDs) {
-                if (ID.equals(e.getEventID())) {
-                    requests.add(e);
+            if ((r.getParticipantID()).equals(participant.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    request = r;
                 }
             }
         }
-        return requests;
+        // TODO no such request error handling
+        myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
+        String key = myRef.push().getKey();
+        myRef.child("reservations").child(key).setValue(new Reservation(user.getUserID(),event.getEventID(),key));
+    }
+    protected void rejectJoinRequest(Participant participant, Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllJoinRequests();
+        updateAllUsers();
+
+        JoinRequest request = null;
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getParticipantID()).equals(participant.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    request = r;
+                }
+            }
+        }
+        // TODO no such request error handling
+        myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
     // Private Methods
     private interface DatabaseUserCallback {
