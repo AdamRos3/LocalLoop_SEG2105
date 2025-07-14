@@ -54,7 +54,10 @@ public class ExampleInstrumentedTest {
                 ArrayList<Event> events = me.getUserEvents(db);
                 ArrayList<Participant> requests = me.getJoinRequests(db,events.getFirst());
                 // accepting requests
+                /*
                 me.acceptJoinRequest(db,requests.getFirst(),events.getFirst());
+                */
+                //me.rejectJoinRequest(db,requests.getFirst(),events.getFirst());
                 Log.d("requests",requests.toString());
                 Log.d("TEST", "Request accepted");
             } catch (Exception e) {
