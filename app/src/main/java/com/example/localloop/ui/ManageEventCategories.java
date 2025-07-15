@@ -182,6 +182,7 @@ public class ManageEventCategories extends AppCompatActivity {
                             new Thread(() -> {
                                 try {
                                     admin.deleteEventCategory(DatabaseInstance.get(),category);
+                                    fetchAndRefreshCategories();
                                 } catch (NoSuchEventCategoryException e) {
                                     runOnUiThread(() -> Toast.makeText(context, "Category does not exist!", Toast.LENGTH_SHORT).show());
                                 } catch (NoSuchEventException e) {
@@ -191,7 +192,6 @@ public class ManageEventCategories extends AppCompatActivity {
                                 }
                             }).start();
                             runOnUiThread(() -> Toast.makeText(context, "Category Deleted", Toast.LENGTH_SHORT).show());
-                            fetchAndRefreshCategories();
                         })
                         .setNegativeButton("Cancel", null)
                         .show();

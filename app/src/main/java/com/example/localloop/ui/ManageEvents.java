@@ -31,10 +31,7 @@ import com.example.localloop.model.Organizer;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.exception.InvalidDateException;
-import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.InvalidTimeException;
-import com.example.localloop.resources.exception.NoSuchEventCategoryException;
-import com.example.localloop.resources.exception.NoSuchEventException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,11 +66,11 @@ public class ManageEvents extends AppCompatActivity {
                 allCategoryNames.clear();
                 allCategories.addAll(organizer.getAllEventCategories(DatabaseInstance.get()));
                 userEvents.addAll(organizer.getUserEvents(DatabaseInstance.get()));
-                for (EventCategory category:allCategories) {
+                for (EventCategory category : allCategories) {
                     allCategoryNames.add(category.getName());
                 }
                 runOnUiThread(() -> {
-                    RecyclerView eventsListView = findViewById(R.id.listViewEvents);
+                    RecyclerView eventsListView = findViewById(R.id.listViewUsers);
                     adapter = new eventAdapter(this, userEvents);
                     eventsListView.setLayoutManager(new LinearLayoutManager(this));
                     eventsListView.setAdapter(adapter);
@@ -83,37 +80,6 @@ public class ManageEvents extends AppCompatActivity {
                 Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
             }
         }).start();
-        /*
-        //retrieveCategoriesFromDatabase();
-
-        RecyclerView eventsListView = findViewById(R.id.listViewEvents);
-        eventAdapter adapter = new eventAdapter(this, userEvents);
-        eventsListView.setLayoutManager(new LinearLayoutManager(this));
-        eventsListView.setAdapter(adapter);
-
-
-        eventsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                events.clear();
-                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    Event event = eventSnapshot.getValue(Event.class);
-                    if (event != null) {
-                        if (event.getOrganizerID().equals(organizer.getUserID())) {
-                            events.add(event);
-                        }
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w("ManageEventListener", error.toException());
-                Toast.makeText(ManageEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
-            }
-        });
-         */
     }
 
     public void onBackClick(View view) {
@@ -211,10 +177,10 @@ public class ManageEvents extends AppCompatActivity {
         public eventViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nameText = itemView.findViewById(R.id.name);
-            categoryText = itemView.findViewById(R.id.category);
-            descriptionText = itemView.findViewById(R.id.description);
-            dateTimeText = itemView.findViewById(R.id.dateTime);
+            nameText = itemView.findViewById(R.id.username);
+            categoryText = itemView.findViewById(R.id.AccountType);
+            descriptionText = itemView.findViewById(R.id.userID);
+            dateTimeText = itemView.findViewById(R.id.password);
             feeText = itemView.findViewById(R.id.fee);
 
             editButton = itemView.findViewById(R.id.buttonEdit);

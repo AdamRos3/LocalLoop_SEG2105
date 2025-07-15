@@ -45,8 +45,8 @@ public class Login extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                dbConnection = new DatabaseConnection(username, password);
-                user = dbConnection.getUser();
+                DatabaseInstance.set(new DatabaseConnection(username, password));
+                user = DatabaseInstance.get().getUser();
                 runOnUiThread(() -> HandleValidCredentials(view));
             } catch (NoSuchUserException e) {
                 runOnUiThread(() -> HandleInvalidCredentials(view));

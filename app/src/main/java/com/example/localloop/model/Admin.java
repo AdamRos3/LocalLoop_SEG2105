@@ -41,6 +41,9 @@ public class Admin extends UserAccount {
     public void deleteUser(DatabaseConnection dbConnection, UserAccount user) throws NoSuchUserException, NoSuchEventException, InterruptedException {
         dbConnection.deleteUser(user);
     }
+    public void deleteUser(DatabaseConnection dbConnection, String userID) throws NoSuchUserException, NoSuchEventException, InterruptedException {
+        dbConnection.deleteUser(userID);
+    }
     public void createEventCategory(DatabaseConnection dbConnection, EventCategory category) throws InvalidEventCategoryNameException, InterruptedException {
         dbConnection.createEventCategory(category);
     }

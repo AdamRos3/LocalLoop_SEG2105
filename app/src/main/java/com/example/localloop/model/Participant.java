@@ -1,5 +1,8 @@
 package com.example.localloop.model;
 
+import com.example.localloop.resources.exception.InvalidJoinRequestException;
+import com.example.localloop.resources.exception.NoSuchEventException;
+
 import java.util.ArrayList;
 
 public class Participant extends UserAccount {
@@ -33,7 +36,7 @@ public class Participant extends UserAccount {
     public ArrayList<EventCategory> getAllEventCategories(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getAllEventCategories();
     }
-    public void requestJoinEvent(DatabaseConnection dbConnection, Event event) throws InterruptedException {
+    public void requestJoinEvent(DatabaseConnection dbConnection, Event event) throws InvalidJoinRequestException, NoSuchEventException, InterruptedException {
         dbConnection.requestJoinEvent(event);
     }
     public ArrayList<Event> getJoinRequests(DatabaseConnection dbConnection) throws InterruptedException {

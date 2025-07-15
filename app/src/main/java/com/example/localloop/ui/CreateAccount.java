@@ -1,5 +1,6 @@
 package com.example.localloop.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -57,5 +58,9 @@ public class CreateAccount extends AppCompatActivity {
                 Log.e("InterruptedException","Interrupted at onCreateUserAccount > CreateAccount");
             }
         }).start();
+    }
+    public void onBackClicked(View view) {
+        Intent intent = new Intent(this, WelcomeAdmin.class);
+        startActivity(intent);
     }
 }

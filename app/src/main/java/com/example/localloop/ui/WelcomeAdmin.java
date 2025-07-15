@@ -13,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
 import com.example.localloop.model.Admin;
-import com.example.localloop.model.DatabaseConnection;
 
 public class WelcomeAdmin extends AppCompatActivity {
 
@@ -39,6 +38,10 @@ public class WelcomeAdmin extends AppCompatActivity {
     }
     public void toManageEvents(View view) {
         Intent intent = new Intent(this, ManageEventCategories.class);
+        startActivity(intent);
+    }
+    public void toManageUsers(View view) {
+        Intent intent = new Intent(this, ManageUsers.class);
         startActivity(intent);
     }
     public void returnToLogin(View view) {

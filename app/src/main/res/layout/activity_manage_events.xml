@@ -21,7 +21,7 @@
             android:text="Back" />
 
         <TextView
-            android:id="@+id/manageEventPageTitle"
+            android:id="@+id/manageUsersPageTitle"
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:layout_gravity="center"
@@ -38,7 +38,7 @@
             android:text="Add Event" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listViewEvents"
+            android:id="@+id/listViewUsers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbarAlwaysDrawVerticalTrack="true"

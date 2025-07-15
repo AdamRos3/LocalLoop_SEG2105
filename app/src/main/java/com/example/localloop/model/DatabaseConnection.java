@@ -6,6 +6,7 @@ import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.datetime.Date;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
+import com.example.localloop.resources.exception.InvalidJoinRequestException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
 import com.example.localloop.resources.exception.NoSuchUserException;
@@ -280,6 +281,62 @@ public class DatabaseConnection {
                 throw new NoSuchUserException("Nonexisting user cannot be deleted");
             }
             myRef.child("users/Participant").child(userToDelete.getUserID()).removeValue();
+            // Delete all associated join requests and reservations
+            updateAllJoinRequests();
+            for (JoinRequest r : allJoinRequests) {
+                if ((user.getUserID()).equals(r.getParticipantID())) {
+                    myRef.child("joinRequests").child(r.getJoinRequestID()).removeValue();
+                }
+            }
+            updateAllReservations();
+            for (Reservation r : allReservations) {
+                if ((user.getUserID()).equals(r.getAttendeeID())) {
+                    myRef.child("reservations").child(r.getReservationID()).removeValue();
+                }
+            }
+        }
+    }
+    protected static void deleteUser(String userID) throws NoSuchUserException, NoSuchEventException, InterruptedException {
+        // Called by Admin Class Only
+        updateAllUsers();
+        boolean found = false;
+
+        // Check that user exists
+        for (Organizer o : allOrganizers) {
+            if (o.getUserID().equals(userID)) {
+                found = true;
+                myRef.child("users/Organizer").child(userID).removeValue();
+                // Delete all associated events (which inherently deletes all associated JoinRequests and Reservations
+                updateAllEvents();
+                for (Event e : allEvents) {
+                    if ((e.getOrganizerID()).equals(userID)) {
+                        deleteEvent(e);
+                    }
+                }
+            }
+        }
+        for (Participant p : allParticipants) {
+            if (p.getUserID().equals(userID)) {
+                found = true;
+                myRef.child("users/Participant").child(userID).removeValue();
+                // Delete all associated join requests and reservations
+                updateAllJoinRequests();
+                for (JoinRequest r : allJoinRequests) {
+                    if (userID.equals(r.getParticipantID())) {
+                        myRef.child("joinRequests").child(r.getJoinRequestID()).removeValue();
+                    }
+                }
+                updateAllReservations();
+                for (Reservation r : allReservations) {
+                    if ((userID).equals(r.getAttendeeID())) {
+                        myRef.child("reservations").child(r.getReservationID()).removeValue();
+                    }
+                }
+            }
+        }
+        if (!found) {
+            Log.e("NoSuchUserException", "Nonexisting user cannot be deleted");
+            throw new NoSuchUserException("Nonexisting user cannot be deleted");
         }
     }
     protected ArrayList<Participant> getAllParticipants() throws InterruptedException {
@@ -313,10 +370,27 @@ public class DatabaseConnection {
         }
         return userEvents;
     }
-    protected void requestJoinEvent(Event event) throws InterruptedException {
+    protected void requestJoinEvent(Event event) throws InvalidJoinRequestException, NoSuchEventException, InterruptedException {
         // Called by Participant Class only
-        // TODO Check if event already exists
-        // TODO Check if request already exists
+        updateAllEvents();
+        boolean found = false;
+        for (Event e : allEvents) {
+            if ((e.getEventID()).equals(event.getEventID())) {
+                found = true;
+                return;
+            }
+        }
+        if (!found) {
+            throw new NoSuchEventException("Request to join non-existing event");
+        }
+        updateAllJoinRequests();
+        for (JoinRequest j : allJoinRequests) {
+            if ((j.getParticipantID()).equals(user.getUserID())) {
+                if ((j.getEventID()).equals(event.getEventID())) {
+                    throw new InvalidJoinRequestException("Join request has already been made");
+                }
+            }
+        }
         String key = myRef.push().getKey();
         myRef.child("joinRequests").child(key).setValue(new JoinRequest(user.getUserID(),event.getEventID(),key));
     }

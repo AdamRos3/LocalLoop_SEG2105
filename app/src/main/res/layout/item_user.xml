@@ -16,7 +16,7 @@
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:text="Username"
             android:textColor="@color/black"
             android:textSize="34sp" />
 
@@ -24,7 +24,7 @@
             android:id="@+id/AccountType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Category"
+            android:text="Account Type"
             android:textColor="@color/black"
             android:textSize="24sp" />
 
@@ -32,7 +32,7 @@
             android:id="@+id/userID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="User ID"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -40,25 +40,10 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="dateTime"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/fee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fee"
+            android:text="Password"
             android:textColor="@color/black" />
 
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/buttonEdit"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="edit button"
-        android:src="@android:drawable/ic_menu_edit" />
 
     <ImageButton
         android:id="@+id/buttonDelete"
