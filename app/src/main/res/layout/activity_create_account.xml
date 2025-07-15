@@ -7,13 +7,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="15dp"
+            android:onClick="onBackClicked"
+            android:text="Back" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#5CAF954C"
         android:orientation="vertical">
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="43dp" />
+            android:layout_height="77dp"
+            android:onClick="onBackClicked" />
 
         <ImageView
             android:id="@+id/logo_image"
@@ -25,19 +42,6 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="10dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="51dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button7"
-                android:layout_width="135dp"
-                android:layout_height="wrap_content"
-                android:onClick="onBackClicked"
-                android:text="Back" />
-        </LinearLayout>
 
         <TextView
             android:id="@+id/TextViewCreateAccount"
