@@ -521,22 +521,36 @@ public class DatabaseConnection {
         }
         return reservations;
     }
-    protected Event eventSearch(String name) throws InterruptedException {
+    protected Event eventSearch(String name) throws NoSuchEventException, InterruptedException {
         // Called by Participant Class only
         updateAllEvents();
         Event event = null;
+        boolean found = false;
         for (Event e : allEvents) {
             if (name.equals(e.getName())) {
                 event = e;
+                found = true;
             }
+        }
+        if (!found) {
+            throw new NoSuchEventException("Event does not exist");
         }
         return event;
     }
-    protected ArrayList<Event> eventSearch(EventCategory category) throws InterruptedException {
+    protected ArrayList<Event> eventSearch(EventCategory category) throws NoSuchEventCategoryException, InterruptedException {
         // Called by Participant Class only
         updateAllEventCategories();
         updateAllEvents();
         ArrayList<Event> events = new ArrayList<>();
+        boolean found = false;
+        for (EventCategory cat : allEventCategories) {
+            if ((cat.getCategoryID()).equals(category.getCategoryID())) {
+                found = true;
+            }
+        }
+        if (!found) {
+            throw new NoSuchEventCategoryException("Event category does not exist");
+        }
         for (Event e : allEvents) {
             if ((category.getCategoryID()).equals(e.getCategoryID())) {
                 events.add(e);
