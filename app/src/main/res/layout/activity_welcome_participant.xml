@@ -5,9 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="24dp"
     android:background="#5CAF954C">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="ReturnToLogin"
+        android:text="Back" />
 
     <TextView
         android:id="@+id/welcome_message3"
@@ -36,12 +42,4 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="108dp" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="220dp"
-        android:layout_height="wrap_content"
-        android:onClick="ReturnToLogin"
-        android:text="Back" />
-
 </LinearLayout>

@@ -5,9 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#5CAF954C"
-    android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="returnToLogin"
+        android:text="Back" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,17 +67,4 @@
             android:onClick="onManageEvents"
             android:text="Manage Events" />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="18dp"
-        android:orientation="horizontal" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="returnToLogin"
-        android:text="Back" />
-
 </LinearLayout>
