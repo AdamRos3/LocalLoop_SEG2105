@@ -5,21 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="135dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="15dp"
-            android:onClick="onBackClicked"
-            android:text="Back" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,10 +12,18 @@
         android:background="#5CAF954C"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="15dp"
+            android:onClick="onBackClicked"
+            android:text="Back" />
+
         <Space
             android:layout_width="match_parent"
-            android:layout_height="77dp"
-            android:onClick="onBackClicked" />
+            android:layout_height="30dp" />
 
         <ImageView
             android:id="@+id/logo_image"

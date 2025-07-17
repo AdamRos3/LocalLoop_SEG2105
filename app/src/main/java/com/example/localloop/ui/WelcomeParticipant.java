@@ -30,12 +30,13 @@ public class WelcomeParticipant extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         user = (Participant)DatabaseInstance.get().getUser();
         String username = user.getUsername();
 
         // Set welcome message
         TextView welcomeMessage = findViewById(R.id.welcome_message3);
-        String message = "Welcome " + user.getUsername();
+        String message = "Welcome " + username;
         welcomeMessage.setText(message);
     }
 
@@ -43,4 +44,10 @@ public class WelcomeParticipant extends AppCompatActivity {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
+
+    public void toBrowseEvents(View view) {
+        Intent intent = new Intent(this, BrowseEvents.class);
+        startActivity(intent);
+    }
+
 }
