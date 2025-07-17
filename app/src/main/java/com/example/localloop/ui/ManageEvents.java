@@ -70,7 +70,7 @@ public class ManageEvents extends AppCompatActivity {
                     allCategoryNames.add(category.getName());
                 }
                 runOnUiThread(() -> {
-                    RecyclerView eventsListView = findViewById(R.id.listViewUsers);
+                    RecyclerView eventsListView = findViewById(R.id.listViewEvents);
                     adapter = new eventAdapter(this, userEvents);
                     eventsListView.setLayoutManager(new LinearLayoutManager(this));
                     eventsListView.setAdapter(adapter);
@@ -171,20 +171,20 @@ public class ManageEvents extends AppCompatActivity {
     }
         public static class eventViewHolder extends RecyclerView.ViewHolder {
 
-        TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
-        ImageButton editButton, deleteButton;
+            TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
+            ImageButton editButton, deleteButton;
 
-        public eventViewHolder(@NonNull View itemView) {
-            super(itemView);
+            public eventViewHolder(@NonNull View itemView) {
+                super(itemView);
 
-            nameText = itemView.findViewById(R.id.username);
-            categoryText = itemView.findViewById(R.id.AccountType);
-            descriptionText = itemView.findViewById(R.id.userID);
-            dateTimeText = itemView.findViewById(R.id.password);
-            feeText = itemView.findViewById(R.id.fee);
+                nameText = itemView.findViewById(R.id.eventName);
+                categoryText = itemView.findViewById(R.id.eventCategory);
+                descriptionText = itemView.findViewById(R.id.eventDescription);
+                dateTimeText = itemView.findViewById(R.id.eventDateTime);
+                feeText = itemView.findViewById(R.id.eventFee);
 
-            editButton = itemView.findViewById(R.id.buttonEdit);
-            deleteButton = itemView.findViewById(R.id.buttonDelete);
+                editButton = itemView.findViewById(R.id.buttonEdit);
+                deleteButton = itemView.findViewById(R.id.buttonDelete);
         }
     }
 

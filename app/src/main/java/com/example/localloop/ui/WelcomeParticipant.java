@@ -13,11 +13,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.localloop.R;
 import com.example.localloop.model.DatabaseConnection;
+import com.example.localloop.model.EventCategory;
 import com.example.localloop.model.Participant;
 
 public class WelcomeParticipant extends AppCompatActivity {
 
     private static Participant user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
