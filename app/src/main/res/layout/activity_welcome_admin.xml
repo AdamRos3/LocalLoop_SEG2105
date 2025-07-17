@@ -50,6 +50,10 @@
             app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
     </LinearLayout>
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
     <TextView
         android:id="@+id/ManageEventCategories2"
         android:layout_width="match_parent"

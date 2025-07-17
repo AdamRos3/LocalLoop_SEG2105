@@ -43,5 +43,4 @@ public class WelcomeParticipant extends AppCompatActivity {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
-
 }

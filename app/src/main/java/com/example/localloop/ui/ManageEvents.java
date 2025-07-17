@@ -201,7 +201,7 @@ public class ManageEvents extends AppCompatActivity {
         @NonNull
         @Override
         public eventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_event,
+            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_manage_event,
                     parent, false));
         }
 
