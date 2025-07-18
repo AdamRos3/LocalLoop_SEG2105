@@ -1,6 +1,7 @@
 package com.example.localloop.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.TokenWatcher;
 import android.util.Log;
@@ -16,12 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.localloop.R;
 import com.example.localloop.model.Event;
 import com.example.localloop.model.EventCategory;
 import com.example.localloop.model.Participant;
+import com.example.localloop.resources.exception.InvalidJoinRequestException;
+import com.example.localloop.resources.exception.NoSuchEventException;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +41,7 @@ public class BrowseEvents extends AppCompatActivity {
     ArrayList<String> categoryNames = new ArrayList<>();
     ArrayList<Event> events = new ArrayList<>();
 
-//    eventAdapter adapter;
+    eventAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +70,23 @@ public class BrowseEvents extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     RecyclerView eventListView = findViewById(R.id.listViewEvents);
+                    adapter = new eventAdapter(this, events);
+                    eventListView.setLayoutManager(new LinearLayoutManager(this));
+                    eventListView.setAdapter(adapter);
                 });
 
             } catch (InterruptedException e) {
                 Log.e("BrowseEvents", e.toString());
                 Toast.makeText(BrowseEvents.this, "Failed to load events", Toast.LENGTH_SHORT).show();
             }
-        });
+        }).start();
     }
 
     public void onBackClick(View view) { finish(); }
+
+    public void onSearchClick(View view) {
+
+    }
 
     public static class eventViewHolder extends RecyclerView.ViewHolder {
         TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
@@ -124,11 +135,35 @@ public class BrowseEvents extends AppCompatActivity {
             }
 
             holder.categoryText.setText(categoryName);
-            holder.descriptionText.setText(event.getDate().toString() + " " + event.getTime().toString());
+            holder.descriptionText.setText(event.getDescription());
+            holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
             holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
 
             holder.joinButton.setOnClickListener(v -> {
+                new Thread(() -> {
 
+                    try {
+                        user.requestJoinEvent(DatabaseInstance.get(), event);
+
+
+                        ((BrowseEvents) context).runOnUiThread(() -> {
+                            Button button = holder.joinButton;
+
+                            button.setText("Request Sent");
+                            button.setBackgroundColor(Color.GRAY);
+                            button.setEnabled(false);
+
+                            ((BrowseEvents) context).adapter.notifyDataSetChanged();
+                            Toast.makeText(context, "Request sent", Toast.LENGTH_SHORT).show();
+                        });
+                    } catch (InvalidJoinRequestException e) {
+                        ((BrowseEvents) context).runOnUiThread(() -> Toast.makeText(context, "Invalid join request", Toast.LENGTH_SHORT).show());
+                    } catch (NoSuchEventException e) {
+                        ((BrowseEvents) context).runOnUiThread(() -> Toast.makeText(context, "Event does not exist", Toast.LENGTH_SHORT).show());
+                    } catch (InterruptedException e) {
+                        ((BrowseEvents) context).runOnUiThread(() -> Toast.makeText(context, "Failed to make join request", Toast.LENGTH_SHORT).show());
+                    }
+                }).start();
             });
         }
 
