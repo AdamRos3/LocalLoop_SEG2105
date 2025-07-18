@@ -377,7 +377,7 @@ public class DatabaseConnection {
         for (Event e : allEvents) {
             if ((e.getEventID()).equals(event.getEventID())) {
                 found = true;
-                return;
+                break;
             }
         }
         if (!found) {
