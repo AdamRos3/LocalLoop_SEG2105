@@ -487,25 +487,6 @@ public class DatabaseConnection {
         // TODO no such request error handling
         myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
-    protected void cancelReservation(Event event) throws NoSuchReservationException, InterruptedException {
-        // Called by Participant Class only
-        updateAllReservations();
-        Reservation reservation = null;
-        boolean found = false;
-        for (Reservation r : allReservations) {
-            if ((r.getEventID()).equals(event.getEventID())) {
-                if ((r.getAttendeeID()).equals(user.getUserID())) {
-                    found = true;
-                    reservation = r;
-                    break;
-                }
-            }
-        }
-        if (!found) {
-            throw new NoSuchReservationException("Reservation does not exist");
-        }
-        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
-    }
     protected ArrayList<Event> getReservations() throws InterruptedException {
         // Called by Participant Class only
         updateAllReservations();
@@ -568,6 +549,25 @@ public class DatabaseConnection {
             }
         }
 
+        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+    }
+    protected void cancelReservation(Event event) throws NoSuchReservationException, InterruptedException {
+        // Called by Participant Class only
+        updateAllReservations();
+        Reservation reservation = null;
+        boolean found = false;
+        for (Reservation r : allReservations) {
+            if ((r.getEventID()).equals(event.getEventID())) {
+                if ((r.getAttendeeID()).equals(user.getUserID())) {
+                    found = true;
+                    reservation = r;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            throw new NoSuchReservationException("Reservation does not exist");
+        }
         myRef.child("reservations").child(reservation.getReservationID()).removeValue();
     }
     protected Event eventSearch(String name) throws NoSuchEventException, InterruptedException {
