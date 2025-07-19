@@ -36,8 +36,8 @@ public class ManageParticipants extends AppCompatActivity {
 
     private ArrayList<Participant> requestingParticipants = new ArrayList<>();
     private ArrayList<Participant> enrolledParticipants = new ArrayList<>();
-    private ManageParticipants.participantRequestsAdapter requestsAdapter;
-    private ManageParticipants.participantEnrolledAdapter enrolledAdapter;
+    private ParticipantRequestsAdapter requestsAdapter;
+    private ParticipantEnrolledAdapter enrolledAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +73,16 @@ public class ManageParticipants extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     RecyclerView requestsListView = findViewById(R.id.listViewRequests);
-                    requestsAdapter = new participantRequestsAdapter(this, requestingParticipants);
+                    requestsAdapter = new ParticipantRequestsAdapter(this, requestingParticipants);
                     requestsListView.setLayoutManager(new LinearLayoutManager(this));
                     requestsListView.setAdapter(requestsAdapter);
 
                     RecyclerView enrolledListView = findViewById(R.id.listViewEnrolledParticipants);
-                    enrolledAdapter = new participantEnrolledAdapter(this, enrolledParticipants);
+                    enrolledAdapter = new ParticipantEnrolledAdapter(this, enrolledParticipants);
                     enrolledListView.setLayoutManager(new LinearLayoutManager(this));
                     enrolledListView.setAdapter(enrolledAdapter);
                 });
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 Log.e("ManageParticipants", e.toString());
                 runOnUiThread(() -> Toast.makeText(ManageParticipants.this, "Failed to load events", Toast.LENGTH_SHORT).show());
             }
@@ -92,12 +91,12 @@ public class ManageParticipants extends AppCompatActivity {
 
     public void onBackClick(View view) { finish(); }
 
-    public static class participantRequestsViewHolder extends RecyclerView.ViewHolder {
+    public static class ParticipantRequestsViewHolder extends RecyclerView.ViewHolder {
         TextView participantName;
 
         ImageButton acceptButton, rejectButton;
 
-        public participantRequestsViewHolder(@NonNull View itemView) {
+        public ParticipantRequestsViewHolder(@NonNull View itemView) {
             super(itemView);
 
             participantName = itemView.findViewById(R.id.participantName);
@@ -106,37 +105,37 @@ public class ManageParticipants extends AppCompatActivity {
         }
     }
 
-    public static class participantEnrolledViewHolder extends RecyclerView.ViewHolder {
+    public static class ParticipantEnrolledViewHolder extends RecyclerView.ViewHolder {
         TextView participantName;
 
         ImageButton removeButton;
 
-        public participantEnrolledViewHolder(@NonNull View itemView) {
+        public ParticipantEnrolledViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            participantName = itemView.findViewById(R.id.participantName);
-            removeButton = itemView.findViewById(R.id.removeButton);
+            participantName = itemView.findViewById(R.id.name);
+            removeButton = itemView.findViewById(R.id.xButton);
         }
     }
 
-    public static class participantRequestsAdapter extends RecyclerView.Adapter<participantRequestsViewHolder> {
+    public static class ParticipantRequestsAdapter extends RecyclerView.Adapter<ParticipantRequestsViewHolder> {
         Context context;
         List<Participant> requests;
 
-        public participantRequestsAdapter(Context context, List<Participant> requests) {
+        public ParticipantRequestsAdapter(Context context, List<Participant> requests) {
             this.context = context;
             this.requests = requests;
         }
 
         @NonNull
         @Override
-        public participantRequestsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new participantRequestsViewHolder(LayoutInflater.from(context).inflate(R.layout.item_requesting_participant,
+        public ParticipantRequestsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ParticipantRequestsViewHolder(LayoutInflater.from(context).inflate(R.layout.item_name_with_check_and_x_button,
                     parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull participantRequestsViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ParticipantRequestsViewHolder holder, int position) {
             Participant requestingParticipant = requests.get(position);
 
             holder.participantName.setText(requestingParticipant.getUsername());
@@ -207,24 +206,24 @@ public class ManageParticipants extends AppCompatActivity {
         public int getItemCount() { return requests.size(); }
     }
 
-    public static class participantEnrolledAdapter extends RecyclerView.Adapter<participantEnrolledViewHolder> {
+    public static class ParticipantEnrolledAdapter extends RecyclerView.Adapter<ParticipantEnrolledViewHolder> {
         Context context;
         List<Participant> enrolled;
 
-        public participantEnrolledAdapter(Context context, List<Participant> enrolled) {
+        public ParticipantEnrolledAdapter(Context context, List<Participant> enrolled) {
             this.context = context;
             this.enrolled = enrolled;
         }
 
         @NonNull
         @Override
-        public participantEnrolledViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new participantEnrolledViewHolder(LayoutInflater.from(context).inflate(R.layout.item_enrolled_participant,
+        public ParticipantEnrolledViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ParticipantEnrolledViewHolder(LayoutInflater.from(context).inflate(R.layout.item_name_with_x_button,
                     parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull participantEnrolledViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ParticipantEnrolledViewHolder holder, int position) {
             Participant enrolledParticipant = enrolled.get(position);
 
             holder.participantName.setText(enrolledParticipant.getUsername());

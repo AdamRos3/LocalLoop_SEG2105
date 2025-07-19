@@ -3,7 +3,6 @@ package com.example.localloop.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.TokenWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +41,7 @@ public class BrowseEvents extends AppCompatActivity {
     ArrayList<Event> events = new ArrayList<>();
     ArrayList<Event> requestedEvents = new ArrayList<>();
     ArrayList<Event> joinedEvents = new ArrayList<>();
-    eventAdapter adapter;
+    EventAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,7 @@ public class BrowseEvents extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     RecyclerView eventListView = findViewById(R.id.listViewEvents);
-                    adapter = new eventAdapter(this, events, requestedEvents, joinedEvents);
+                    adapter = new EventAdapter(this, events, requestedEvents, joinedEvents);
                     eventListView.setLayoutManager(new LinearLayoutManager(this));
                     eventListView.setAdapter(adapter);
                 });
@@ -95,11 +94,11 @@ public class BrowseEvents extends AppCompatActivity {
 
     }
 
-    public static class eventViewHolder extends RecyclerView.ViewHolder {
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
         Button joinButton;
 
-        public eventViewHolder(@NotNull View itemView) {
+        public EventViewHolder(@NotNull View itemView) {
             super(itemView);
 
             nameText = itemView.findViewById(R.id.eventName);
@@ -112,13 +111,13 @@ public class BrowseEvents extends AppCompatActivity {
         }
     }
 
-    public static class eventAdapter extends RecyclerView.Adapter<eventViewHolder> {
+    public static class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         Context context;
         List<Event> eventsList;
         List<Event> requestedEventsList;
         List<Event> joinedEventsList;
 
-        public eventAdapter (Context context, List<Event> events, List<Event> requestedEvents, List<Event> joinedEvents) {
+        public EventAdapter(Context context, List<Event> events, List<Event> requestedEvents, List<Event> joinedEvents) {
             this.context = context;
             this.eventsList = events;
             this.requestedEventsList = requestedEvents;
@@ -127,13 +126,13 @@ public class BrowseEvents extends AppCompatActivity {
 
         @NotNull
         @Override
-        public eventViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_browse_event,
+        public BrowseEvents.EventViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+            return new EventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_event_with_button,
                     parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NotNull eventViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull BrowseEvents.EventViewHolder holder, int position) {
             Event event = eventsList.get(position);
             holder.nameText.setText(event.getName());
 
@@ -178,18 +177,9 @@ public class BrowseEvents extends AppCompatActivity {
                 if (joined) {
                     joinButton.setText("Joined");
                     joinButton.setBackgroundColor(Color.GREEN);
+                    joinButton.setTextColor(Color.WHITE);
                     joinButton.setEnabled(false);
                 }
-            }
-
-            if (!requestedEventsList.isEmpty() && requestedEventsList.contains(event)) {
-                joinButton.setText("Request Sent");
-                joinButton.setBackgroundColor(Color.GRAY);
-                joinButton.setEnabled(false);
-            } else if (!joinedEventsList.isEmpty() && joinedEventsList.contains(event)) {
-                joinButton.setText("Joined");
-                joinButton.setBackgroundColor(Color.GREEN);
-                joinButton.setEnabled(false);
             }
 
             joinButton.setOnClickListener(v -> {
