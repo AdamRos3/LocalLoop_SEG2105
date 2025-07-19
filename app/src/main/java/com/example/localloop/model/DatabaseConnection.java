@@ -532,6 +532,24 @@ public class DatabaseConnection {
         }
         return reservations;
     }
+    protected void removeReservations(Participant participant, Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllReservations();
+        updateAllUsers();
+
+        Reservation reservation = null;
+
+        for (Reservation r : allReservations) {
+            if ((r.getAttendeeID()).equals(participant.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    reservation = r;
+                    break;
+                }
+            }
+        }
+
+        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+    }
     protected Event eventSearch(String name) throws NoSuchEventException, InterruptedException {
         // Called by Participant Class only
         updateAllEvents();

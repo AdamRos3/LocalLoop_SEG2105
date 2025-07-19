@@ -35,6 +35,7 @@
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
+        android:layout_weight="1"
         tools:visibility="visible" />
 
     <TextView
@@ -54,6 +55,7 @@
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
+        android:layout_weight="1"
         tools:visibility="visible"/>
 
 </LinearLayout>

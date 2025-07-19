@@ -151,6 +151,7 @@ public class ManageParticipants extends AppCompatActivity {
                                     organizer.acceptJoinRequest(DatabaseInstance.get(), requestingParticipant, event);
 
                                     ((ManageParticipants) context).requestingParticipants.clear();
+                                    ((ManageParticipants) context).enrolledParticipants.clear();
 
                                     for (Participant p : organizer.getJoinRequests(DatabaseInstance.get(), event)) {
                                         ((ManageParticipants) context).requestingParticipants.add(p);
@@ -234,7 +235,21 @@ public class ManageParticipants extends AppCompatActivity {
                         .setMessage("Are you sure you want to remove \"" + enrolledParticipant.getUsername() + "\"?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             new Thread(() -> {
-                                //TODO Implement remove participant
+                                try {
+                                    organizer.removeReservations(DatabaseInstance.get(), enrolledParticipant, event);
+
+                                    ((ManageParticipants) context).enrolledParticipants.clear();
+                                    for (Participant p : organizer.getReservations(DatabaseInstance.get(), event)) {
+                                        ((ManageParticipants) context).enrolledParticipants.add(p);
+                                    }
+
+                                    ((ManageParticipants) context).runOnUiThread(() -> {
+                                        ((ManageParticipants) context).enrolledAdapter.notifyDataSetChanged();
+                                        Toast.makeText(context, "Participant Removed", Toast.LENGTH_SHORT).show();
+                                    });
+                                } catch (InterruptedException e) {
+                                    ((ManageParticipants) context).runOnUiThread(() -> Toast.makeText(context, "Error cannot remove participant", Toast.LENGTH_SHORT).show());
+                                }
                             }).start();
                         })
                         .setNegativeButton("Cancel", null)
