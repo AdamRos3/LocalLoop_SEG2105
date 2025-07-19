@@ -3,6 +3,7 @@ package com.example.localloop.model;
 import com.example.localloop.resources.exception.InvalidJoinRequestException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
+import com.example.localloop.resources.exception.NoSuchReservationException;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,9 @@ public class Participant extends UserAccount {
     }
     public ArrayList<Event> getReservations(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getReservations();
+    }
+    public void cancelReservation(DatabaseConnection dbConnection, Event event) throws NoSuchReservationException, InterruptedException {
+        dbConnection.cancelReservation(event);
     }
     public Event eventSearch(DatabaseConnection dbConnection, String name) throws NoSuchEventException, InterruptedException {
         return dbConnection.eventSearch(name);
