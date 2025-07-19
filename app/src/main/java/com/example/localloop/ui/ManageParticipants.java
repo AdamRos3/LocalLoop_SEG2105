@@ -24,6 +24,7 @@ import com.example.localloop.R;
 import com.example.localloop.model.Event;
 import com.example.localloop.model.Organizer;
 import com.example.localloop.model.Participant;
+import com.example.localloop.resources.exception.NoSuchEventException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +51,19 @@ public class ManageParticipants extends AppCompatActivity {
         });
 
         organizer = (Organizer) DatabaseInstance.get().getUser();
-        // Get current event
+        String eventID = getIntent().getStringExtra("eventID");
 
         new Thread(() -> {
+            try {
+                event = DatabaseInstance.get().getEventFromID(eventID);
+            } catch (InterruptedException e) {
+                Log.e("ManageParticipants", e.toString());
+                runOnUiThread(() -> Toast.makeText(ManageParticipants.this, "Failed to retrieve event", Toast.LENGTH_SHORT).show());
+            } catch (NoSuchEventException e) {
+                Log.e("ManageParticipants", e.toString());
+                runOnUiThread(() -> Toast.makeText(ManageParticipants.this, "Event does not exist", Toast.LENGTH_SHORT).show());
+            }
+
             try {
                 requestingParticipants.clear();
                 enrolledParticipants.clear();

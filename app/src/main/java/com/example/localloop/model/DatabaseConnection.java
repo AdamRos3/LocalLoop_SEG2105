@@ -77,6 +77,17 @@ public class DatabaseConnection {
         return user;
     }
 
+    public Event getEventFromID(String eventID) throws NoSuchEventException, InterruptedException {
+        updateAllEvents();
+
+        for (Event e : allEvents) {
+            if (e.getEventID().equals(eventID)) {
+                return e;
+            }
+        }
+        throw new NoSuchEventException("Event does not exist");
+    }
+
     public static void createNewUser(Participant p) throws InvalidEventNameException, InterruptedException {
         updateAllUsers();
         for (Participant existing : allParticipants) {
