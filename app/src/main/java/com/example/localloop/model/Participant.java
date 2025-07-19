@@ -44,6 +44,9 @@ public class Participant extends UserAccount {
     public ArrayList<Event> getJoinRequests(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getJoinRequests();
     }
+    public void cancelJoinRequest(DatabaseConnection dbConnection, Event event) throws NoSuchReservationException, InterruptedException {
+        dbConnection.cancelJoinRequest(event);
+    }
     public ArrayList<Event> getReservations(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getReservations();
     }

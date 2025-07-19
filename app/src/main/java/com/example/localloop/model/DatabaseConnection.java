@@ -487,6 +487,22 @@ public class DatabaseConnection {
         // TODO no such request error handling
         myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
+    protected void cancelJoinRequest(Event event) throws InterruptedException {
+        // Called by Participant Class only
+        updateAllJoinRequests();
+
+        JoinRequest request = null;
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getParticipantID()).equals(user.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    request = r;
+                }
+            }
+        }
+        // TODO no such request error handling
+        myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
+    }
     protected ArrayList<Event> getReservations() throws InterruptedException {
         // Called by Participant Class only
         updateAllReservations();
