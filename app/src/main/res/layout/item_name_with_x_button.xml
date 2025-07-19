@@ -6,7 +6,7 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/participantName"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
@@ -17,7 +17,7 @@
 
 
     <ImageButton
-        android:id="@+id/removeButton"
+        android:id="@+id/xButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:backgroundTint="@android:color/transparent"

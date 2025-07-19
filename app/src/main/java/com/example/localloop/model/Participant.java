@@ -46,6 +46,15 @@ public class Participant extends UserAccount {
     public ArrayList<Event> getReservations(DatabaseConnection dbConnection) throws InterruptedException {
         return dbConnection.getReservations();
     }
+
+    public void removeRequest(DatabaseConnection dbConnections, Event event) throws InterruptedException {
+        dbConnections.rejectJoinRequest(this, event);
+    }
+
+    public void removeReservation(DatabaseConnection dbConnections, Event event) throws InterruptedException {
+        dbConnections.removeReservations(this, event);
+    }
+
     public Event eventSearch(DatabaseConnection dbConnection, String name) throws NoSuchEventException, InterruptedException {
         return dbConnection.eventSearch(name);
     }
