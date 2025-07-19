@@ -2,6 +2,8 @@ package com.example.localloop.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.media.MediaDrm;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,7 +45,7 @@ public class ManageEvents extends AppCompatActivity {
     private ArrayList<EventCategory> allCategories = new ArrayList<>();
     private ArrayList<String> allCategoryNames = new ArrayList<>();
     private ArrayList<Event> userEvents = new ArrayList<>();
-    private eventAdapter adapter;
+    private EventAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,7 @@ public class ManageEvents extends AppCompatActivity {
                 }
                 runOnUiThread(() -> {
                     RecyclerView eventsListView = findViewById(R.id.listViewEvents);
-                    adapter = new eventAdapter(this, userEvents);
+                    adapter = new EventAdapter(this, userEvents);
                     eventsListView.setLayoutManager(new LinearLayoutManager(this));
                     eventsListView.setAdapter(adapter);
                 });
@@ -169,44 +171,46 @@ public class ManageEvents extends AppCompatActivity {
         dialogBuilder.setNegativeButton("Cancel", null);
         dialogBuilder.show();
     }
-        public static class eventViewHolder extends RecyclerView.ViewHolder {
 
-            TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
-            ImageButton editButton, deleteButton;
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
 
-            public eventViewHolder(@NonNull View itemView) {
-                super(itemView);
+        TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
+        ImageButton userButton, editButton, deleteButton;
 
-                nameText = itemView.findViewById(R.id.eventName);
-                categoryText = itemView.findViewById(R.id.eventCategory);
-                descriptionText = itemView.findViewById(R.id.eventDescription);
-                dateTimeText = itemView.findViewById(R.id.eventDateTime);
-                feeText = itemView.findViewById(R.id.eventFee);
+        public EventViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-                editButton = itemView.findViewById(R.id.buttonEdit);
-                deleteButton = itemView.findViewById(R.id.buttonDelete);
+            nameText = itemView.findViewById(R.id.eventName);
+            categoryText = itemView.findViewById(R.id.eventCategory);
+            descriptionText = itemView.findViewById(R.id.eventDescription);
+            dateTimeText = itemView.findViewById(R.id.eventDateTime);
+            feeText = itemView.findViewById(R.id.eventFee);
+
+            userButton = itemView.findViewById(R.id.buttonUsers);
+            editButton = itemView.findViewById(R.id.buttonEdit);
+            deleteButton = itemView.findViewById(R.id.buttonDelete);
         }
     }
 
-    public static class eventAdapter extends RecyclerView.Adapter<eventViewHolder> {
+    public static class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
         Context context;
         List<Event> events;
 
-        public eventAdapter(Context context, List<Event> events) {
+        public EventAdapter(Context context, List<Event> events) {
             this.context = context;
             this.events = events;
         }
 
         @NonNull
         @Override
-        public eventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new eventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_manage_event,
+        public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new EventViewHolder(LayoutInflater.from(context).inflate(R.layout.item_manage_event,
                     parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull eventViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
             Event event = events.get(position);
             holder.nameText.setText(event.getName());
 
@@ -223,6 +227,11 @@ public class ManageEvents extends AppCompatActivity {
             holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
             holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
 
+            holder.userButton.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ManageParticipants.class);
+                intent.putExtra("eventID", event.getEventID());
+                context.startActivity(intent);
+            });
 
             holder.editButton.setOnClickListener(v -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/HorizontalLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -51,6 +52,14 @@
             android:textColor="@color/black" />
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/buttonUsers"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="check users button"
+        app:srcCompat="@android:drawable/ic_menu_more" />
 
     <ImageButton
         android:id="@+id/buttonEdit"

@@ -40,7 +40,8 @@ public class BrowseEvents extends AppCompatActivity {
     ArrayList<EventCategory> allCategories = new ArrayList<>();
     ArrayList<String> categoryNames = new ArrayList<>();
     ArrayList<Event> events = new ArrayList<>();
-
+    ArrayList<Event> requestedEvents = new ArrayList<>();
+    ArrayList<Event> joinedEvents = new ArrayList<>();
     eventAdapter adapter;
 
     @Override
@@ -59,18 +60,24 @@ public class BrowseEvents extends AppCompatActivity {
         new Thread(() -> {
             try {
                 allCategories.clear();
+                categoryNames.clear();
                 events.clear();
+                requestedEvents.clear();
+                joinedEvents.clear();
 
                 allCategories.addAll(user.getAllEventCategories(DatabaseInstance.get()));
+
                 for (EventCategory category : allCategories) {
                     categoryNames.add(category.getName());
                 }
 
                 events.addAll(user.getAllEvents(DatabaseInstance.get()));
+                requestedEvents.addAll(user.getJoinRequests(DatabaseInstance.get()));
+                joinedEvents.addAll(user.getReservations(DatabaseInstance.get()));
 
                 runOnUiThread(() -> {
                     RecyclerView eventListView = findViewById(R.id.listViewEvents);
-                    adapter = new eventAdapter(this, events);
+                    adapter = new eventAdapter(this, events, requestedEvents, joinedEvents);
                     eventListView.setLayoutManager(new LinearLayoutManager(this));
                     eventListView.setAdapter(adapter);
                 });
@@ -107,11 +114,15 @@ public class BrowseEvents extends AppCompatActivity {
 
     public static class eventAdapter extends RecyclerView.Adapter<eventViewHolder> {
         Context context;
-        List<Event> events;
+        List<Event> eventsList;
+        List<Event> requestedEventsList;
+        List<Event> joinedEventsList;
 
-        public eventAdapter (Context context, List<Event> events) {
+        public eventAdapter (Context context, List<Event> events, List<Event> requestedEvents, List<Event> joinedEvents) {
             this.context = context;
-            this.events = events;
+            this.eventsList = events;
+            this.requestedEventsList = requestedEvents;
+            this.joinedEventsList = joinedEvents;
         }
 
         @NotNull
@@ -123,7 +134,7 @@ public class BrowseEvents extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NotNull eventViewHolder holder, int position) {
-            Event event = events.get(position);
+            Event event = eventsList.get(position);
             holder.nameText.setText(event.getName());
 
             String categoryName = "";
@@ -139,7 +150,49 @@ public class BrowseEvents extends AppCompatActivity {
             holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
             holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
 
-            holder.joinButton.setOnClickListener(v -> {
+            Button joinButton = holder.joinButton;
+
+            boolean isRequested = false;
+
+            for (Event requestedEvent : requestedEventsList) {
+                if (requestedEvent.getEventID().equals(event.getEventID())) {
+                    isRequested = true;
+                    break;
+                }
+            }
+
+            if (isRequested) {
+                joinButton.setText("Request Sent");
+                joinButton.setBackgroundColor(Color.GRAY);
+                joinButton.setEnabled(false);
+            } else {
+                boolean joined = false;
+
+                for (Event joinedEvent : joinedEventsList) {
+                    if (joinedEvent.getEventID().equals(event.getEventID())) {
+                        joined = true;
+                        break;
+                    }
+                }
+
+                if (joined) {
+                    joinButton.setText("Joined");
+                    joinButton.setBackgroundColor(Color.GREEN);
+                    joinButton.setEnabled(false);
+                }
+            }
+
+            if (!requestedEventsList.isEmpty() && requestedEventsList.contains(event)) {
+                joinButton.setText("Request Sent");
+                joinButton.setBackgroundColor(Color.GRAY);
+                joinButton.setEnabled(false);
+            } else if (!joinedEventsList.isEmpty() && joinedEventsList.contains(event)) {
+                joinButton.setText("Joined");
+                joinButton.setBackgroundColor(Color.GREEN);
+                joinButton.setEnabled(false);
+            }
+
+            joinButton.setOnClickListener(v -> {
                 new Thread(() -> {
 
                     try {
@@ -147,11 +200,10 @@ public class BrowseEvents extends AppCompatActivity {
 
 
                         ((BrowseEvents) context).runOnUiThread(() -> {
-                            Button button = holder.joinButton;
 
-                            button.setText("Request Sent");
-                            button.setBackgroundColor(Color.GRAY);
-                            button.setEnabled(false);
+                            joinButton.setText("Request Sent");
+                            joinButton.setBackgroundColor(Color.GRAY);
+                            joinButton.setEnabled(false);
 
                             ((BrowseEvents) context).adapter.notifyDataSetChanged();
                             Toast.makeText(context, "Request sent", Toast.LENGTH_SHORT).show();
@@ -167,8 +219,7 @@ public class BrowseEvents extends AppCompatActivity {
             });
         }
 
-        //TODO: this doesn't reflect the number of items that will appear as events the user is already enrolled in will not appear
         @Override
-        public int getItemCount() { return events.size(); }
+        public int getItemCount() { return eventsList.size(); }
     }
 }
