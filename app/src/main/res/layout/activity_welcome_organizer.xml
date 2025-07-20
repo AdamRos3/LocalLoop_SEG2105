@@ -66,6 +66,7 @@
             android:layout_height="46dp"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
+            android:onClick="onManageEvents"
             app:srcCompat="@drawable/aqua_blue_manage_events_transparent" />
 
     </LinearLayout>
@@ -88,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
+            android:onClick="returnToLogin"
             app:srcCompat="@drawable/aqua_blue_back_transparent" />
     </LinearLayout>
 

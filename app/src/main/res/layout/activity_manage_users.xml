@@ -22,10 +22,11 @@
             android:text="Back" />
 
         <ImageButton
-            android:id="@+id/imageButton73"
+            android:id="@+id/imageButton93"
             android:layout_width="193dp"
             android:layout_height="52dp"
             android:background="?android:attr/selectableItemBackground"
+            android:onClick="onBackClick"
             android:src="@drawable/aqua_blue_back_transparent" />
 
         <TextView
