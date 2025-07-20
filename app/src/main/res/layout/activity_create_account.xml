@@ -179,6 +179,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
+            android:onClick="onCreateUserAccount"
             app:srcCompat="@drawable/aqua_blue_create_transparent" />
 
     </LinearLayout>
