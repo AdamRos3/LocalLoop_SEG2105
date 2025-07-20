@@ -47,6 +47,7 @@ public class WelcomeAdmin extends AppCompatActivity {
     public void returnToLogin(View view) {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
+        finish();
     }
 
 }

@@ -62,5 +62,6 @@ public class CreateAccount extends AppCompatActivity {
     public void onBackClicked(View view) {
         Intent intent = new Intent(this, WelcomeAdmin.class);
         startActivity(intent);
+        finish();
     }
 }
