@@ -13,6 +13,12 @@
         android:theme="@style/Theme.LocalLoop"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ManageParticipants"
+            android:exported="false" />
+        <activity
+            android:name=".ui.BrowseEvents"
+            android:exported="false" />
+        <activity
             android:name=".ui.EditUsers"
             android:exported="false" />
         <activity

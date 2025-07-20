@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
     }
 
     public void ValidateCredentials(View view) {
@@ -74,6 +74,7 @@ public class Login extends AppCompatActivity {
         clearPass.setText("");
         // Go to next actvity
         startActivity(intent);
+        finish();
     }
 
     public void HandleInvalidCredentials (View view) {

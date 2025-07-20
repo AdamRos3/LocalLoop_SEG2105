@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/HorizontalLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -9,53 +8,59 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="1">
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/eventName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Username"
+            android:text="Name"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif-condensed"/>
+            android:fontFamily="sans-serif-condensed"
+            />
 
         <TextView
-            android:id="@+id/AccountType"
+            android:id="@+id/eventCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Account Type"
+            android:text="Category"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:fontFamily="sans-serif-condensed"/>
 
         <TextView
-            android:id="@+id/userID"
+            android:id="@+id/eventDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User ID"
+            android:text="Description"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:fontFamily="sans-serif-condensed"/>
 
         <TextView
-            android:id="@+id/password"
+            android:id="@+id/eventDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Password"
-            android:textSize="18sp"
+            android:text="dateTime"
             android:textColor="@color/black"
-            android:fontFamily="sans-serif-condensed"/>
+            android:fontFamily="sans-serif-condensed" />
 
+        <TextView
+            android:id="@+id/eventFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fee"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/buttonDelete"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|end"
-        android:contentDescription="delete button"
-        android:src="@android:drawable/ic_menu_delete" />
+    <Button
+        android:id="@+id/joinButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reqest to join"
+        android:layout_gravity="center" />
 
 </LinearLayout>

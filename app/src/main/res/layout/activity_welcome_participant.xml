@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/returnToLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
-    android:background="#5CAF954C">
+    android:padding="20dp"
+    android:background="#5CAF954C"
+    tools:context=".ui.WelcomeParticipant">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="ReturnToLogin"
+        android:text="Sign Out" />
 
     <TextView
         android:id="@+id/welcome_message3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
         android:layout_gravity="center"
         android:text="[Participant Page]"
         android:textAlignment="center"
@@ -20,28 +28,32 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <Space
+    <Button
+        android:id="@+id/BrowseEventsButton"
         android:layout_width="match_parent"
-        android:layout_height="90dp" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="toBrowseEvents"
+        android:text="Browse Events" />
 
     <TextView
-        android:id="@+id/ManageEventCategories2"
-        android:layout_width="wrap_content"
+        android:id="@+id/EnrolledEvents"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome!"
+        android:layout_marginVertical="30dp"
+        android:text="Enrolled Events"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:layout_gravity="center"
+        android:gravity="center"/>
 
-    <Space
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/participantEvents_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="108dp" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:onClick="ReturnToLogin"
-        android:text="Back" />
+        android:layout_weight="1"
+        />
+
 
 </LinearLayout>

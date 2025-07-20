@@ -59,6 +59,11 @@ public class Organizer extends UserAccount {
     public ArrayList<Participant> getReservations(DatabaseConnection dbConnection, Event event) throws InterruptedException {
         return dbConnection.getReservations(event);
     }
+
+    public void removeReservations(DatabaseConnection dbConnection, Participant participant, Event event) throws InterruptedException {
+        dbConnection.removeReservations(participant, event);
+    }
+
     public String toString() {
         return "organizer: "+username+", ID: "+userID;
     }

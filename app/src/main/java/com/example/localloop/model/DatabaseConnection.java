@@ -9,6 +9,7 @@ import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.InvalidJoinRequestException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
+import com.example.localloop.resources.exception.NoSuchReservationException;
 import com.example.localloop.resources.exception.NoSuchUserException;
 import com.google.firebase.database.*;
 
@@ -75,6 +76,17 @@ public class DatabaseConnection {
 
     public UserAccount getUser() {
         return user;
+    }
+
+    public Event getEventFromID(String eventID) throws NoSuchEventException, InterruptedException {
+        updateAllEvents();
+
+        for (Event e : allEvents) {
+            if (e.getEventID().equals(eventID)) {
+                return e;
+            }
+        }
+        throw new NoSuchEventException("Event does not exist");
     }
 
     public static void createNewUser(Participant p) throws InvalidEventNameException, InterruptedException {
@@ -377,7 +389,7 @@ public class DatabaseConnection {
         for (Event e : allEvents) {
             if ((e.getEventID()).equals(event.getEventID())) {
                 found = true;
-                return;
+                break;
             }
         }
         if (!found) {
@@ -475,6 +487,22 @@ public class DatabaseConnection {
         // TODO no such request error handling
         myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
+    protected void cancelJoinRequest(Event event) throws InterruptedException {
+        // Called by Participant Class only
+        updateAllJoinRequests();
+
+        JoinRequest request = null;
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getParticipantID()).equals(user.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    request = r;
+                }
+            }
+        }
+        // TODO no such request error handling
+        myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
+    }
     protected ArrayList<Event> getReservations() throws InterruptedException {
         // Called by Participant Class only
         updateAllReservations();
@@ -521,21 +549,54 @@ public class DatabaseConnection {
         }
         return reservations;
     }
-    protected Event eventSearch(String name) throws NoSuchEventException, InterruptedException {
+    protected void removeReservations(Participant participant, Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllReservations();
+        updateAllUsers();
+
+        Reservation reservation = null;
+
+        for (Reservation r : allReservations) {
+            if ((r.getAttendeeID()).equals(participant.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    reservation = r;
+                    break;
+                }
+            }
+        }
+
+        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+    }
+    protected void cancelReservation(Event event) throws NoSuchReservationException, InterruptedException {
         // Called by Participant Class only
-        updateAllEvents();
-        Event event = null;
+        updateAllReservations();
+        Reservation reservation = null;
         boolean found = false;
-        for (Event e : allEvents) {
-            if (name.equals(e.getName())) {
-                event = e;
-                found = true;
+        for (Reservation r : allReservations) {
+            if ((r.getEventID()).equals(event.getEventID())) {
+                if ((r.getAttendeeID()).equals(user.getUserID())) {
+                    found = true;
+                    reservation = r;
+                    break;
+                }
             }
         }
         if (!found) {
-            throw new NoSuchEventException("Event does not exist");
+            throw new NoSuchReservationException("Reservation does not exist");
         }
-        return event;
+        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+    }
+    protected ArrayList<Event> eventSearch(String name) throws InterruptedException {
+        // Called by Participant Class only
+        updateAllEvents();
+        ArrayList<Event> events = new ArrayList<>();
+
+        for (Event e : allEvents) {
+            if (name.equals(e.getName()) || (e.getName()).contains(name)) {
+                events.add(e);
+            }
+        }
+        return events;
     }
     protected ArrayList<Event> eventSearch(EventCategory category) throws NoSuchEventCategoryException, InterruptedException {
         // Called by Participant Class only
