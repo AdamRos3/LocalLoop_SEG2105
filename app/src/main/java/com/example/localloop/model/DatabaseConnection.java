@@ -97,6 +97,12 @@ public class DatabaseConnection {
                 throw new InvalidEventNameException("Username taken");
             }
         }
+        for (Organizer existing : allOrganizers) {
+            if (p.getUsername().equals(existing.getUsername())) {
+                Log.d(p.getUsername(), "New Participant Username Conflict");
+                throw new InvalidEventNameException("Username taken");
+            }
+        }
         String key = myRef.push().getKey();
         myRef.child("users/Participant").child(key).setValue(new Participant(p.getUsername(), p.getPassword(), key));
     }
@@ -104,6 +110,12 @@ public class DatabaseConnection {
     public static void createNewUser(Organizer o) throws InvalidEventNameException, InterruptedException {
         updateAllUsers();
         for (Organizer existing : allOrganizers) {
+            if (o.getUsername().equals(existing.getUsername())) {
+                Log.e(o.getUsername(), "New Organizer Username Conflict");
+                throw new InvalidEventNameException("Username taken");
+            }
+        }
+        for (Participant existing : allParticipants) {
             if (o.getUsername().equals(existing.getUsername())) {
                 Log.e(o.getUsername(), "New Organizer Username Conflict");
                 throw new InvalidEventNameException("Username taken");
