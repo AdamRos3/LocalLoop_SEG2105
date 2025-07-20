@@ -41,7 +41,8 @@
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <ImageView
             android:id="@+id/imageView4"
@@ -58,9 +59,30 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonAddEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onManageEvents"
-        android:text="Manage Events" />
+        android:onClick="onAddClick"
+        android:text="Add Event" />
+
+    <TextView
+        android:id="@+id/manageUsersPageTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="My Events"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:fontFamily="sans-serif-condensed" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listViewEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        tools:visibility="visible"/>
+
 </LinearLayout>

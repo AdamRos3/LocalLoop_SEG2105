@@ -26,7 +26,8 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-condensed" />
 
     <Button
         android:id="@+id/BrowseEventsButton"
@@ -45,6 +46,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#000000"
+        android:fontFamily="sans-serif-condensed"
         android:layout_gravity="center"
         android:gravity="center"/>
 
