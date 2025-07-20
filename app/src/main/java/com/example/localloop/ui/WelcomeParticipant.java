@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +33,9 @@ import com.example.localloop.model.DatabaseConnection;
 import com.example.localloop.model.Event;
 import com.example.localloop.model.EventCategory;
 import com.example.localloop.model.Participant;
+import com.example.localloop.resources.exception.NoSuchRequestException;
+import com.example.localloop.resources.exception.NoSuchReservationException;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +48,6 @@ public class WelcomeParticipant extends AppCompatActivity {
     ArrayList<EventCategory> allCategories = new ArrayList<>();
     ArrayList<Event> requestedEvents = new ArrayList<>();
     ArrayList<Event> joinedEvents = new ArrayList<>();
-
 
     EventAdapter adapter;
 
@@ -61,15 +64,15 @@ public class WelcomeParticipant extends AppCompatActivity {
             return insets;
         });
 
+        user = (Participant)DatabaseInstance.get().getUser();
+        String username = user.getUsername();
+
+        // Set welcome message
+        TextView welcomeMessage = findViewById(R.id.welcome_message3);
+        String message = "Welcome " + username;
+        welcomeMessage.setText(message);
+
         new Thread(() -> {
-            user = (Participant)DatabaseInstance.get().getUser();
-            String username = user.getUsername();
-
-            // Set welcome message
-            TextView welcomeMessage = findViewById(R.id.welcome_message3);
-            String message = "Welcome " + username;
-            welcomeMessage.setText(message);
-
             try {
                 allCategories.clear();
                 requestedEvents.clear();
@@ -96,11 +99,13 @@ public class WelcomeParticipant extends AppCompatActivity {
     public void ReturnToLogin(View view) {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
+        finish();
     }
 
     public void toBrowseEvents(View view) {
         Intent intent = new Intent(this, BrowseEvents.class);
         startActivity(intent);
+        finish();
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -182,7 +187,7 @@ public class WelcomeParticipant extends AppCompatActivity {
                             new Thread(() -> {
                                 try {
                                     if (joinedEvents.contains(event)) {
-                                        user.removeReservation(DatabaseInstance.get(), event);
+                                        user.cancelReservation(DatabaseInstance.get(), event);
 
                                         ((WelcomeParticipant) context).joinedEvents.clear();
                                         ((WelcomeParticipant) context).joinedEvents.addAll(user.getReservations(DatabaseInstance.get()));
@@ -191,11 +196,13 @@ public class WelcomeParticipant extends AppCompatActivity {
                                         allParticipantEvents.addAll(((WelcomeParticipant) context).joinedEvents);
                                         allParticipantEvents.addAll(((WelcomeParticipant) context).requestedEvents);
 
-                                        ((WelcomeParticipant) context).adapter.notifyDataSetChanged();
-                                        Toast.makeText(context, "Reservation removed", Toast.LENGTH_SHORT).show();
+                                        ((WelcomeParticipant) context).runOnUiThread(() -> {
+                                            ((WelcomeParticipant) context).adapter.notifyDataSetChanged();
+                                            Toast.makeText(context, "Reservation removed", Toast.LENGTH_SHORT).show();
+                                        });
 
                                     } else if (requestedEvents.contains(event)) {
-                                        user.removeRequest(DatabaseInstance.get(), event);
+                                        user.cancelJoinRequest(DatabaseInstance.get(), event);
 
                                         ((WelcomeParticipant) context).requestedEvents.clear();
                                         ((WelcomeParticipant) context).requestedEvents.addAll(user.getJoinRequests(DatabaseInstance.get()));
@@ -204,11 +211,17 @@ public class WelcomeParticipant extends AppCompatActivity {
                                         allParticipantEvents.addAll(((WelcomeParticipant) context).joinedEvents);
                                         allParticipantEvents.addAll(((WelcomeParticipant) context).requestedEvents);
 
-                                        ((WelcomeParticipant) context).adapter.notifyDataSetChanged();
-                                        Toast.makeText(context, "Reservation removed", Toast.LENGTH_SHORT).show();
+                                        ((WelcomeParticipant) context).runOnUiThread(() -> {
+                                            ((WelcomeParticipant) context).adapter.notifyDataSetChanged();
+                                            Toast.makeText(context, "Reservation removed", Toast.LENGTH_SHORT).show();
+                                        });
                                     }
                                 } catch (InterruptedException e) {
                                     ((WelcomeParticipant) context).runOnUiThread(() -> Toast.makeText(context, "Failed to drop event", Toast.LENGTH_SHORT).show());
+                                } catch (NoSuchRequestException e) {
+                                    ((WelcomeParticipant) context).runOnUiThread(() -> Toast.makeText(context, "Request does not exist", Toast.LENGTH_SHORT).show());
+                                } catch (NoSuchReservationException e) {
+                                    ((WelcomeParticipant) context).runOnUiThread(() -> Toast.makeText(context, "Reservation does not exist", Toast.LENGTH_SHORT).show());
                                 }
                             }).start();
                         })

@@ -74,6 +74,7 @@ public class Login extends AppCompatActivity {
         clearPass.setText("");
         // Go to next actvity
         startActivity(intent);
+        finish();
     }
 
     public void HandleInvalidCredentials (View view) {

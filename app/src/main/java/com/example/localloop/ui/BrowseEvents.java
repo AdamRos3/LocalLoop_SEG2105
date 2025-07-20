@@ -1,6 +1,7 @@
 package com.example.localloop.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,7 +89,11 @@ public class BrowseEvents extends AppCompatActivity {
         }).start();
     }
 
-    public void onBackClick(View view) { finish(); }
+    public void onBackClick(View view) {
+        Intent intent = new Intent(this, WelcomeParticipant.class);
+        startActivity(intent);
+        finish();
+    }
 
     public void onSearchClick(View view) {
 
