@@ -171,8 +171,7 @@ public class WelcomeParticipant extends AppCompatActivity {
 
             if (joinedEvents.contains(event)) {
                 statusButton.setText("Joined");
-                statusButton.setBackgroundColor(Color.GREEN);
-                statusButton.setTextColor(Color.WHITE);
+                statusButton.setBackgroundColor(context.getResources().getColor(R.color.green, context.getTheme()));
             } else if (requestedEvents.contains(event)) {
                 statusButton.setText("Request Sent");
                 statusButton.setBackgroundColor(Color.GRAY);

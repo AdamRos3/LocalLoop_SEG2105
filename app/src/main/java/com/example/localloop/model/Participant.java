@@ -55,7 +55,7 @@ public class Participant extends UserAccount {
     public void cancelReservation(DatabaseConnection dbConnection, Event event) throws NoSuchReservationException, InterruptedException {
         dbConnection.cancelReservation(event);
     }
-    public Event eventSearch(DatabaseConnection dbConnection, String name) throws NoSuchEventException, InterruptedException {
+    public ArrayList<Event> eventSearch(DatabaseConnection dbConnection, String name) throws InterruptedException {
         return dbConnection.eventSearch(name);
     }
     public ArrayList<Event> eventSearch(DatabaseConnection dbConnection, EventCategory category) throws NoSuchEventCategoryException, InterruptedException {

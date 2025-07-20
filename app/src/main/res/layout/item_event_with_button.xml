@@ -16,8 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Name"
-            android:textColor="@color/black"
-            android:textSize="34sp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            />
 
         <TextView
             android:id="@+id/eventCategory"
@@ -25,7 +27,8 @@
             android:layout_height="wrap_content"
             android:text="Category"
             android:textColor="@color/black"
-            android:textSize="24sp"/>
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"/>
 
         <TextView
             android:id="@+id/eventDescription"
@@ -33,21 +36,24 @@
             android:layout_height="wrap_content"
             android:text="Description"
             android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"/>
 
         <TextView
             android:id="@+id/eventDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="dateTime"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/eventFee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fee"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed" />
     </LinearLayout>
 
     <Button

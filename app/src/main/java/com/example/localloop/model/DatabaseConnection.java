@@ -586,21 +586,17 @@ public class DatabaseConnection {
         }
         myRef.child("reservations").child(reservation.getReservationID()).removeValue();
     }
-    protected Event eventSearch(String name) throws NoSuchEventException, InterruptedException {
+    protected ArrayList<Event> eventSearch(String name) throws InterruptedException {
         // Called by Participant Class only
         updateAllEvents();
-        Event event = null;
-        boolean found = false;
+        ArrayList<Event> events = new ArrayList<>();
+
         for (Event e : allEvents) {
-            if (name.equals(e.getName())) {
-                event = e;
-                found = true;
+            if (name.equals(e.getName()) || (e.getName()).contains(name)) {
+                events.add(e);
             }
         }
-        if (!found) {
-            throw new NoSuchEventException("Event does not exist");
-        }
-        return event;
+        return events;
     }
     protected ArrayList<Event> eventSearch(EventCategory category) throws NoSuchEventCategoryException, InterruptedException {
         // Called by Participant Class only
