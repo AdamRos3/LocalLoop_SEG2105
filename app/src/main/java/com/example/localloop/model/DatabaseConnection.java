@@ -590,9 +590,12 @@ public class DatabaseConnection {
         // Called by Participant Class only
         updateAllEvents();
         ArrayList<Event> events = new ArrayList<>();
+        String lowerName = name.toLowerCase();
 
         for (Event e : allEvents) {
-            if (name.equals(e.getName()) || (e.getName()).contains(name)) {
+            String lowerEventName = e.getName().toLowerCase();
+
+            if (lowerName.equals(lowerEventName) || (lowerEventName).contains(lowerName)) {
                 events.add(e);
             }
         }
