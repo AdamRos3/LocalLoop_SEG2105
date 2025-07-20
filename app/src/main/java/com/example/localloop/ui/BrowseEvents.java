@@ -49,8 +49,6 @@ public class BrowseEvents extends AppCompatActivity {
     ArrayList<Event> joinedEvents = new ArrayList<>();
     EventAdapter adapter;
 
-    EventCategory category;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
