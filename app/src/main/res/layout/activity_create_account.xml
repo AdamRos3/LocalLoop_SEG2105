@@ -19,6 +19,13 @@
             android:onClick="onBackClicked"
             android:text="Back" />
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/aqua_blue_back_transparent" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -166,6 +173,13 @@
             android:layout_gravity="center"
             android:onClick="onCreateUserAccount"
             android:text="Create Account" />
+
+        <ImageButton
+            android:id="@+id/imageButton72"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            app:srcCompat="@drawable/aqua_blue_create_transparent" />
 
     </LinearLayout>
 </RelativeLayout>

@@ -118,6 +118,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="match_parent"
+                android:layout_height="67dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:onClick="ValidateCredentials"
+                app:srcCompat="@drawable/aqua_blue_sign_in_transparent" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/createUserAccount_button"
             android:layout_width="227dp"
@@ -144,6 +158,14 @@
             android:layout_gravity="center"
             android:onClick="onCreateAccount"
             android:text="Create an Account" />
+
+        <ImageButton
+            android:id="@+id/imageButtonCreateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onCreateAccount"
+            app:srcCompat="@drawable/aqua_blue_create_account_transparent" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
