@@ -72,6 +72,9 @@ public class Login extends AppCompatActivity {
         clearUser.setText("");
         final TextView clearPass = (TextView) findViewById(R.id.password_input);
         clearPass.setText("");
+        // clear bad credentials
+        final TextView badCreds = (TextView) findViewById(R.id.badcreds_state);
+        badCreds.setText("");
         // Go to next actvity
         startActivity(intent);
         finish();
@@ -89,6 +92,14 @@ public class Login extends AppCompatActivity {
         badCreds.setText("Invalid credentials, please try again.");
     }
     public void onCreateAccount(View view) {
+        // clear username and password fields
+        final TextView clearUser = (TextView) findViewById(R.id.username_input);
+        clearUser.setText("");
+        final TextView clearPass = (TextView) findViewById(R.id.password_input);
+        clearPass.setText("");
+        // clear bad credentials
+        final TextView badCreds = (TextView) findViewById(R.id.badcreds_state);
+        badCreds.setText("");
         Intent intent = new Intent(this, CreateAccount.class);
         startActivity(intent);
     }
