@@ -155,7 +155,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
                 calendar.setTimeInMillis(selection);
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH) + 1;
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH) + 1;
                 inputDate.setText(String.format("%02d/%02d/%d", day, month, year));
             });
 
@@ -363,8 +363,19 @@ public class WelcomeOrganizer extends AppCompatActivity {
                 );
                 categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categorySpinner.setAdapter(categoryAdapter);
+
+                String selectedCategory = null;
+                for (EventCategory category : ((WelcomeOrganizer) context).allCategories) {
+                    if (category.getCategoryID().equals(event.getCategoryID())) {
+                        selectedCategory = category.getName();
+                        break;
+                    }
+                }
+                Log.d("selectedCategory", selectedCategory);
+
                 categorySpinner.setSelection(((WelcomeOrganizer) context)
-                        .allCategoryNames.indexOf(event.getCategoryID()));
+                        .allCategoryNames.indexOf(selectedCategory));
+
                 layout.addView(categorySpinner);
 
                 final EditText inputFee = new EditText(context);
@@ -391,7 +402,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
                         calendar.setTimeInMillis(selection);
                         int year = calendar.get(Calendar.YEAR);
                         int month = calendar.get(Calendar.MONTH) + 1;
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        int day = calendar.get(Calendar.DAY_OF_MONTH) + 1;
                         inputDate.setText(String.format("%02d/%02d/%04d", day, month, year));
                     });
 
