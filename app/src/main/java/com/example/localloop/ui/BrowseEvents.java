@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -38,6 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
 public class BrowseEvents extends AppCompatActivity {
 
     private static Participant user;
@@ -48,8 +54,6 @@ public class BrowseEvents extends AppCompatActivity {
     ArrayList<Event> requestedEvents = new ArrayList<>();
     ArrayList<Event> joinedEvents = new ArrayList<>();
     EventAdapter adapter;
-
-    EventCategory category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +177,7 @@ public class BrowseEvents extends AppCompatActivity {
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
+        TextView eventOrganizer;
         Button joinButton;
 
         public EventViewHolder(@NotNull View itemView) {
@@ -184,6 +189,7 @@ public class BrowseEvents extends AppCompatActivity {
             dateTimeText = itemView.findViewById(R.id.eventDateTime);
             feeText = itemView.findViewById(R.id.eventFee);
 
+            eventOrganizer = itemView.findViewById(R.id.eventOrganizer);
             joinButton = itemView.findViewById(R.id.joinButton);
         }
     }
@@ -224,7 +230,30 @@ public class BrowseEvents extends AppCompatActivity {
             holder.categoryText.setText(categoryName);
             holder.descriptionText.setText(event.getDescription());
             holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
-            holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
+
+            String feeStr = "$" + String.format(Locale.getDefault(), "%.2f", event.getFee());
+            holder.feeText.setText(feeStr);
+
+            //logic to display organizer username in the recyclerview list
+            holder.eventOrganizer.setText("Organizer: loading...");
+            FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child("Organizer")
+                    .child(event.getOrganizerID())
+                    .child("username")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String name = snapshot.exists() ? snapshot.getValue(String.class)
+                                    : "unknown";
+                            holder.eventOrganizer.setText("Organizer: " + name);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            holder.eventOrganizer.setText("Organizer: unknown");
+                        }
+                    });
 
             Button joinButton = holder.joinButton;
 

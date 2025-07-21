@@ -31,7 +31,7 @@
             app:srcCompat="@drawable/mirrors_edge_logo_transparent2" />
 
         <TextView
-            android:id="@+id/welcome_message3"
+            android:id="@+id/welcome_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -76,7 +76,7 @@
         android:layout_height="50dp" />
 
     <TextView
-        android:id="@+id/welcome_message2"
+        android:id="@+id/manage_user_accounts_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

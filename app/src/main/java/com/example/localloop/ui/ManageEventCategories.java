@@ -19,14 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.localloop.R;
 import com.example.localloop.model.Admin;
-import com.example.localloop.model.DatabaseConnection;
 import com.example.localloop.model.EventCategory;
 import com.example.localloop.resources.exception.InvalidEventCategoryNameException;
 import com.example.localloop.resources.exception.InvalidEventNameException;
 import com.example.localloop.resources.exception.NoSuchEventCategoryException;
 import com.example.localloop.resources.exception.NoSuchEventException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,7 @@ import java.util.List;
 public class ManageEventCategories extends AppCompatActivity {
     private final ArrayList<EventCategory> allCategories = new ArrayList<>();
     private Admin admin;
-    private categoryAdapter adapter;
+    private CategoryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +41,7 @@ public class ManageEventCategories extends AppCompatActivity {
         admin = (Admin) DatabaseInstance.get().getUser();
 
         RecyclerView recyclerview = findViewById(R.id.event_recycler_view);
-        adapter = new categoryAdapter(this, allCategories);
+        adapter = new CategoryAdapter(this, allCategories);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(adapter);
 
@@ -104,11 +101,11 @@ public class ManageEventCategories extends AppCompatActivity {
         }).start();
     }
 
-    public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.CategoryViewHolder> {
+    public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
         private final List<EventCategory> allCategories;
         private final Context context;
 
-        public categoryAdapter(Context context, List<EventCategory> allCategories) {
+        public CategoryAdapter(Context context, List<EventCategory> allCategories) {
             this.context = context;
             this.allCategories = allCategories;
         }

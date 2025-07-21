@@ -52,6 +52,6 @@ public class Time {
         } else {
             minuteStr = String.valueOf(minute);
         }
-        return hourStr+":"+minuteStr+" "+timezone;
+        return hourStr+":"+minuteStr;//+" "+timezone;
     }
 }
