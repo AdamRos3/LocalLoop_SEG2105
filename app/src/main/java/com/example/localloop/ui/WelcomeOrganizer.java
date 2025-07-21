@@ -35,6 +35,12 @@ import com.example.localloop.resources.datetime.Time;
 import com.example.localloop.resources.exception.InvalidDateException;
 import com.example.localloop.resources.exception.InvalidTimeException;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -185,6 +191,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
+        TextView eventOrganizer;
         ImageButton userButton, editButton, deleteButton;
 
         public EventViewHolder(@NonNull View itemView) {
@@ -195,6 +202,8 @@ public class WelcomeOrganizer extends AppCompatActivity {
             descriptionText = itemView.findViewById(R.id.eventDescription);
             dateTimeText = itemView.findViewById(R.id.eventDateTime);
             feeText = itemView.findViewById(R.id.eventFee);
+
+            eventOrganizer = itemView.findViewById(R.id.eventOrganizer);
 
             userButton = itemView.findViewById(R.id.buttonUsers);
             editButton = itemView.findViewById(R.id.buttonEdit);
@@ -239,6 +248,31 @@ public class WelcomeOrganizer extends AppCompatActivity {
             String feeStr = "$" + String.format(Locale.getDefault(), "%.2f", event.getFee());
             holder.feeText.setText(feeStr);
 
+
+            String currentUserId = user.getUserID();
+            if (event.getOrganizerID().equals(currentUserId)) {
+                // I’m the organizer—hide the line entirely
+                holder.eventOrganizer.setVisibility(View.GONE);
+            } else {
+                holder.eventOrganizer.setVisibility(View.VISIBLE);
+                holder.eventOrganizer.setText("Organizer: loading…");
+                com.google.firebase.database.FirebaseDatabase.getInstance()
+                        .getReference("users")
+                        .child("Organizer")
+                        .child(event.getOrganizerID())
+                        .child("username")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override public void onDataChange(DataSnapshot snap) {
+                                String name = snap.exists()
+                                        ? snap.getValue(String.class)
+                                        : "unknown";
+                                holder.eventOrganizer.setText("Organizer: " + name);
+                            }
+                            @Override public void onCancelled(DatabaseError err) {
+                                holder.eventOrganizer.setText("Organizer: unknown");
+                            }
+                        });
+            }
             holder.userButton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ManageParticipants.class);
                 intent.putExtra("eventID", event.getEventID());
