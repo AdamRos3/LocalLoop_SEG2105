@@ -5,7 +5,7 @@
     android:id="@+id/returnToLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5CAF954C"
+    android:background="#E1D5BD"
     android:orientation="vertical"
     android:padding="20dp"
     tools:context=".ui.WelcomeOrganizer">
@@ -37,12 +37,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed"
             android:text="Welcome Organizer"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-condensed" />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageView4"
@@ -69,20 +69,20 @@
         android:id="@+id/manageUsersPageTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
         android:layout_gravity="center"
+        android:layout_marginVertical="30dp"
+        android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:text="My Events"
-        android:textSize="24sp"
-        android:textStyle="bold"
         android:textColor="#000000"
-        android:fontFamily="sans-serif-condensed" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listViewEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbarAlwaysDrawVerticalTrack="true"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </LinearLayout>
