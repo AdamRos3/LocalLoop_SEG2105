@@ -215,9 +215,9 @@ public class WelcomeOrganizer extends AppCompatActivity {
                 try {
                     double fee = Double.parseDouble(feeStr);
                     String[] t = timeStr.split(":");
-                    String[] d = dateStr.split("-");
+                    String[] d = dateStr.split("/");
                     user.createEvent(DatabaseInstance.get(), new Event(name, description, categoryID, fee,
-                            new Date(Integer.parseInt(d[0]), (Integer.parseInt(d[1])), Integer.parseInt(d[2])),
+                            new Date(Integer.parseInt(d[2]), Integer.parseInt(d[1]), (Integer.parseInt(d[0]))),
                             new Time(Integer.parseInt(t[0]), Integer.parseInt(t[1])), user.getUserID(), null));
                     allCategories.clear();
                     userEvents.clear();
