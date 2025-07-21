@@ -134,7 +134,6 @@ public class WelcomeOrganizer extends AppCompatActivity {
 
 
 
-
         final TextInputEditText inputDate = new TextInputEditText(this);
         inputDate.setHint("Pick a date");
         inputDate.setFocusable(false);
@@ -304,8 +303,167 @@ public class WelcomeOrganizer extends AppCompatActivity {
                 intent.putExtra("eventID", event.getEventID());
                 context.startActivity(intent);
             });
-
+//Changes made to try and implement clock and calendar
             holder.editButton.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Edit Event");
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                final EditText inputName = new EditText(context);
+                inputName.setText(event.getName());
+                layout.addView(inputName);
+
+                final EditText inputDescription = new EditText(context);
+                inputDescription.setText(event.getDescription());
+                layout.addView(inputDescription);
+
+                final Spinner categorySpinner = new Spinner(context);
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                        context,
+                        android.R.layout.simple_spinner_item,
+                        ((WelcomeOrganizer) context).allCategoryNames
+                );
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categorySpinner.setAdapter(categoryAdapter);
+                categorySpinner.setSelection(((WelcomeOrganizer) context)
+                        .allCategoryNames.indexOf(event.getCategoryID()));
+                layout.addView(categorySpinner);
+
+                final EditText inputFee = new EditText(context);
+                inputFee.setText(String.valueOf(event.getFee()));
+                layout.addView(inputFee);
+
+                final TextInputEditText inputDate = new TextInputEditText(context);
+                inputDate.setHint("Pick a date");
+                inputDate.setFocusable(false);
+                String formattedDate = String.format("%02d/%02d/%04d",
+                        event.getDate().getDay(),
+                        event.getDate().getMonth(),
+                        event.getDate().getYear());
+                inputDate.setText(formattedDate);
+                layout.addView(inputDate);
+
+                inputDate.setOnClickListener(v1 -> {
+                    MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                            .setTitleText("Select Date")
+                            .build();
+
+                    datePicker.addOnPositiveButtonClickListener(selection -> {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(selection);
+                        int year = calendar.get(Calendar.YEAR);
+                        int month = calendar.get(Calendar.MONTH) + 1;
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        inputDate.setText(String.format("%02d/%02d/%04d", day, month, year));
+                    });
+
+                    datePicker.show(((AppCompatActivity) context).getSupportFragmentManager(), "DATE_PICKER");
+                });
+
+
+                final TextInputEditText inputTime = new TextInputEditText(context);
+                inputTime.setHint("Pick a time");
+                inputTime.setFocusable(false);
+                String formattedTime = String.format("%02d:%02d",
+                        event.getTime().getHour(),
+                        event.getTime().getMinute());
+                inputTime.setText(formattedTime);
+                layout.addView(inputTime);
+
+                inputTime.setOnClickListener(v1 -> {
+                    MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                            .setTimeFormat(TimeFormat.CLOCK_24H)
+                            .setHour(event.getTime().getHour())
+                            .setMinute(event.getTime().getMinute())
+                            .setTitleText("Select Time")
+                            .build();
+
+                    timePicker.addOnPositiveButtonClickListener(selection -> {
+                        int hour = timePicker.getHour();
+                        int minute = timePicker.getMinute();
+                        inputTime.setText(String.format("%02d:%02d", hour, minute));
+                    });
+
+                    timePicker.show(((AppCompatActivity) context).getSupportFragmentManager(), "TIME_PICKER");
+                });
+
+                builder.setView(layout);
+
+                builder.setPositiveButton("Save", (dialog, which) -> {
+                    String newName = inputName.getText().toString().trim();
+                    String newDesc = inputDescription.getText().toString().trim();
+                    String newDateStr = inputDate.getText().toString().trim();
+                    String newTimeStr = inputTime.getText().toString().trim();
+                    String newFeeStr = inputFee.getText().toString().trim();
+                    int newCatPos = categorySpinner.getSelectedItemPosition();
+                    String newCatID = ((WelcomeOrganizer) context).allCategories.get(newCatPos).getCategoryID();
+
+                    if (!newName.isEmpty() && !newDesc.isEmpty() && !newFeeStr.isEmpty()
+                            && !newDateStr.isEmpty() && !newTimeStr.isEmpty()) {
+
+                        new Thread(() -> {
+                            try {
+                                double newFee = Double.parseDouble(newFeeStr);
+
+                                String[] dateParts = newDateStr.split("/");
+                                int day = Integer.parseInt(dateParts[0]);
+                                int month = Integer.parseInt(dateParts[1]);
+                                int year = Integer.parseInt(dateParts[2]);
+
+                                String[] timeParts = newTimeStr.split(":");
+                                int hour = Integer.parseInt(timeParts[0]);
+                                int minute = Integer.parseInt(timeParts[1]);
+
+                                user.editEvent(
+                                        DatabaseInstance.get(),
+                                        event,
+                                        new Event(newName, newDesc, newCatID, newFee,
+                                                new Date(year, month, day),
+                                                new Time(hour, minute),
+                                                user.getUserID(),
+                                                event.getEventID())
+                                );
+
+                                ((WelcomeOrganizer) context).allCategories.clear();
+                                ((WelcomeOrganizer) context).userEvents.clear();
+                                ((WelcomeOrganizer) context).allCategoryNames.clear();
+                                ((WelcomeOrganizer) context).allCategories.addAll(user.getAllEventCategories(DatabaseInstance.get()));
+                                ((WelcomeOrganizer) context).userEvents.addAll(user.getUserEvents(DatabaseInstance.get()));
+                                for (EventCategory category : ((WelcomeOrganizer) context).allCategories) {
+                                    ((WelcomeOrganizer) context).allCategoryNames.add(category.getName());
+                                }
+
+                                ((WelcomeOrganizer) context).runOnUiThread(() -> {
+                                    ((WelcomeOrganizer) context).adapter.notifyDataSetChanged();
+                                    Toast.makeText(context, "Event Updated", Toast.LENGTH_SHORT).show();
+                                });
+
+                            } catch (InvalidTimeException e) {
+                                ((WelcomeOrganizer) context).runOnUiThread(() ->
+                                        Toast.makeText(context, "Invalid time", Toast.LENGTH_SHORT).show());
+                            } catch (InvalidDateException e) {
+                                ((WelcomeOrganizer) context).runOnUiThread(() ->
+                                        Toast.makeText(context, "Invalid date", Toast.LENGTH_SHORT).show());
+                            } catch (Exception e) {
+                                ((WelcomeOrganizer) context).runOnUiThread(() ->
+                                        Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show());
+                            }
+                        }).start();
+
+                    } else {
+                        ((WelcomeOrganizer) context).runOnUiThread(() ->
+                                Toast.makeText(context, "All fields must be filled", Toast.LENGTH_SHORT).show());
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
+            });
+
+
+            /*holder.editButton.setOnClickListener(v -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Edit Event");
 
@@ -410,7 +568,7 @@ public class WelcomeOrganizer extends AppCompatActivity {
 
                 builder.setNegativeButton("Cancel", null);
                 builder.show();
-            });
+            });*/
 
             holder.deleteButton.setOnClickListener(v -> {
                 new AlertDialog.Builder(context)
