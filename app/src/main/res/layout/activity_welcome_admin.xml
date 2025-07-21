@@ -5,9 +5,9 @@
     android:id="@+id/returnToLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#5CC7C0E0"
     android:orientation="vertical"
     android:padding="20dp"
-    android:background="#5CAF954C"
     tools:context=".ui.WelcomeAdmin">
 
     <Button
@@ -20,8 +20,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginVertical="30dp">
+        android:layout_marginVertical="30dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imageView5"
@@ -35,13 +35,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="Welcome Admin"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_weight="1" />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageView4"
@@ -55,12 +55,12 @@
         android:id="@+id/ManageEventCategories2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="Manage Event Categories"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:gravity="center"/>
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/manage_events_button"
@@ -79,12 +79,12 @@
         android:id="@+id/welcome_message2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="Manage User Accounts"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:gravity="center"/>
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/button"

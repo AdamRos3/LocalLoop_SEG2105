@@ -39,6 +39,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import java.util.Calendar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
+
+
 public class WelcomeOrganizer extends AppCompatActivity {
     private static Organizer user;
 
@@ -125,13 +132,68 @@ public class WelcomeOrganizer extends AppCompatActivity {
         inputFee.setHint("Fee");
         layout.addView(inputFee);
 
-        final EditText inputDate = new EditText(this);
+
+
+
+        final TextInputEditText inputDate = new TextInputEditText(this);
+        inputDate.setHint("Pick a date");
+        inputDate.setFocusable(false);
+        layout.addView(inputDate);
+
+        inputDate.setOnClickListener(v1 -> {
+            MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select Date")
+                    .build();
+
+            datePicker.addOnPositiveButtonClickListener(selection -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                inputDate.setText(String.format("%02d/%02d/%d", day, month, year));
+            });
+
+            datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+        });
+
+        final TextInputEditText inputTime = new TextInputEditText(this);
+        inputTime.setHint("Pick a time");
+        inputTime.setFocusable(false);
+        layout.addView(inputTime);
+
+        inputTime.setOnClickListener(v1 -> {
+            MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                    .setTimeFormat(TimeFormat.CLOCK_24H)
+                    .setHour(12)
+                    .setMinute(0)
+                    .setTitleText("Select Time")
+                    .build();
+
+            timePicker.addOnPositiveButtonClickListener( selection -> {
+                int hour = timePicker.getHour();
+                int minute = timePicker.getMinute();
+                inputTime.setText(String.format("%02d:%02d", hour, minute));
+            });
+
+            timePicker.show(getSupportFragmentManager(), "TIME_PICKER");
+        });
+
+
+
+        /*final EditText inputDate = new EditText(this);
         inputDate.setHint("Date (YYYY-MM-DD)");
         layout.addView(inputDate);
 
         final EditText inputTime = new EditText(this);
         inputTime.setHint("Time HH:MM");
-        layout.addView(inputTime);
+        layout.addView(inputTime);the
+         */
+
+
+
+
+
 
         dialogBuilder.setView(layout);
 

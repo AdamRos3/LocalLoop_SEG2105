@@ -5,7 +5,7 @@
     android:id="@+id/category_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5CAF954C"
+    android:background="#5CC7C0E0"
     android:padding="20dp"
     tools:context=".ui.ManageEventCategories">
 
@@ -14,10 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/back_button"
@@ -30,10 +30,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
             android:text="Manage Categories"
             android:textSize="26sp"
-            android:textStyle="bold|italic"
-            android:layout_marginBottom="24dp" />
+            android:textStyle="bold|italic" />
 
         <EditText
             android:id="@+id/category_name_input"
@@ -46,17 +46,17 @@
             android:id="@+id/category_description_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:hint="Category Description"
-            android:inputType="text"
-            android:layout_marginTop="12dp" />
+            android:inputType="text" />
 
         <Button
             android:id="@+id/add_category_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Category"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:text="Add Category" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/event_recycler_view"

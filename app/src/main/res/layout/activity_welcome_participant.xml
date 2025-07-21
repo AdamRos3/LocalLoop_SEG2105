@@ -4,9 +4,9 @@
     android:id="@+id/returnToLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#5CC7C0E0"
     android:orientation="vertical"
     android:padding="20dp"
-    android:background="#5CAF954C"
     tools:context=".ui.WelcomeParticipant">
 
     <Button
@@ -20,14 +20,14 @@
         android:id="@+id/welcome_message3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
         android:layout_gravity="center"
+        android:layout_marginVertical="30dp"
+        android:fontFamily="sans-serif-condensed"
         android:text="[Participant Page]"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-condensed" />
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/BrowseEventsButton"
@@ -41,21 +41,20 @@
         android:id="@+id/EnrolledEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
-        android:text="Enrolled Events"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:fontFamily="sans-serif-condensed"
         android:layout_gravity="center"
-        android:gravity="center"/>
+        android:layout_marginVertical="30dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="Enrolled Events"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/participantEvents_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1" />
 
 
 </LinearLayout>
