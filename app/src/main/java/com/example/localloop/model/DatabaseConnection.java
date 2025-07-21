@@ -78,9 +78,26 @@ public class DatabaseConnection {
         return user;
     }
 
+    public Event getEventFromID(String eventID) throws NoSuchEventException, InterruptedException {
+        updateAllEvents();
+
+        for (Event e : allEvents) {
+            if (e.getEventID().equals(eventID)) {
+                return e;
+            }
+        }
+        throw new NoSuchEventException("Event does not exist");
+    }
+
     public static void createNewUser(Participant p) throws InvalidEventNameException, InterruptedException {
         updateAllUsers();
         for (Participant existing : allParticipants) {
+            if (p.getUsername().equals(existing.getUsername())) {
+                Log.d(p.getUsername(), "New Participant Username Conflict");
+                throw new InvalidEventNameException("Username taken");
+            }
+        }
+        for (Organizer existing : allOrganizers) {
             if (p.getUsername().equals(existing.getUsername())) {
                 Log.d(p.getUsername(), "New Participant Username Conflict");
                 throw new InvalidEventNameException("Username taken");
@@ -93,6 +110,12 @@ public class DatabaseConnection {
     public static void createNewUser(Organizer o) throws InvalidEventNameException, InterruptedException {
         updateAllUsers();
         for (Organizer existing : allOrganizers) {
+            if (o.getUsername().equals(existing.getUsername())) {
+                Log.e(o.getUsername(), "New Organizer Username Conflict");
+                throw new InvalidEventNameException("Username taken");
+            }
+        }
+        for (Participant existing : allParticipants) {
             if (o.getUsername().equals(existing.getUsername())) {
                 Log.e(o.getUsername(), "New Organizer Username Conflict");
                 throw new InvalidEventNameException("Username taken");
@@ -378,7 +401,7 @@ public class DatabaseConnection {
         for (Event e : allEvents) {
             if ((e.getEventID()).equals(event.getEventID())) {
                 found = true;
-                return;
+                break;
             }
         }
         if (!found) {
@@ -476,24 +499,21 @@ public class DatabaseConnection {
         // TODO no such request error handling
         myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
-    protected void cancelReservation(Event event) throws NoSuchReservationException, InterruptedException {
+    protected void cancelJoinRequest(Event event) throws InterruptedException {
         // Called by Participant Class only
-        updateAllReservations();
-        Reservation reservation = null;
-        boolean found = false;
-        for (Reservation r : allReservations) {
-            if ((r.getEventID()).equals(event.getEventID())) {
-                if ((r.getAttendeeID()).equals(user.getUserID())) {
-                    found = true;
-                    reservation = r;
-                    break;
+        updateAllJoinRequests();
+
+        JoinRequest request = null;
+
+        for (JoinRequest r : allJoinRequests) {
+            if ((r.getParticipantID()).equals(user.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    request = r;
                 }
             }
         }
-        if (!found) {
-            throw new NoSuchReservationException("Reservation does not exist");
-        }
-        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+        // TODO no such request error handling
+        myRef.child("joinRequests").child(request.getJoinRequestID()).removeValue();
     }
     protected ArrayList<Event> getReservations() throws InterruptedException {
         // Called by Participant Class only
@@ -541,21 +561,57 @@ public class DatabaseConnection {
         }
         return reservations;
     }
-    protected Event eventSearch(String name) throws NoSuchEventException, InterruptedException {
+    protected void removeReservations(Participant participant, Event event) throws InterruptedException {
+        // Called by Organizer Class only
+        updateAllReservations();
+        updateAllUsers();
+
+        Reservation reservation = null;
+
+        for (Reservation r : allReservations) {
+            if ((r.getAttendeeID()).equals(participant.getUserID())) {
+                if ((r.getEventID()).equals(event.getEventID())) {
+                    reservation = r;
+                    break;
+                }
+            }
+        }
+
+        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+    }
+    protected void cancelReservation(Event event) throws NoSuchReservationException, InterruptedException {
         // Called by Participant Class only
-        updateAllEvents();
-        Event event = null;
+        updateAllReservations();
+        Reservation reservation = null;
         boolean found = false;
-        for (Event e : allEvents) {
-            if (name.equals(e.getName())) {
-                event = e;
-                found = true;
+        for (Reservation r : allReservations) {
+            if ((r.getEventID()).equals(event.getEventID())) {
+                if ((r.getAttendeeID()).equals(user.getUserID())) {
+                    found = true;
+                    reservation = r;
+                    break;
+                }
             }
         }
         if (!found) {
-            throw new NoSuchEventException("Event does not exist");
+            throw new NoSuchReservationException("Reservation does not exist");
         }
-        return event;
+        myRef.child("reservations").child(reservation.getReservationID()).removeValue();
+    }
+    protected ArrayList<Event> eventSearch(String name) throws InterruptedException {
+        // Called by Participant Class only
+        updateAllEvents();
+        ArrayList<Event> events = new ArrayList<>();
+        String lowerName = name.toLowerCase();
+
+        for (Event e : allEvents) {
+            String lowerEventName = e.getName().toLowerCase();
+
+            if (lowerName.equals(lowerEventName) || (lowerEventName).contains(lowerName)) {
+                events.add(e);
+            }
+        }
+        return events;
     }
     protected ArrayList<Event> eventSearch(EventCategory category) throws NoSuchEventCategoryException, InterruptedException {
         // Called by Participant Class only

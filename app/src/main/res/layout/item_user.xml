@@ -17,8 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Username"
-            android:textColor="@color/black"
-            android:textSize="34sp" />
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"/>
 
         <TextView
             android:id="@+id/AccountType"
@@ -26,7 +27,8 @@
             android:layout_height="wrap_content"
             android:text="Account Type"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"/>
 
         <TextView
             android:id="@+id/userID"
@@ -34,14 +36,17 @@
             android:layout_height="wrap_content"
             android:text="User ID"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"/>
 
         <TextView
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Password"
-            android:textColor="@color/black" />
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed"/>
 
     </LinearLayout>
 

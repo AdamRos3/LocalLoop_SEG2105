@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".ManageEvents">
+    android:background="#5CAF954C"
+    tools:context=".ui.ManageUsers">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +33,8 @@
         <TextView
             android:id="@+id/manageUsersPageTitle"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="30dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="Manage Users"

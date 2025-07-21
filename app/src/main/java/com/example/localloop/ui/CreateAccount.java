@@ -20,11 +20,16 @@ import com.example.localloop.resources.exception.InvalidEventNameException;
 
 public class CreateAccount extends AppCompatActivity {
 
+    private TextView badCreds;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_account);
+
+        badCreds = findViewById(R.id.badcreds_state);
+        badCreds.setVisibility(View.GONE);
+
         Switch accountTypeSwitch = findViewById(R.id.accountTypeSwitch);
         TextView accountTypeText = findViewById(R.id.newAccountType_input);
         accountTypeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -44,6 +49,18 @@ public class CreateAccount extends AppCompatActivity {
 
         Switch accountSwitch = findViewById(R.id.accountTypeSwitch);
 
+        //validates if the username field or the password field are empty upon account creation
+        if (username.isEmpty()) {
+            userText.setError("Username required");
+            userText.requestFocus();
+            return;
+        }
+        if (password.isEmpty()) {
+            passText.setError("Password required");
+            passText.requestFocus();
+            return;
+        }
+
         new Thread(() -> {
             try {
                 if (accountSwitch.isChecked()) {
@@ -54,6 +71,12 @@ public class CreateAccount extends AppCompatActivity {
                 finish();
             } catch (InvalidEventNameException e) {
                 Log.e("InvalidUsername","Username Taken");
+                runOnUiThread(() -> {
+                    badCreds.setText("That username is already in use");
+                    badCreds.setVisibility(View.VISIBLE);
+                    userText.requestFocus();
+                });
+
             } catch (InterruptedException e) {
                 Log.e("InterruptedException","Interrupted at onCreateUserAccount > CreateAccount");
             }
@@ -62,5 +85,6 @@ public class CreateAccount extends AppCompatActivity {
     public void onBackClicked(View view) {
         Intent intent = new Intent(this, WelcomeAdmin.class);
         startActivity(intent);
+        finish();
     }
 }

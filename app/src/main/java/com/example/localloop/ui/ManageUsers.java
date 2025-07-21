@@ -32,7 +32,7 @@ public class ManageUsers extends AppCompatActivity {
 
     private static Admin admin;
     private ArrayList<UserAccount> allUsers = new ArrayList<>();
-    private ManageUsers.userAdapter adapter;
+    private UserAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class ManageUsers extends AppCompatActivity {
                 }
                 runOnUiThread(() -> {
                     RecyclerView usersListView = findViewById(R.id.listViewUsers);
-                    adapter = new ManageUsers.userAdapter(this, allUsers);
+                    adapter = new UserAdapter(this, allUsers);
                     usersListView.setLayoutManager(new LinearLayoutManager(this));
                     usersListView.setAdapter(adapter);
                 });
@@ -73,12 +73,12 @@ public class ManageUsers extends AppCompatActivity {
         finish();
     }
 
-    public static class userViewHolder extends RecyclerView.ViewHolder {
+    public static class UserViewHolder extends RecyclerView.ViewHolder {
 
         TextView usernameText, accountTypeText, userIDText, passwordText;
         ImageButton editButton, deleteButton;
 
-        public userViewHolder(@NonNull View itemView) {
+        public UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
             usernameText = itemView.findViewById(R.id.username);
@@ -91,25 +91,25 @@ public class ManageUsers extends AppCompatActivity {
         }
     }
 
-    public static class userAdapter extends RecyclerView.Adapter<ManageUsers.userViewHolder> {
+    public static class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
         Context context;
         List<UserAccount> users;
 
-        public userAdapter(Context context, List<UserAccount> users) {
+        public UserAdapter(Context context, List<UserAccount> users) {
             this.context = context;
             this.users = users;
         }
 
         @NonNull
         @Override
-        public ManageUsers.userViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ManageUsers.userViewHolder(LayoutInflater.from(context).inflate(R.layout.item_user,
+        public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new UserViewHolder(LayoutInflater.from(context).inflate(R.layout.item_user,
                     parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ManageUsers.userViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
             UserAccount user = users.get(position);
             holder.usernameText.setText(user.getUsername());
 
