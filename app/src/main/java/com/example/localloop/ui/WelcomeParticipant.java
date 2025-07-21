@@ -41,6 +41,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
 public class WelcomeParticipant extends AppCompatActivity {
 
     private static Participant user;
@@ -110,7 +115,7 @@ public class WelcomeParticipant extends AppCompatActivity {
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView nameText, categoryText, descriptionText, dateTimeText, feeText;
-
+        TextView eventOrganizer;
         Button statusButton;
 
         public EventViewHolder(@NonNull View itemView) {
@@ -121,6 +126,7 @@ public class WelcomeParticipant extends AppCompatActivity {
             descriptionText = itemView.findViewById(R.id.eventDescription);
             dateTimeText = itemView.findViewById(R.id.eventDateTime);
             feeText = itemView.findViewById(R.id.eventFee);
+            eventOrganizer = itemView.findViewById(R.id.eventOrganizer);
 
             statusButton = itemView.findViewById(R.id.joinButton);
         }
@@ -166,7 +172,25 @@ public class WelcomeParticipant extends AppCompatActivity {
             holder.descriptionText.setText(event.getDescription());
             holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
             holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
-
+            holder.eventOrganizer.setText("Organizer: loading…");
+            FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child("Organizer")
+                    .child(event.getOrganizerID())
+                    .child("username")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snap) {
+                            String name = snap.exists()
+                                    ? snap.getValue(String.class)
+                                    : "unknown";
+                            holder.eventOrganizer.setText("Organizer: " + name);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError err) {
+                            holder.eventOrganizer.setText("Organizer: unknown");
+                        }
+                    });
             Button statusButton = holder.statusButton;
 
             if (joinedEvents.contains(event)) {
