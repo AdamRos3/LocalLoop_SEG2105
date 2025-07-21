@@ -32,7 +32,7 @@ public class WelcomeAdmin extends AppCompatActivity {
         admin = (Admin)DatabaseInstance.get().getUser();
         
         // Set welcome message
-        TextView welcomeMessage = findViewById(R.id.welcome_message2);
+        TextView welcomeMessage = findViewById(R.id.welcome_message);
         String message = "Welcome " + admin.getUsername();
         welcomeMessage.setText(message);
     }

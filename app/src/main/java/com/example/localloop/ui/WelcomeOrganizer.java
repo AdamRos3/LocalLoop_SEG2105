@@ -235,7 +235,9 @@ public class WelcomeOrganizer extends AppCompatActivity {
             holder.categoryText.setText(categoryName);
             holder.descriptionText.setText(event.getDescription());
             holder.dateTimeText.setText(event.getDate().toString() + " " + event.getTime().toString());
-            holder.feeText.setText(String.format(Locale.getDefault(), "%.2f", event.getFee()));
+
+            String feeStr = "$" + String.format(Locale.getDefault(), "%.2f", event.getFee());
+            holder.feeText.setText(feeStr);
 
             holder.userButton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ManageParticipants.class);
