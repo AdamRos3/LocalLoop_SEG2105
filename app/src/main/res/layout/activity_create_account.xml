@@ -14,6 +14,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <FrameLayout
+            android:layout_width="308dp"
+            android:layout_height="56dp">
+
+            <ImageButton
+                android:id="@+id/imageButton49"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="Delete"
+                app:srcCompat="@drawable/bg_gradient" />
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="66dp"
+                android:gravity="center"
+                android:text="something"
+                android:textColor="@android:color/white" />
+            <!--            android:background-image: linear-gradient(hsl(0 0% 100% / 0.85), transparent 10px), linear-gradient(hsl(0 0% 100% / 0.25) 10px, transparent 10px)-->
+            <!--            <?xml version="1.0" encoding="utf-8"?>-->
+            <!--                <LinearLayoutxmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--                android:orientation="vertical"-->
+            <!--                android:layout_width="fill_parent"-->
+            <!--                android:layout_height="fill_parent"-->
+            <!--                android:background="@drawable/bg_gradient "-->
+            <!--                >-->
+            <!--            </LinearLayout>-->
+        </FrameLayout>
+
         <Button
             android:id="@+id/button7"
             android:layout_width="wrap_content"

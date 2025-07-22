@@ -14,18 +14,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/manage_event_back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:onClick="onBackClick"
-            android:text="Back" />
-
         <ImageButton
             android:id="@+id/imageButton93"
-            android:layout_width="193dp"
-            android:layout_height="52dp"
+
+            android:layout_width="246dp"
+            android:layout_height="106dp"
             android:background="?android:attr/selectableItemBackground"
             android:onClick="onBackClick"
             android:src="@drawable/aqua_blue_back_transparent" />
