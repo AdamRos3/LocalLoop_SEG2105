@@ -2,46 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E1D5BD"
+    android:padding="20dp"
+    tools:context=".ui.CreateAccount">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="135dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="15dp"
-            android:onClick="onBackClicked"
-            android:text="Back" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#5CAF954C"
         android:orientation="vertical">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="77dp"
-            android:onClick="onBackClicked" />
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onBackClicked"
+            android:text="Back" />
 
         <ImageView
             android:id="@+id/logo_image"
-            android:layout_width="305dp"
-            android:layout_height="171dp"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
             android:layout_gravity="center"
+            android:layout_marginVertical="30dp"
             android:src="@drawable/parliament" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
 
         <TextView
             android:id="@+id/TextViewCreateAccount"
@@ -59,109 +46,58 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/badcreds_state"
-            android:textColor="#FF1744" />
+            android:textColor="#FF1744"
+            android:visibility="gone"
+            android:text="" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
+        <EditText
+            android:id="@+id/username_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:hint="username"
+            android:inputType="text"
+            android:text="@string/username_input" />
 
-            <Space
-                android:layout_width="18dp"
-                android:layout_height="52dp"
-                android:layout_weight="1" />
-
-            <EditText
-                android:id="@+id/username_input"
-                android:layout_width="wrap_content"
-                android:layout_height="58dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="username"
-                android:inputType="text"
-                android:text="@string/username_input" />
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="60dp"
-                android:layout_weight="1" />
-
-        </LinearLayout>
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:text="@string/password_input" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="30dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <Space
-                android:layout_width="59dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <EditText
-                android:id="@+id/password_input"
-                android:layout_width="253dp"
-                android:layout_height="60dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="password"
-                android:inputType="text"
-                android:text="@string/password_input" />
-
-            <Space
-                android:layout_width="61dp"
-                android:layout_height="43dp"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="13dp" />
-
-        <LinearLayout
-            android:layout_width="361dp"
-            android:layout_height="54dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="199dp"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:id="@+id/newAccountType_input"
-                    android:layout_width="96dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="@string/newAccountType_input"
-                    android:textAlignment="textEnd" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/newAccountType_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/newAccountType_input" />
 
             <Switch
                 android:id="@+id/accountTypeSwitch"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:checked="true"
-                android:showText="false" />
-
-            <Space
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:checked="true"
+                android:gravity="center"
+                android:showText="false" />
         </LinearLayout>
 
         <Button
             android:id="@+id/createUserAccount_button"
-            android:layout_width="227dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:onClick="onCreateUserAccount"
